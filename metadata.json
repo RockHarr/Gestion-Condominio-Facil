@@ -1,0 +1,5 @@
+{
+  "name": "Gestión Condominio Fácil",
+  "description": "Una aplicación de gestión de condominios de bajo costo para residentes. Permite ver saldos, realizar pagos, crear tickets de soporte, revisar avisos de la comunidad y reservar áreas comunes.",
+  "requestFramePermissions": []
+}
