@@ -1,0 +1,79 @@
+# Guía de Usuario: ¡Bienvenido a tu Comunidad Conectada!
+
+Hola,
+
+Hemos creado esta herramienta pensando en ti y en todos nuestros vecinos. Nuestro objetivo es simple: hacer que la vida en nuestra comunidad sea más fácil, transparente y organizada.
+
+Esta aplicación es tu nuevo centro de control para todo lo relacionado con nuestro condominio. Aquí podrás pagar tus cuentas, reportar problemas, enterarte de las novedades y mucho más, todo desde la palma de tu mano.
+
+---
+
+## ✅ Para Residentes: Tu Comunidad, a un Toque de Distancia
+
+Como residente, tienes acceso a todo lo que necesitas para estar al día.
+
+### **Inicio**
+
+Es tu vista principal. De un solo vistazo, sabrás:
+-   **Cuánto debes pagar** este mes.
+-   **Por qué lo estás pagando:** Verás un resumen de los gastos aprobados por la comunidad (como mantenciones o seguridad) y cuánto te corresponde a ti. ¡Transparencia total!
+
+### **Pagos**
+
+-   **Paga Fácil y Rápido:** Desde el inicio, un botón te llevará directamente a pagar tu deuda.
+-   **Historial a la Mano:** Podrás ver un registro de todos los pagos que has realizado.
+
+### **Tickets**
+
+-   **¿Algo no funciona? Repórtalo:** Si hay una ampolleta quemada o una fuga de agua, puedes crear un "ticket".
+-   **Sigue su Estado:** Describe el problema, adjunta una foto si quieres, y podrás ver si está "En Proceso" o ya fue "Resuelto" por la administración.
+
+### **Avisos**
+
+-   **No te Pierdas Nada:** Aquí encontrarás todas las comunicaciones importantes: cortes de agua programados, asambleas o eventos de la comunidad.
+
+### **Más Opciones**
+
+-   **Reservas:** ¿Quieres usar el quincho? Revisa la disponibilidad y resérvalo directamente desde aquí.
+-   **Rendición de Cuentas:** Accede a los informes financieros oficiales de cada mes.
+-   **Mi Perfil:** Configura tus preferencias y cierra tu sesión de forma segura.
+
+---
+
+## 🛠️ Para la Administración: Gestiona con Claridad y Eficiencia
+
+Como administrador, tienes herramientas poderosas para que tu gestión sea más simple y transparente para todos.
+
+### **Dashboard (Tu Centro de Mando)**
+
+-   **El Pulso del Mes:** De un vistazo, verás el estado financiero: cuánto se ha gastado, cuántos gastos están por aprobarse y si todos tienen su boleta de respaldo.
+-   **Tu Lista de Tareas:** La "Cola de Aprobación" te muestra todos los gastos que necesitan tu revisión. Podrás aprobarlos o rechazarlos (con un motivo) directamente.
+-   **Acciones Rápidas:** Botones para las tareas más importantes: "Cargar Gasto", "Cerrar Mes" y "Crear Aviso".
+
+### **Unidades**
+
+-   **El Registro de la Comunidad:** Aquí puedes ver todas las unidades, añadir nuevos residentes, editar su información (como su email o si tienen estacionamiento) o eliminarlos si es necesario.
+-   **Historial por Unidad:** Consulta el historial de pagos y las deudas pendientes de cada residente.
+
+### **Tickets**
+
+-   **Atiende a tu Comunidad:** Revisa todos los tickets creados por los residentes, actualiza su estado y asegúrate de que cada problema sea resuelto.
+
+### **Avisos**
+
+-   **Comunica Eficazmente:** Crea nuevos avisos para la comunidad. Puedes guardarlos como "Borrador" para revisarlos y "Publicarlos" cuando estés seguro.
+
+### **Configuración**
+
+-   **Define las Reglas:** Establece los montos fijos para el Gasto Común y el Estacionamiento. Estos valores se usarán para calcular las deudas automáticamente.
+
+---
+
+## 🙏 Créditos y Agradecimientos
+
+Esta aplicación es el resultado de una colaboración única:
+
+-   **Desarrollo y Arquitectura:** Construida por una IA Asistente de Desarrollo de Google.
+-   **Visión y Alma:** Inspirada y dirigida por una persona con un profundo deseo de ayudar a las comunidades. **Gracias a ti**, por creer que la tecnología puede y debe ser una herramienta para mejorar la vida de las personas.
+
+¡Esperamos que esta herramienta te sea de gran utilidad
