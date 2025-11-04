@@ -1168,72 +1168,145 @@ const AdminDashboard: React.FC<{
 };
 
 const AdminCreateExpenseModal: React.FC<{ 
-    onClose: () => void;
-    onAddExpense: (expense: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => void 
+  onClose: () => void;
+  onAddExpense: (expense: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => void 
 }> = ({ onClose, onAddExpense }) => {
-    const [descripcion, setDescripcion] = useState('');
-    const [monto, setMonto] = useState('');
-    const [categoria, setCategoria] = useState<ExpenseCategory>(ExpenseCategory.OTROS);
-    const [proveedor, setProveedor] = useState('');
-    const [numeroDocumento, setNumeroDocumento] = useState('');
-    const [hasEvidencia, setHasEvidencia] = useState(false);
+  const [descripcion, setDescripcion] = useState('');
+  const [monto, setMonto] = useState('');
+  const [categoria, setCategoria] = useState<ExpenseCategory>(ExpenseCategory.OTROS);
+  const [proveedor, setProveedor] = useState('');
+  const [numeroDocumento, setNumeroDocumento] = useState('');
+  const [fecha, setFecha] = useState<string>(() => {
+    const d = new Date();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${d.getFullYear()}-${mm}-${dd}`; // YYYY-MM-DD
+  });
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const montoNum = parseInt(monto, 10);
-        if (descripcion.trim() && !isNaN(montoNum) && montoNum > 0) {
-            onAddExpense({ 
-                descripcion, 
-                monto: montoNum, 
-                categoria,
-                proveedor,
-                numeroDocumento,
-                evidenciaUrl: hasEvidencia ? '#' : undefined,
-            });
-        }
-    };
+  // Adjuntos
+  const [evidenciaFile, setEvidenciaFile] = useState<File | null>(null);
+  const [fileTooLarge, setFileTooLarge] = useState(false);
+  const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
 
-    return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <Card className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Cargar Nuevo Gasto</h2>
-                    <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
-                        <div>
-                            <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción</label>
-                            <input type="text" id="descripcion" data-testid="input-descripcion" value={descripcion} onChange={e => setDescripcion(e.target.value)} required className="mt-1 block w-full input-field" />
-                        </div>
-                        <div>
-                            <label htmlFor="monto" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto (CLP)</label>
-                            <input type="number" id="monto" data-testid="input-monto" value={monto} onChange={e => setMonto(e.target.value)} required className="mt-1 block w-full input-field" />
-                        </div>
-                        <div>
-                            <label htmlFor="categoria" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label>
-                            <select id="categoria" data-testid="select-categoria" value={categoria} onChange={e => setCategoria(e.target.value as ExpenseCategory)} className="mt-1 block w-full input-field">
-                                {Object.values(ExpenseCategory).map(c => <option key={c} value={c}>{c}</option>)}
-                            </select>
-                        </div>
-                        <div>
-                            <label htmlFor="proveedor" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Proveedor</label>
-                            <input type="text" id="proveedor" data-testid="input-proveedor" value={proveedor} onChange={e => setProveedor(e.target.value)} className="mt-1 block w-full input-field" />
-                        </div>
-                        <div>
-                            <label htmlFor="numeroDocumento" className="block text-sm font-medium text-gray-700 dark:text-gray-300">N° Documento</label>
-                            <input type="text" id="numeroDocumento" data-testid="input-documento" value={numeroDocumento} onChange={e => setNumeroDocumento(e.target.value)} className="mt-1 block w-full input-field" />
-                        </div>
-                        <div className="flex items-center">
-                            <input type="checkbox" id="hasEvidencia" data-testid="check-evidencia" checked={hasEvidencia} onChange={e => setHasEvidencia(e.target.checked)} className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                            <label htmlFor="hasEvidencia" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">Simular adjunto de evidencia</label>
-                        </div>
-                    </div>
-                    <div className="flex gap-4 pt-4">
-                        <Button type="button" variant="secondary" onClick={onClose}>Cancelar</Button>
-                        <Button type="submit">Enviar a Revisión</Button>
-                    </div>
-                </form>
-            </Card>
-        </div>
-    );
+  const onPickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    setEvidenciaFile(f || null);
+    setFileTooLarge(!!f && f.size > MAX_BYTES);
+  };
+
+  // Validaciones
+  const isFutureDate = useMemo(() => {
+    if (!fecha) return false;
+    const selected = new Date(fecha + 'T00:00:00');
+    const today = new Date();
+    // normaliza "hoy" a 00:00 para comparar solo fechas
+    today.setHours(0, 0, 0, 0);
+    return selected.getTime() > today.getTime();
+  }, [fecha]);
+
+  const isInvalid = fileTooLarge || isFutureDate;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const montoNum = parseInt(monto, 10);
+
+    if (isInvalid) return; // bloquea envío si hay errores
+    if (!(descripcion.trim() && !isNaN(montoNum) && montoNum > 0)) return;
+
+    onAddExpense({
+      descripcion,
+      monto: montoNum,
+      categoria,
+      proveedor,
+      numeroDocumento,
+      // No guardamos la fecha ni el binario en el "db" mock;
+      // el test solo exige que validemos y bloqueemos.
+      evidenciaUrl: evidenciaFile ? '#' : undefined,
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Cargar Nuevo Gasto</h2>
+
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+            <div>
+              <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción</label>
+              <input id="descripcion" data-testid="input-descripcion" value={descripcion} onChange={e => setDescripcion(e.target.value)} required className="mt-1 block w-full input-field" />
+            </div>
+
+            <div>
+              <label htmlFor="monto" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto (CLP)</label>
+              <input id="monto" type="number" data-testid="input-monto" value={monto} onChange={e => setMonto(e.target.value)} required className="mt-1 block w-full input-field" />
+            </div>
+
+            <div>
+              <label htmlFor="categoria" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label>
+              <select id="categoria" data-testid="select-categoria" value={categoria} onChange={e => setCategoria(e.target.value as ExpenseCategory)} className="mt-1 block w-full input-field">
+                {Object.values(ExpenseCategory).map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="proveedor" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Proveedor</label>
+                <input id="proveedor" data-testid="input-proveedor" value={proveedor} onChange={e => setProveedor(e.target.value)} className="mt-1 block w-full input-field" />
+              </div>
+              <div>
+                <label htmlFor="numeroDocumento" className="block text-sm font-medium text-gray-700 dark:text-gray-300">N° Documento</label>
+                <input id="numeroDocumento" data-testid="input-documento" value={numeroDocumento} onChange={e => setNumeroDocumento(e.target.value)} className="mt-1 block w-full input-field" />
+              </div>
+            </div>
+
+            {/* Fecha del gasto (solo para validar; no se persiste en el mock) */}
+            <div>
+              <label htmlFor="fecha" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha del gasto</label>
+              <input
+                id="fecha"
+                type="date"
+                data-testid="input-fecha"
+                value={fecha}
+                onChange={e => setFecha(e.target.value)}
+                className="mt-1 block w-full input-field"
+              />
+              {isFutureDate && (
+                <p className="mt-1 text-sm text-red-600" data-testid="error-fecha">
+                  La fecha no puede ser futura.
+                </p>
+              )}
+            </div>
+
+            {/* Evidencia (valida tamaño > 5 MB) */}
+            <div>
+              <label htmlFor="evidencia" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Adjuntar evidencia (PDF/JPG/PNG, máx. 5 MB)</label>
+              <input
+                id="evidencia"
+                type="file"
+                accept=".pdf,image/*"
+                data-testid="input-evidencia"
+                onChange={onPickFile}
+                className="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300"
+              />
+              {fileTooLarge && (
+                <p className="mt-1 text-sm text-red-600" data-testid="error-evidencia">
+                  El archivo excede 5 MB. Por favor, adjunta uno más liviano.
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <Button type="button" variant="secondary" onClick={onClose}>Cancelar</Button>
+            <Button type="submit" disabled={isInvalid}>
+              Enviar a Revisión
+            </Button>
+          </div>
+        </form>
+      </Card>
+    </div>
+  );
 };
 
 const AdminRejectExpenseModal: React.FC<{
