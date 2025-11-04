@@ -652,7 +652,13 @@ const NoticesScreen: React.FC<{ notices: Notice[]; onNavigate: (page: Page, para
     return (
         <div className="p-4 space-y-4">
             {notices.map(notice => (
-                 <button key={notice.id} onClick={() => onNavigate('notice-detail', { id: notice.id })} className="w-full text-left">
+                 <button
+  key={notice.id}
+  data-testid={`notice-item-${notice.id}`}
+  onClick={() => onNavigate('notice-detail', { id: notice.id })}
+  className="w-full text-left"
+>
+
                     <Card className={`border-l-4 ${typeColors[notice.tipo]} ${!notice.leido && 'bg-blue-50 dark:bg-blue-900/20'}`}>
                         <div className="flex justify-between items-start">
                              <div>
