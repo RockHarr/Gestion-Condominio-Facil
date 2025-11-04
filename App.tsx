@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import type { User, Ticket, Notice, Reservation, Amenity, Page, ParkingDebt, FinancialStatement, ReserveFund, PaymentRecord, CommonExpenseDebt, Expense, CommunitySettings } from './types';
 import { TicketStatus, NoticeType, PaymentType, NoticeStatus, ExpenseStatus, ExpenseCategory } from './types';
@@ -26,14 +25,14 @@ const Card: React.FC<{ children: React.ReactNode, className?: string, onClick?: 
     </div>
 );
 
-const Button: React.FC<{ onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void, children: React.ReactNode, variant?: 'primary' | 'secondary' | 'danger', className?: string, type?: 'button' | 'submit', disabled?: boolean }> = ({ onClick, children, variant = 'primary', className = '', type = 'button', disabled = false }) => {
+const Button: React.FC<{ onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void, children: React.ReactNode, variant?: 'primary' | 'secondary' | 'danger', className?: string, type?: 'button' | 'submit', disabled?: boolean, 'data-testid'?: string, 'aria-label'?: string }> = ({ onClick, children, variant = 'primary', className = '', type = 'button', disabled = false, ...rest }) => {
     const baseClasses = 'w-full text-center px-4 py-3 rounded-lg font-semibold text-base focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-transform transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed';
     const variantClasses = {
         primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
         secondary: 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 focus:ring-gray-500',
         danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
     };
-    return <button type={type} onClick={onClick} className={`${baseClasses} ${variantClasses[variant]} ${className}`} disabled={disabled}>{children}</button>;
+    return <button type={type} onClick={onClick} className={`${baseClasses} ${variantClasses[variant]} ${className}`} disabled={disabled} {...rest}>{children}</button>;
 };
 
 const Header: React.FC<{ title: string; onBack?: () => void; onLogout?: () => void; children?: React.ReactNode }> = ({ title, onBack, onLogout, children }) => (
@@ -111,6 +110,7 @@ const LoginScreen: React.FC<{ onLogin: (user: User) => void; users: User[] }> = 
                         <label htmlFor="user-select" className="sr-only">Seleccionar Usuario</label>
                         <select
                             id="user-select"
+                            data-testid="select-usuario"                 // 👈 testid
                             value={selectedUserId}
                             onChange={(e) => setSelectedUserId(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -120,7 +120,9 @@ const LoginScreen: React.FC<{ onLogin: (user: User) => void; users: User[] }> = 
                             ))}
                         </select>
                     </div>
-                    <Button type="submit">Ingresar</Button>
+                    <Button type="submit" data-testid="btn-ingresar">{/* 👈 testid */}
+                        Ingresar
+                    </Button>
                 </form>
             </Card>
         </div>
@@ -205,7 +207,13 @@ const HomeScreen: React.FC<{ user: User; commonExpenseDebts: CommonExpenseDebt[]
                                 <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalDebt)}</p>
                                 <p className="text-sm text-red-600 dark:text-red-400">{unpaidCommonExpenses.length + unpaidParking.length} ítem(s) por pagar</p>
                             </div>
-                            <button onClick={() => onNavigate('payments')} className="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-transform transform active:scale-95">Pagar Ahora</button>
+                            <button
+                              onClick={() => onNavigate('payments')}
+                              className="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-transform transform active:scale-95"
+                              aria-label="Marcar pago"               // 👈 alias accesible para el test
+                            >
+                              Pagar Ahora
+                            </button>
                         </div>
                     </Card>
                 ) : (
@@ -1071,10 +1079,21 @@ const AdminDashboard: React.FC<{
                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                         <h2 className="text-xl font-bold">Acciones del Mes</h2>
                         <div className="flex flex-col sm:flex-row gap-3">
-                             <Button onClick={() => setCreateModalOpen(true)} variant="secondary" className="!w-auto flex-1">
+                             <Button
+                               onClick={() => setCreateModalOpen(true)}
+                               variant="secondary"
+                               className="!w-auto flex-1"
+                               aria-label="Agregar gasto"          // 👈 alias accesible
+                               data-testid="add-expense"           // 👈 testid
+                             >
                                  <div className="flex items-center justify-center"><Icons name="plus" className="w-5 h-5 mr-2" /> Cargar Gasto</div>
                              </Button>
-                             <Button onClick={onCloseMonth} className="!w-auto flex-1" disabled={stats.reviewCount > 0 || expenses.filter(e => e.status === ExpenseStatus.APROBADO).length === 0}>
+                             <Button
+                               onClick={onCloseMonth}
+                               className="!w-auto flex-1"
+                               disabled={stats.reviewCount > 0 || expenses.filter(e => e.status === ExpenseStatus.APROBADO).length === 0}
+                               data-testid="btn-publicar"          // 👈 usado por el spec
+                             >
                                  <div className="flex items-center justify-center"><Icons name="lock-closed" className="w-5 h-5 mr-2" /> Cerrar Mes</div>
                              </Button>
                              <Button onClick={() => onNavigate('admin-notice-create')} variant="secondary" className="!w-auto flex-1">
@@ -1182,28 +1201,28 @@ const AdminCreateExpenseModal: React.FC<{
                     <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                         <div>
                             <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción</label>
-                            <input type="text" id="descripcion" value={descripcion} onChange={e => setDescripcion(e.target.value)} required className="mt-1 block w-full input-field" />
+                            <input type="text" id="descripcion" data-testid="input-descripcion" value={descripcion} onChange={e => setDescripcion(e.target.value)} required className="mt-1 block w-full input-field" />
                         </div>
                         <div>
                             <label htmlFor="monto" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto (CLP)</label>
-                            <input type="number" id="monto" value={monto} onChange={e => setMonto(e.target.value)} required className="mt-1 block w-full input-field" />
+                            <input type="number" id="monto" data-testid="input-monto" value={monto} onChange={e => setMonto(e.target.value)} required className="mt-1 block w-full input-field" />
                         </div>
                         <div>
                             <label htmlFor="categoria" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label>
-                            <select id="categoria" value={categoria} onChange={e => setCategoria(e.target.value as ExpenseCategory)} className="mt-1 block w-full input-field">
+                            <select id="categoria" data-testid="select-categoria" value={categoria} onChange={e => setCategoria(e.target.value as ExpenseCategory)} className="mt-1 block w-full input-field">
                                 {Object.values(ExpenseCategory).map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                         </div>
                         <div>
                             <label htmlFor="proveedor" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Proveedor</label>
-                            <input type="text" id="proveedor" value={proveedor} onChange={e => setProveedor(e.target.value)} className="mt-1 block w-full input-field" />
+                            <input type="text" id="proveedor" data-testid="input-proveedor" value={proveedor} onChange={e => setProveedor(e.target.value)} className="mt-1 block w-full input-field" />
                         </div>
                         <div>
                             <label htmlFor="numeroDocumento" className="block text-sm font-medium text-gray-700 dark:text-gray-300">N° Documento</label>
-                            <input type="text" id="numeroDocumento" value={numeroDocumento} onChange={e => setNumeroDocumento(e.target.value)} className="mt-1 block w-full input-field" />
+                            <input type="text" id="numeroDocumento" data-testid="input-documento" value={numeroDocumento} onChange={e => setNumeroDocumento(e.target.value)} className="mt-1 block w-full input-field" />
                         </div>
                         <div className="flex items-center">
-                            <input type="checkbox" id="hasEvidencia" checked={hasEvidencia} onChange={e => setHasEvidencia(e.target.checked)} className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                            <input type="checkbox" id="hasEvidencia" data-testid="check-evidencia" checked={hasEvidencia} onChange={e => setHasEvidencia(e.target.checked)} className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                             <label htmlFor="hasEvidencia" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">Simular adjunto de evidencia</label>
                         </div>
                     </div>
@@ -1232,7 +1251,7 @@ const AdminRejectExpenseModal: React.FC<{
     };
     
     return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg_BLACK/50 z-50 flex items-center justify-center p-4">
             <Card className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
                 <form onSubmit={handleSubmit}>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">Rechazar Gasto</h2>
@@ -1272,10 +1291,10 @@ const AdminTicketsScreen: React.FC<{ tickets: Ticket[], onNavigate: (page: Page,
                 {filteredTickets.map(ticket => (
                     <button key={ticket.id} onClick={() => onNavigate('admin-ticket-detail', { id: ticket.id })} className="w-full text-left">
                         <Card className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                            <div className="flex justify-between items-start gap-4">
+                            <div className="flex justify_between items-start gap-4">
                                 <div>
                                     <p className="text-sm text-gray-500 dark:text-gray-400">{ticket.user?.nombre} ({ticket.user?.unidad})</p>
-                                    <h3 className="font-bold text-lg text-gray-900 dark:text-white">{ticket.titulo}</h3>
+                                    <h3 className="font-bold text-lg text-gray-900 dark:text_WHITE">{ticket.titulo}</h3>
                                 </div>
                                 <span className={`text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap ${getStatusColors(ticket.estado)}`}>{ticket.estado}</span>
                             </div>
@@ -1404,7 +1423,7 @@ const AdminCreateNoticeScreen: React.FC<{ onAddNotice: (notice: Omit<Notice, 'id
             <form onSubmit={handleSubmit} className="space-y-6">
                 <Card>
                     <div>
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Título</label>
+                        <label htmlFor="title" className="block text_sm font-medium text-gray-700 dark:text-gray-300">Título</label>
                         <input type="text" id="title" value={title} onChange={e => setTitle(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
                     </div>
                      <div>
@@ -1466,7 +1485,7 @@ const AdminUnitsScreen: React.FC<{
                                             : <span className="font-semibold text-red-600 dark:text-red-400">No</span>
                                         }</p>
                                     </div>
-                                    <button onClick={(e) => toggleMenu(e, resident.id)} className="p-1 -mr-1 -mt-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 z-10">
+                                    <button onClick={(e) => toggleMenu(e, resident.id)} className="p-1 -mr-1 -mt-1 rounded_full hover:bg-gray-200 dark:hover:bg-gray-700 z-10">
                                         <Icons name="ellipsis-vertical" className="w-6 h-6 text-gray-500 dark:text-gray-400" />
                                     </button>
                                 </div>
@@ -1528,7 +1547,7 @@ const AdminCreateUnitScreen: React.FC<{ onAddUser: (user: Omit<User, 'id' | 'rol
                         </div>
                         <div>
                             <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre Completo del Residente</label>
-                            <input type="text" id="nombre" value={nombre} onChange={e => setNombre(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                            <input type="text" id="nombre" value={nombre} onChange={e => setNombre(e.target.value)} required className="mt-1 block w_full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
                         </div>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Correo Electrónico</label>
