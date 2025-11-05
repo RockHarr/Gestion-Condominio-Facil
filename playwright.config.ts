@@ -1,25 +1,42 @@
-// playwright.config.ts
 import { defineConfig, devices } from '@playwright/test';
 
-const PREVIEW_URL = 'http://localhost:4173';
-
 export default defineConfig({
+  // Carpeta donde viven los tests
   testDir: './tests',
-  testMatch: ['**/*.spec.ts'],
+
+  // Tiempos razonables para E2E
   timeout: 30_000,
   expect: { timeout: 5_000 },
-  reporter: [['html', { open: 'never' }], ['line']],
+
+  // Reportes: HTML (guardado como artifact en CI) + lista en consola
+  reporter: [
+    ['html', { open: 'never' }],
+    ['list']
+  ],
+
+  // Defaults para todos los tests
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || PREVIEW_URL,
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+
+  // Navegador principal
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
+
+  /**
+   * Hace que Playwright levante la app antes de correr los tests.
+   * Usamos el build de Vite (por eso en CI corremos `npm run build` antes).
+   */
   webServer: {
-    command: 'npm run preview -- --port 4173 --strictPort',
-    url: PREVIEW_URL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    command: 'npx vite preview --port 3000 --strictPort',
+    port: 3000,
+    reuseExistingServer: !process.env.CI, // Reutiliza server en local, no en CI
   },
 });

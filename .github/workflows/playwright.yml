@@ -22,7 +22,7 @@ jobs:
 
       - run: npx playwright install --with-deps
 
-      # 🔎 DEBUG: ver qué tests detecta Playwright y el árbol de archivos
+      # 🔎 DEBUG: ver árbol de tests y config (útil mientras afinamos)
       - name: Debug – listar árbol de tests y config
         run: |
           pwd
@@ -33,14 +33,19 @@ jobs:
           echo "----- playwright.config.ts -----"
           sed -n '1,200p' playwright.config.ts || true
 
-      # El server lo levanta Playwright (webServer en config)
-      - name: Lista los tests que Playwright detecta
+      # 1) Lista los tests que detecta Playwright
+      - name: Lista de tests detectados
         run: npx playwright test --list
         env:
-          # Si quisieras testear contra una URL externa, define esto:
-          # PLAYWRIGHT_BASE_URL: https://tu-preview.example.com
           CI: true
 
+      # 2) 🚀 Ejecuta los tests
+      - name: Run E2E
+        run: npx playwright test --reporter=line
+        env:
+          CI: true
+
+      # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
         if: always()
         uses: actions/upload-artifact@v4
