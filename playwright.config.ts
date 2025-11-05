@@ -4,8 +4,8 @@ import { defineConfig, devices } from '@playwright/test';
 const PREVIEW_URL = 'http://localhost:4173';
 
 export default defineConfig({
-  testDir: 'tests/e2e',
-  testMatch: /.*\.spec\.ts$/i,   // <- asegura que tome *.spec.ts
+  testDir: './tests',
+  testMatch: ['**/*.spec.ts'],
   timeout: 30_000,
   expect: { timeout: 5_000 },
   reporter: [['html', { open: 'never' }], ['line']],
