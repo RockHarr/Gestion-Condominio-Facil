@@ -2,38 +2,54 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Admin — Rechazo de Gasto', () => {
   test('abre modal, ingresa motivo y rechaza', async ({ page }) => {
-    // 1) Ir a app
+    // 1) Ir a la app (si tienes baseURL en playwright.config, esto funciona tal cual)
     await page.goto('/');
 
-    // 2) Login como Admin
-    // Asumiendo pantalla de login por select (como tu UI):
-    await page.getByRole('combobox').selectOption(/admin/i); // si el option muestra (Admin)
+    // 2) Login como Admin (selector robusto sobre <select> + botón "Ingresar")
+    const userSelect = page.locator('select');
+    await expect(userSelect).toBeVisible();
+    // intenta por label; si no, por regex
+    await userSelect.selectOption({ label: /admin/i }).catch(async () => {
+      // fallback: cualquier opción que contenga "Admin"
+      const option = page.locator('select option', { hasText: /admin/i }).first();
+      const value = await option.getAttribute('value');
+      if (!value) throw new Error('No encontré opción de Admin en el select');
+      await userSelect.selectOption(value);
+    });
+
     await page.getByRole('button', { name: /ingresar/i }).click();
 
-    // 3) En dashboard debe verse "Cola de Aprobación"
-    await expect(page.getByRole('heading', { name: /cola de aprobación/i })).toBeVisible();
+    // 3) En dashboard debe verse algo estable; usamos el título del bloque
+    await expect(page.getByText(/cola de aprobación/i)).toBeVisible();
 
-    // 4) Tomar el primer gasto "En Revisión"
-    const card = page.locator('section:has-text("Cola de Aprobación")').locator('li').first();
+    // 4) Tomar el primer ítem de la cola (tolerante)
+    const queueSection = page.locator('section').filter({ hasText: /cola de aprobación/i }).first();
+    // si tu lista es <ul><li>..., agarramos el primer LI
+    const card = queueSection.locator('li, .card, .item').first();
 
-    // 5) Click en "Rechazar" (botón rojo del item)
-    await expect(card.getByRole('button', { name: /rechazar/i })).toBeVisible();
-    await card.getByRole('button', { name: /rechazar/i }).click();
+    // 5) Click en "Rechazar"
+    const rejectBtn = card.getByRole('button', { name: /rechazar/i });
+    await expect(rejectBtn).toBeVisible();
+    await rejectBtn.click();
 
     // 6) Debe abrir modal "Rechazar Gasto"
-    const modal = page.getByRole('dialog', { name: /rechazar gasto/i });
+    const modal = page.getByRole('dialog').filter({ hasText: /rechazar gasto/i }).first();
     await expect(modal).toBeVisible();
 
-    // 7) Escribir motivo y confirmar
-    await modal.getByLabel(/motivo del rechazo/i).fill('No coincide con OC');
+    // 7) Escribir motivo y confirmar (targeteamos el único textarea dentro del modal)
+    const motivo = modal.locator('textarea, [role="textbox"]');
+    await expect(motivo).toBeVisible();
+    await motivo.fill('No coincide con OC');
+
     await modal.getByRole('button', { name: /confirmar rechazo/i }).click();
 
-    // 8) Esperar toast de éxito
-    await expect(page.getByText(/gasto rechazado/i)).toBeVisible();
+    // 8) Esperar feedback (toast/mensaje). Probamos varias opciones comunes.
+    const toast = page.locator(
+      '[role="status"]:has-text("rechazado"), [data-sonner-toast]:has-text("rechazado"), .toast:has-text("rechazado"), :text("Gasto rechazado")'
+    );
+    await expect(toast).toBeVisible({ timeout: 5000 });
 
-    // 9) El item ya no debe estar en "En Revisión" (o debe mostrar estado Rechazado)
+    // 9) El item ya no debe mostrar "En Revisión"
     await expect(card).not.toContainText(/en revisión/i);
-
-    // Opcional: validar que aparece en otra lista/estado si la UI lo muestra
   });
 });

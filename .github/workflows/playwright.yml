@@ -4,41 +4,30 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
 
 jobs:
   e2e:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 22
 
-      - name: Install deps
-        run: npm ci
+      - run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - run: npm run build
 
-      # Si tu app necesita estar corriendo:
-      - name: Start app
-        run: npm run dev &
-      - name: Wait on app
-        uses: jakejarvis/wait-action@v0.1.1
-        with:
-          timeout: '60'
-          url: 'http://localhost:3000'
+      - run: npx playwright install --with-deps
 
-      - name: Run E2E
-        run: npm run test:e2e
+      # El server lo levanta Playwright (webServer en config)
+      - run: npx playwright test --reporter=line
         env:
-          PLAYWRIGHT_BASE_URL: http://localhost:3000
+          # Si quisieras testear contra una URL externa, define esto:
+          # PLAYWRIGHT_BASE_URL: https://tu-preview.example.com
+          CI: true
 
       - name: Upload HTML report
         if: always()
