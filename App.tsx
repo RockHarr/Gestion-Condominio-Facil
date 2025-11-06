@@ -1113,46 +1113,76 @@ const AdminDashboard: React.FC<{
                     </div>
                 </Card>
 
-                <Card>
-                    <h2 className="text-xl font-bold mb-4">Cola de Aprobación</h2>
-                     {expensesToReview.length > 0 ? (
-                        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                            {expensesToReview.map(expense => (
-                                <li key={expense.id} className="py-3 px-1">
-                                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                                        <div className="flex-1">
-                                            <p className="font-semibold text-gray-800 dark:text-white">{expense.descripcion}</p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                {expense.proveedor || 'S/P'} - {expense.numeroDocumento || 'S/D'}
-                                            </p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                {expense.categoria} - {new Date(expense.fecha).toLocaleDateString('es-CL')}
-                                            </p>
-                                        </div>
-                                        <div className="text-left sm:text-right">
-                                            <p className="font-bold text-lg">{formatCurrency(expense.monto)}</p>
-                                            {expense.evidenciaUrl ? (
-                                                <a href={expense.evidenciaUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-blue-600 dark:text-blue-400">Ver Evidencia</a>
-                                            ) : (
-                                                <p className="text-xs font-semibold text-yellow-600 dark:text-yellow-400">Sin Evidencia</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="mt-3 flex justify-end gap-2">
-                                        <Button onClick={() => setRejectModalOpen(expense)} variant="danger" className="!w-auto !py-1.5 !px-3 !text-sm">
-                                            <div className="flex items-center"><Icons name="x-circle" className="w-4 h-4 mr-1"/> Rechazar</div>
-                                        </Button>
-                                        <Button onClick={() => onApproveExpense(expense.id)} className="!w-auto !py-1.5 !px-3 !text-sm">
-                                            <div className="flex items-center"><Icons name="check" className="w-4 h-4 mr-1"/> Aprobar</div>
-                                        </Button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                     ) : (
-                        <p className="text-gray-600 dark:text-gray-400 text-center py-4">No hay gastos pendientes de revisión.</p>
-                     )}
-                </Card>
+                
+
+                <section data-qa="approval-queue">
+  <Card>
+    <h2 className="text-xl font-bold mb-4">Cola de Aprobación</h2>
+    {expensesToReview.length > 0 ? (
+      <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+        {expensesToReview.map(expense => (
+          <li key={expense.id} className="py-3 px-1" data-qa="expense-item">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+              <div className="flex-1">
+                <p className="font-semibold text-gray-800 dark:text-white">{expense.descripcion}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {expense.proveedor || 'S/P'} - {expense.numeroDocumento || 'S/D'}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {expense.categoria} - {new Date(expense.fecha).toLocaleDateString('es-CL')}
+                </p>
+              </div>
+              <div className="text-left sm:text-right">
+                <p className="font-bold text-lg">{formatCurrency(expense.monto)}</p>
+                {expense.evidenciaUrl ? (
+                  <a
+                    href={expense.evidenciaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold text-blue-600 dark:text-blue-400"
+                    data-qa="link-evidencia"
+                  >
+                    Ver Evidencia
+                  </a>
+                ) : (
+                  <p className="text-xs font-semibold text-yellow-600 dark:text-yellow-400">Sin Evidencia</p>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-3 flex justify-end gap-2">
+              <Button
+                onClick={() => setRejectModalOpen(expense)}
+                variant="danger"
+                className="!w-auto !py-1.5 !px-3 !text-sm"
+                data-qa="btn-rechazar"
+              >
+                <div className="flex items-center">
+                  <Icons name="x-circle" className="w-4 h-4 mr-1" /> Rechazar
+                </div>
+              </Button>
+
+              <Button
+                onClick={() => onApproveExpense(expense.id)}
+                className="!w-auto !py-1.5 !px-3 !text-sm"
+                data-qa="btn-aprobar"
+              >
+                <div className="flex items-center">
+                  <Icons name="check" className="w-4 h-4 mr-1" /> Aprobar
+                </div>
+              </Button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-gray-600 dark:text-gray-400 text-center py-4">
+        No hay gastos pendientes de revisión.
+      </p>
+    )}
+  </Card>
+</section>
+
             </div>
             {isCreateModalOpen && (
                 <AdminCreateExpenseModal 
