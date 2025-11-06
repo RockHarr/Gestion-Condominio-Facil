@@ -4,42 +4,48 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
 
 jobs:
   e2e:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 22
 
-      - name: Install deps
-        run: npm ci
+      - run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - run: npm run build
 
-      # Si tu app necesita estar corriendo:
-      - name: Start app
-        run: npm run dev &
-      - name: Wait on app
-        uses: jakejarvis/wait-action@v0.1.1
-        with:
-          timeout: '60'
-          url: 'http://localhost:3000'
+      - run: npx playwright install --with-deps
 
-      - name: Run E2E
-        run: npm run test:e2e
+      # 🔎 DEBUG: ver árbol de tests y config (útil mientras afinamos)
+      - name: Debug – listar árbol de tests y config
+        run: |
+          pwd
+          node -v
+          ls -la
+          echo "----- tests tree -----"
+          ls -R tests || true
+          echo "----- playwright.config.ts -----"
+          sed -n '1,200p' playwright.config.ts || true
+
+      # 1) Lista los tests que detecta Playwright
+      - name: Lista de tests detectados
+        run: npx playwright test --list
         env:
-          PLAYWRIGHT_BASE_URL: http://localhost:3000
+          CI: true
 
+      # 2) 🚀 Ejecuta los tests
+      - name: Run E2E
+        run: npx playwright test --reporter=line
+        env:
+          CI: true
+
+      # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
         if: always()
         uses: actions/upload-artifact@v4
