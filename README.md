@@ -1,5 +1,7 @@
 # Gestión Condominio Fácil — RockCode
 
+*En desarrollo*
+
 Prototipo funcional de plataforma liviana para la gestión de gastos
 comunes y comunicación básica en condominios y edificios pequeños.
 
