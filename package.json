@@ -10,7 +10,9 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:ci": "playwright test --reporter=line",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "react": "^19.2.0",
@@ -19,7 +21,15 @@
   "devDependencies": {
     "@playwright/test": "^1.56.1",
     "@types/node": "^22.14.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "prettier": "^3.2.5",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

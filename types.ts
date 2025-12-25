@@ -9,11 +9,11 @@ export interface User {
 }
 
 export interface CommonExpenseDebt {
-    id: number;
-    userId: number;
-    mes: string; // YYYY-MM
-    monto: number;
-    pagado: boolean;
+  id: number;
+  userId: number;
+  mes: string; // YYYY-MM
+  monto: number;
+  pagado: boolean;
 }
 
 export enum TicketStatus {
@@ -40,8 +40,8 @@ export enum NoticeType {
 }
 
 export enum NoticeStatus {
-    BORRADOR = 'Borrador',
-    PUBLICADO = 'Publicado',
+  BORRADOR = 'Borrador',
+  PUBLICADO = 'Publicado',
 }
 
 export interface Notice {
@@ -68,72 +68,72 @@ export interface Reservation {
 }
 
 export interface ParkingDebt {
-    id: number;
-    userId: number;
-    patente: string;
-    monto: number;
-    mes: string;
-    pagado: boolean;
+  id: number;
+  userId: number;
+  patente: string;
+  monto: number;
+  mes: string;
+  pagado: boolean;
 }
 
 export interface FinancialStatement {
-    id: number;
-    mes: string;
-    url: string;
-    ingresos: number;
-    egresos: number;
-    saldo: number;
+  id: number;
+  mes: string;
+  url: string;
+  ingresos: number;
+  egresos: number;
+  saldo: number;
 }
 
 export interface ReserveFund {
-    montoActual: number;
-    meta: number;
+  montoActual: number;
+  meta: number;
 }
 
 export enum PaymentType {
-    GASTO_COMUN = 'Gasto Común',
-    ESTACIONAMIENTO = 'Estacionamiento',
+  GASTO_COMUN = 'Gasto Común',
+  ESTACIONAMIENTO = 'Estacionamiento',
 }
 
 export interface PaymentRecord {
-    id: number;
-    userId: number;
-    type: PaymentType;
-    periodo: string; // Ej: "2025-11"
-    monto: number;
-    fechaPago: string; // YYYY-MM-DD
+  id: number;
+  userId: number;
+  type: PaymentType;
+  periodo: string; // Ej: "2025-11"
+  monto: number;
+  fechaPago: string; // YYYY-MM-DD
 }
 
 export enum ExpenseStatus {
-    EN_REVISION = 'En Revisión',
-    APROBADO = 'Aprobado',
-    RECHAZADO = 'Rechazado',
+  EN_REVISION = 'En Revisión',
+  APROBADO = 'Aprobado',
+  RECHAZADO = 'Rechazado',
 }
 
 export enum ExpenseCategory {
-    MANTENIMIENTO = 'Mantenimiento',
-    ADMINISTRACION = 'Administración',
-    SUMINISTROS = 'Suministros',
-    SEGURIDAD = 'Seguridad',
-    OTROS = 'Otros',
+  MANTENIMIENTO = 'Mantenimiento',
+  ADMINISTRACION = 'Administración',
+  SUMINISTROS = 'Suministros',
+  SEGURIDAD = 'Seguridad',
+  OTROS = 'Otros',
 }
 
 export interface Expense {
-    id: number;
-    descripcion: string;
-    monto: number;
-    fecha: string;
-    categoria: ExpenseCategory;
-    status: ExpenseStatus;
-    proveedor?: string;
-    numeroDocumento?: string;
-    evidenciaUrl?: string; // Simulado por ahora
-    motivoRechazo?: string;
+  id: number;
+  descripcion: string;
+  monto: number;
+  fecha: string;
+  categoria: ExpenseCategory;
+  status: ExpenseStatus;
+  proveedor?: string;
+  numeroDocumento?: string;
+  evidenciaUrl?: string; // Simulado por ahora
+  motivoRechazo?: string;
 }
 
 export interface CommunitySettings {
-    commonExpense: number;
-    parkingCost: number;
+  commonExpense: number;
+  parkingCost: number;
 }
 
 export interface AppData {
@@ -151,18 +151,18 @@ export interface AppData {
   communitySettings: CommunitySettings;
 }
 
-export type Page = 
+export type Page =
   // Resident Pages
-  | 'login' 
-  | 'home' 
-  | 'payments' 
+  | 'login'
+  | 'home'
+  | 'payments'
   | 'payment-method'
   | 'payment-confirm'
   | 'payment-receipt'
-  | 'tickets' 
-  | 'ticket-detail' 
+  | 'tickets'
+  | 'ticket-detail'
   | 'ticket-create'
-  | 'notices' 
+  | 'notices'
   | 'notice-detail'
   | 'reservations'
   | 'profile'
@@ -182,3 +182,9 @@ export type Page =
   | 'admin-unit-edit'
   | 'admin-unit-detail'
   | 'admin-config';
+
+export interface ToastMessage {
+  id: number;
+  message: string;
+  type: 'success' | 'error' | 'info';
+}
