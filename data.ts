@@ -1,5 +1,4 @@
 
-// FIX: Import Ticket and Reservation types to resolve missing type errors.
 import { AppData, TicketStatus, NoticeType, Ticket, Reservation, User, Notice, PaymentRecord, PaymentType, CommonExpenseDebt, ParkingDebt, NoticeStatus, Expense, ExpenseStatus, ExpenseCategory, FinancialStatement, CommunitySettings } from './types';
 
 const SEED_DATA: AppData = {
@@ -274,7 +273,6 @@ class DataManager {
       return this.getData().reserveFund;
   }
 
-// FIX: Made `userId` optional to allow fetching all payment records for the admin view.
   public getPaymentHistory(userId?: number): PaymentRecord[] {
     const paymentHistory = this.getData().paymentHistory
         .sort((a, b) => new Date(b.fechaPago).getTime() - new Date(a.fechaPago).getTime());
