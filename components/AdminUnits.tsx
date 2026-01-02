@@ -15,14 +15,14 @@ const formatPeriod = (period: string) => {
 interface AdminUnitsScreenProps {
     users: User[];
     onNavigate: (page: Page, params?: any) => void;
-    onDeleteUser: (id: number) => void;
+    onDeleteUser: (id: string | number) => void;
 }
 
 export const AdminUnitsScreen: React.FC<AdminUnitsScreenProps> = ({ users, onNavigate, onDeleteUser }) => {
     const residents = users.filter(u => u.role === 'resident');
-    const [menuOpen, setMenuOpen] = useState<number | null>(null);
+    const [menuOpen, setMenuOpen] = useState<string | number | null>(null);
 
-    const toggleMenu = (e: React.MouseEvent<HTMLButtonElement>, id: number) => {
+    const toggleMenu = (e: React.MouseEvent<HTMLButtonElement>, id: string | number) => {
         e.stopPropagation();
         setMenuOpen(prev => (prev === id ? null : id));
     };
@@ -105,6 +105,17 @@ export const AdminUnitsScreen: React.FC<AdminUnitsScreenProps> = ({ users, onNav
                             )}
                         </div>
                     ))}
+                    {residents.length === 0 && (
+                        <div className="col-span-full py-12 text-center bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
+                            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                                <Icons name="user-group" className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-lg font-medium text-gray-900 dark:text-white">No hay unidades registradas</h3>
+                            <p className="text-gray-500 dark:text-gray-400 mt-1 max-w-md mx-auto">
+                                Los usuarios creados en Supabase aparecerán aquí automáticamente si el trigger está configurado.
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -203,18 +214,19 @@ export const AdminCreateUnitScreen: React.FC<AdminCreateUnitScreenProps> = ({ on
 
 interface AdminEditUnitScreenProps {
     user: User;
-    onUpdateUser: (id: number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email'>>) => void;
+    onUpdateUser: (id: string | number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email' | 'unidad'>>) => void;
 }
 
 export const AdminEditUnitScreen: React.FC<AdminEditUnitScreenProps> = ({ user, onUpdateUser }) => {
+    const [unidad, setUnidad] = useState(user.unidad);
     const [nombre, setNombre] = useState(user.nombre);
     const [email, setEmail] = useState(user.email || '');
     const [hasParking, setHasParking] = useState(user.hasParking);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (nombre.trim()) {
-            onUpdateUser(user.id, { nombre, hasParking, email });
+        if (nombre.trim() && unidad.trim()) {
+            onUpdateUser(user.id, { nombre, hasParking, email, unidad });
         }
     };
 
@@ -226,7 +238,12 @@ export const AdminEditUnitScreen: React.FC<AdminEditUnitScreenProps> = ({ user, 
                     <div className="space-y-5">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Unidad</label>
-                            <input type="text" value={user.unidad} disabled className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 py-3 px-4 cursor-not-allowed" />
+                            <input
+                                type="text"
+                                value={unidad}
+                                onChange={(e) => setUnidad(e.target.value)}
+                                className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
+                            />
                         </div>
                         <div>
                             <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre del Residente</label>

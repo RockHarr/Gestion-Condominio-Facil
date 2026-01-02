@@ -32,7 +32,7 @@ interface ResidentAppProps {
     toggleTheme: () => void;
     addTicket: (data: any) => void;
     updateTicketStatus: (id: number, status: TicketStatus) => void;
-    addReservation: (data: any) => boolean;
+    addReservation: (data: any) => Promise<boolean>;
     cancelReservation: (id: number) => void;
     handleConfirmPayment: () => void;
     showToast: (message: string, type?: 'success' | 'error' | 'info') => void;

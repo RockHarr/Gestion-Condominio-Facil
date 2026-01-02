@@ -1,6 +1,6 @@
 
 export interface User {
-  id: number;
+  id: number | string;
   nombre: string;
   unidad: string;
   role: 'resident' | 'admin';
@@ -10,7 +10,7 @@ export interface User {
 
 export interface CommonExpenseDebt {
   id: number;
-  userId: number;
+  userId: number | string;
   mes: string; // YYYY-MM
   monto: number;
   pagado: boolean;
@@ -64,12 +64,12 @@ export interface Reservation {
   amenityId: string;
   fecha: string; // YYYY-MM-DD
   hora: string; // HH:00
-  userId: number;
+  userId: number | string;
 }
 
 export interface ParkingDebt {
   id: number;
-  userId: number;
+  userId: number | string;
   patente: string;
   monto: number;
   mes: string;
@@ -97,7 +97,7 @@ export enum PaymentType {
 
 export interface PaymentRecord {
   id: number;
-  userId: number;
+  userId: number | string;
   type: PaymentType;
   periodo: string; // Ej: "2025-11"
   monto: number;
@@ -105,14 +105,14 @@ export interface PaymentRecord {
 }
 
 export enum ExpenseStatus {
-  EN_REVISION = 'En Revisión',
+  EN_REVISION = 'En Revision',
   APROBADO = 'Aprobado',
   RECHAZADO = 'Rechazado',
 }
 
 export enum ExpenseCategory {
   MANTENIMIENTO = 'Mantenimiento',
-  ADMINISTRACION = 'Administración',
+  ADMINISTRACION = 'Administracion',
   SUMINISTROS = 'Suministros',
   SEGURIDAD = 'Seguridad',
   OTROS = 'Otros',

@@ -2,6 +2,7 @@ import React from 'react';
 import { User } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
+import { authService } from '../services/auth';
 
 interface ProfileScreenProps {
     user: User;
@@ -33,11 +34,102 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, on
                 </button>
             </Card>
 
+            <PasswordChangeSection />
+
             <Button onClick={onLogout} variant="danger">
                 <div className="flex items-center justify-center">
                     <Icons name="logout" className="w-5 h-5 mr-2" /> Cerrar Sesión
                 </div>
             </Button>
         </div>
+    );
+};
+
+const PasswordChangeSection: React.FC = () => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [password, setPassword] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [message, setMessage] = React.useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+    const handleUpdatePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage(null);
+
+        if (password.length < 6) {
+            setMessage({ text: 'La contraseña debe tener al menos 6 caracteres.', type: 'error' });
+            setLoading(false);
+            return;
+        }
+
+
+        console.log("ProfileScreen: Attempting to update password...");
+        try {
+            const { error } = await authService.updatePassword(password);
+            console.log("ProfileScreen: Update password result", error);
+
+            if (error) {
+                const errMsg = error.message || JSON.stringify(error);
+                if (errMsg.includes('Timeout') || errMsg.includes('timed out')) {
+                    setMessage({ text: '⏳ Tiempo agotado: La conexión es lenta. Intenta de nuevo.', type: 'error' });
+                } else {
+                    setMessage({ text: '❌ Error: ' + errMsg, type: 'error' });
+                }
+            } else {
+                setMessage({ text: 'Contraseña actualizada exitosamente.', type: 'success' });
+                setPassword('');
+                setTimeout(() => setIsOpen(false), 2000);
+            }
+        } catch (err: any) {
+            console.error("ProfileScreen: Exception updating password", err);
+            setMessage({ text: 'Error inesperado: ' + (err.message || err), type: 'error' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (!isOpen) {
+        return (
+            <Card>
+                <button onClick={() => setIsOpen(true)} className="flex justify-between items-center w-full p-2 text-blue-600 dark:text-blue-400 font-medium">
+                    <span>Cambiar Contraseña</span>
+                    <Icons name="chevronRight" className="w-5 h-5" />
+                </button>
+            </Card>
+        );
+    }
+
+    return (
+        <Card>
+            <div className="p-2 space-y-4">
+                <div className="flex justify-between items-center">
+                    <h3 className="font-bold text-gray-900 dark:text-white">Nueva Contraseña</h3>
+                    <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
+                        <Icons name="close" className="w-5 h-5" />
+                    </button>
+                </div>
+
+                <form onSubmit={handleUpdatePassword} className="space-y-3">
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Ingresa nueva contraseña"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        required
+                    />
+
+                    {message && (
+                        <div className={`p-2 rounded text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {message.text}
+                        </div>
+                    )}
+
+                    <Button type="submit" disabled={loading} className="w-full">
+                        {loading ? 'Guardando...' : 'Guardar Nueva Contraseña'}
+                    </Button>
+                </form>
+            </div>
+        </Card>
     );
 };

@@ -15,6 +15,7 @@ export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigat
         { page: 'admin-tickets', icon: 'ticket', label: 'Tickets' },
         { page: 'admin-notices', icon: 'bell', label: 'Avisos' },
         { page: 'admin-config', icon: 'cog-6-tooth', label: 'Config' },
+        { page: 'profile', icon: 'user', label: 'Perfil' },
     ];
 
     return (
@@ -27,8 +28,8 @@ export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigat
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
                             className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-200 ${isActive
-                                    ? 'text-blue-600 dark:text-blue-400 transform scale-105'
-                                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
+                                ? 'text-blue-600 dark:text-blue-400 transform scale-105'
+                                : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
                                 }`}
                         >
                             <Icons name={item.icon} className={`w-6 h-6 ${isActive ? 'stroke-2' : 'stroke-1.5'}`} />
@@ -54,6 +55,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
         { page: 'admin-tickets', icon: 'ticket', label: 'Gestión de Tickets' },
         { page: 'admin-notices', icon: 'bell', label: 'Mural de Avisos' },
         { page: 'admin-config', icon: 'cog-6-tooth', label: 'Configuración' },
+        { page: 'profile', icon: 'user', label: 'Mi Perfil' },
     ];
 
     return (
@@ -79,8 +81,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
                             className={`w-full flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-200 group ${isActive
-                                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-sm'
-                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'
+                                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-sm'
+                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'
                                 }`}
                         >
                             <Icons

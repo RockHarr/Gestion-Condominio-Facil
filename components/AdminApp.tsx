@@ -7,6 +7,7 @@ import { AdminNoticesScreen, AdminNoticeDetailScreen, AdminCreateNoticeScreen } 
 import { AdminUnitsScreen, AdminCreateUnitScreen, AdminEditUnitScreen, AdminUnitDetailScreen } from './AdminUnits';
 import { AdminSettingsScreen } from './AdminSettings';
 import { AdminSidebar, AdminTabBar } from './AdminNavigation';
+import { ProfileScreen } from './ProfileScreen';
 
 interface AdminAppProps {
     page: Page;
@@ -26,17 +27,19 @@ interface AdminAppProps {
     addNotice: (data: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) => void;
     approveNotice: (id: number) => void;
     addUser: (data: Omit<User, 'id' | 'role'>) => void;
-    updateUser: (id: number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email'>>) => void;
-    deleteUser: (id: number) => void;
+    updateUser: (id: string | number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email' | 'unidad'>>) => void;
+    deleteUser: (id: string | number) => void;
     addExpense: (data: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => void;
     approveExpense: (id: number) => void;
     rejectExpense: (id: number, motivo: string) => void;
     closeMonth: () => void;
     updateSettings: (settings: CommunitySettings) => void;
+    theme: 'light' | 'dark';
+    toggleTheme: () => void;
 }
 
 export const AdminApp: React.FC<AdminAppProps> = (props) => {
-    const { page, pageParams, users, tickets, notices, expenses, settings, paymentHistory, commonExpenseDebts, parkingDebts, handleNavigate, handleLogout, updateTicketStatus, addNotice, approveNotice, addUser, updateUser, deleteUser, addExpense, approveExpense, rejectExpense, closeMonth, updateSettings } = props;
+    const { page, pageParams, users, tickets, notices, expenses, settings, paymentHistory, commonExpenseDebts, parkingDebts, handleNavigate, handleLogout, updateTicketStatus, addNotice, approveNotice, addUser, updateUser, deleteUser, addExpense, approveExpense, rejectExpense, closeMonth, updateSettings, theme, toggleTheme } = props;
 
     const renderPage = () => {
         switch (page) {
@@ -64,6 +67,7 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
                 return user ? <AdminUnitDetailScreen user={user} paymentHistory={userPaymentHistory} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} /> : <div>Usuario no encontrado</div>;
             }
             case 'admin-config': return <AdminSettingsScreen settings={settings} onUpdateSettings={updateSettings} />;
+            case 'profile': return <ProfileScreen user={props.currentUser} onLogout={handleLogout} onToggleTheme={toggleTheme} theme={theme} />;
             default: return <AdminDashboard expenses={expenses} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} />;
         }
     };

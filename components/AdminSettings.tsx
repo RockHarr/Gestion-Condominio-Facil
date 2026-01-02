@@ -10,8 +10,8 @@ interface AdminSettingsScreenProps {
 }
 
 export const AdminSettingsScreen: React.FC<AdminSettingsScreenProps> = ({ settings, onUpdateSettings }) => {
-    const [commonExpense, setCommonExpense] = useState(settings.commonExpense.toString());
-    const [parkingCost, setParkingCost] = useState(settings.parkingCost.toString());
+    const [commonExpense, setCommonExpense] = useState((settings?.commonExpense ?? 0).toString());
+    const [parkingCost, setParkingCost] = useState((settings?.parkingCost ?? 0).toString());
     const [isSaved, setIsSaved] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {

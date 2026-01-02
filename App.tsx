@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import type { User, Ticket, Notice, Reservation, Amenity, Page, ParkingDebt, FinancialStatement, ReserveFund, PaymentRecord, CommonExpenseDebt, Expense, CommunitySettings } from './types';
 import { TicketStatus, NoticeStatus, ExpenseStatus } from './types';
-import { db } from './data';
+import { db } from './data'; // Keeping for fallback/admin methods not yet migrated
+import { authService } from './services/auth';
+import { dataService } from './services/data';
 import { SkeletonLoader, Toast } from './components/Shared';
 import { LoginScreen } from './components/LoginScreen';
 import { ResidentApp } from './components/ResidentApp';
@@ -36,30 +38,60 @@ function App() {
         setTimeout(() => setToast(current => (current?.id === id ? null : current)), 3000);
     };
 
-    const loadData = useCallback((user?: User) => {
-        setUsers(db.getUsers());
-        setNotices(db.getNotices());
-        setAmenities(db.getAmenities());
-        setReservations(db.getReservations());
-        setFinancialStatements(db.getFinancialStatements());
-        setReserveFund(db.getReserveFund());
-        setExpenses(db.getExpenses());
-        setSettings(db.getCommunitySettings());
+    const loadData = useCallback(async (user?: User) => {
+        try {
+            // Load public/common data
+            const [fetchedNotices, fetchedAmenities, fetchedReservations, fetchedExpenses, fetchedSettings] = await Promise.all([
+                dataService.getNotices(),
+                db.getAmenities(), // Not migrated yet
+                dataService.getReservations(),
+                dataService.getExpenses(),
+                dataService.getSettings()
+            ]);
 
-        if (user?.role === 'resident') {
-            setCommonExpenseDebts(db.getCommonExpenseDebts(user.id));
-            setParkingDebts(db.getParkingDebts(user.id));
-            setTickets(db.getTickets(user.id));
-            setPaymentHistory(db.getPaymentHistory(user.id));
-        } else if (user?.role === 'admin') {
-            setTickets(db.getTickets()); // Admin gets all tickets
-            setPaymentHistory(db.getPaymentHistory()); // Admin can see all history
-            setCommonExpenseDebts(db.getCommonExpenseDebts());
-            setParkingDebts(db.getParkingDebts());
-        } else {
-            // Initial load before login, load all for potential admin login
-            setCommonExpenseDebts(db.getCommonExpenseDebts());
-            setParkingDebts(db.getParkingDebts());
+            setNotices(fetchedNotices);
+            setAmenities(fetchedAmenities);
+            setReservations(fetchedReservations);
+            setExpenses(fetchedExpenses);
+            setSettings(fetchedSettings);
+
+            // Mock data for things not in DB yet
+            setFinancialStatements(db.getFinancialStatements());
+            setReserveFund(db.getReserveFund());
+
+            if (user?.role === 'resident') {
+                const [debts, parking, userTickets, payments] = await Promise.all([
+                    dataService.getCommonExpenseDebts(user.id),
+                    dataService.getParkingDebts(user.id),
+                    dataService.getTickets(user.id),
+                    dataService.getPaymentHistory(user.id)
+                ]);
+
+                setCommonExpenseDebts(debts);
+                setParkingDebts(parking);
+                setTickets(userTickets);
+                setPaymentHistory(payments);
+            } else if (user?.role === 'admin') {
+                // Admin fetching
+                const [allTickets, allPayments, allCommonDebts, allParkingDebts, allUsers] = await Promise.all([
+                    dataService.getTickets(),
+                    dataService.getPaymentHistory(),
+                    dataService.getCommonExpenseDebts(),
+                    dataService.getParkingDebts(),
+                    dataService.getUsers()
+                ]);
+
+                setTickets(allTickets);
+                setPaymentHistory(allPayments);
+                setCommonExpenseDebts(allCommonDebts);
+                setParkingDebts(allParkingDebts);
+                setUsers(allUsers);
+            }
+        } catch (error) {
+            console.error("Error loading data:", error);
+            showToast("Error al cargar datos", "error");
+        } finally {
+            setIsLoading(false);
         }
     }, []);
 
@@ -70,32 +102,88 @@ function App() {
         setTheme(initialTheme);
         document.documentElement.classList.toggle('dark', initialTheme === 'dark');
 
-        loadData();
-        setIsLoading(false);
+        // Check Env Vars
+        if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+            showToast("Faltan credenciales de Supabase en .env.local", "error");
+        }
+
+        console.log("App: Starting auth check...", window.location.href);
+
+        // Safety timeout
+        const safetyTimeout = setTimeout(() => {
+            if (isLoading) {
+                console.warn("App: Safety timeout triggered");
+                setIsLoading(false);
+                showToast("La conexión está tardando mucho. Verifique su red o configuración.", "info");
+            }
+        }, 5000);
+
+        // Auth Subscription
+        const { data: authListener } = authService.onAuthStateChange((user) => {
+            console.log("App: Auth state change detected", user);
+            if (user) {
+                const appUser: User = {
+                    id: user.id,
+                    nombre: user.nombre || user.email,
+                    unidad: user.unidad || '',
+                    role: user.role || 'resident',
+                    hasParking: user.has_parking || false,
+                    email: user.email
+                };
+                setCurrentUser(appUser);
+                loadData(appUser);
+                const startPage = appUser.role === 'admin' ? 'admin-dashboard' : 'home';
+                setPage(startPage);
+            } else {
+                setCurrentUser(null);
+                setPage('login');
+            }
+            setIsLoading(false);
+        });
+
+        // Initial check
+        authService.getCurrentUser().then((result) => {
+            console.log("App: Initial user check done", result);
+            if (result && result.user) {
+                // Explicitly set user here in case subscription missed it
+                const appUser: User = {
+                    id: result.user.id,
+                    nombre: result.profile?.nombre || result.user.email?.split('@')[0] || 'Usuario',
+                    unidad: result.profile?.unidad || 'Sin Asignar',
+                    role: result.profile?.role || 'resident',
+                    hasParking: result.profile?.has_parking || false,
+                    email: result.user.email
+                };
+                setCurrentUser(appUser);
+                loadData(appUser);
+                const startPage = appUser.role === 'admin' ? 'admin-dashboard' : 'home';
+                setPage(startPage);
+                setIsLoading(false);
+            } else {
+                setIsLoading(false);
+            }
+        }).catch(err => {
+            console.error("App: Error checking user", err);
+            setIsLoading(false);
+            showToast("Error verificando sesión", "error");
+        });
+
+        return () => {
+            clearTimeout(safetyTimeout);
+            authListener.subscription.unsubscribe();
+        };
     }, [loadData]);
 
     const handleNavigate = (newPage: Page, params: any = null) => {
         window.scrollTo(0, 0);
         setPage(newPage);
         setPageParams(params);
-        if (currentUser?.role === 'resident' && newPage === 'notice-detail' && params?.id) {
-            db.markNoticeAsRead(params.id);
-            setNotices(db.getNotices());
-        }
+        // Note: markNoticeAsRead logic needs migration to async
     };
 
-    const handleLogin = (user: User) => {
-        setCurrentUser(user);
-        loadData(user);
-        const startPage = user.role === 'admin' ? 'admin-dashboard' : 'home';
-        handleNavigate(startPage);
-    };
-
-    const handleLogout = () => {
-        setCurrentUser(null);
-        db.resetData();
-        loadData();
-        handleNavigate('login');
+    const handleLogout = async () => {
+        await authService.signOut();
+        // State update handled by onAuthStateChange
     };
 
     const toggleTheme = () => {
@@ -108,125 +196,208 @@ function App() {
     const unreadNoticesCount = useMemo(() => notices.filter(n => !n.leido && n.status === NoticeStatus.PUBLICADO).length, [notices]);
 
     // Data handlers
-    const addTicket = (ticketData: { titulo: string; descripcion: string; foto?: string; }) => {
+    const addTicket = async (ticketData: { titulo: string; descripcion: string; foto?: string; }) => {
         if (currentUser) {
-            // FIX: Pass the required 'estado' property to db.addTicket.
-            db.addTicket({ ...ticketData, estado: TicketStatus.NUEVO }, currentUser);
-            setTickets(db.getTickets(currentUser.id));
-            handleNavigate('tickets');
-            showToast('Ticket creado exitosamente.');
-        }
-    };
-
-    const updateTicketStatus = (id: number, status: TicketStatus) => {
-        db.updateTicketStatus(id, status);
-        const userFilter = currentUser?.role === 'resident' ? currentUser.id : undefined;
-        setTickets(db.getTickets(userFilter));
-        const backPage = currentUser?.role === 'admin' ? 'admin-tickets' : 'tickets';
-        handleNavigate(backPage);
-        showToast('Estado del ticket actualizado.');
-    };
-
-    const addReservation = (resData: Omit<Reservation, 'id'>) => {
-        const result = db.addReservation(resData);
-        if (result) {
-            setReservations(db.getReservations());
-            showToast('Reserva creada exitosamente');
-            return true;
-        } else {
-            showToast('Error: El horario ya está ocupado.', 'error');
-            return false;
-        }
-    };
-
-    const cancelReservation = (id: number) => {
-        db.cancelReservation(id);
-        setReservations(db.getReservations());
-        showToast('Reserva cancelada');
-    };
-
-    const handleConfirmPayment = () => {
-        if (currentUser) {
-            db.payAllDebts(currentUser.id);
-            loadData(currentUser);
-            handleNavigate('payment-receipt', pageParams);
-        }
-    }
-
-    const addNotice = (noticeData: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) => {
-        db.createNotice(noticeData);
-        setNotices(db.getNotices());
-        handleNavigate('admin-notices');
-        showToast('Aviso guardado como borrador.');
-    };
-
-    const approveNotice = (id: number) => {
-        db.updateNoticeStatus(id, NoticeStatus.PUBLICADO);
-        setNotices(db.getNotices());
-        handleNavigate('admin-notices');
-        showToast('Aviso publicado exitosamente.');
-    };
-
-    const addUser = (userData: Omit<User, 'id' | 'role'>) => {
-        db.addUser(userData);
-        loadData(currentUser || undefined); // Recargar todos los datos
-        handleNavigate('admin-units');
-        showToast('Unidad añadida exitosamente.');
-    };
-
-    const handleUpdateUser = (id: number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email'>>) => {
-        db.updateUser(id, data);
-        setUsers(db.getUsers());
-        handleNavigate('admin-units');
-        showToast('Unidad actualizada exitosamente.');
-    };
-
-    const handleDeleteUser = (id: number) => {
-        if (window.confirm('¿Estás seguro de que quieres eliminar esta unidad? Esta acción no se puede deshacer.')) {
-            db.deleteUser(id);
-            setUsers(db.getUsers());
-            showToast('Unidad eliminada.');
-        }
-    };
-
-    const handleAddExpense = (expenseData: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => {
-        db.addExpense(expenseData);
-        setExpenses(db.getExpenses());
-        showToast('Gasto enviado a revisión.');
-    };
-
-    const handleApproveExpense = (id: number) => {
-        db.approveExpense(id);
-        setExpenses(db.getExpenses());
-        showToast('Gasto aprobado.');
-    };
-
-    const handleRejectExpense = (id: number, motivo: string) => {
-        db.rejectExpense(id, motivo);
-        setExpenses(db.getExpenses());
-        showToast('Gasto rechazado.', 'info');
-    }
-
-    const handleCloseMonth = () => {
-        if (window.confirm('¿Estás seguro de cerrar el mes? Esta acción generará un nuevo informe financiero con los gastos aprobados y no se puede deshacer.')) {
-            const newStatement = db.closeMonthAndGenerateStatement();
-            if (newStatement) {
-                setExpenses(db.getExpenses());
-                setFinancialStatements(db.getFinancialStatements());
-                showToast(`Informe de ${newStatement.mes} generado exitosamente.`);
-            } else {
-                showToast('No hay gastos aprobados para cerrar el mes.', 'error');
+            try {
+                await dataService.createTicket(ticketData, currentUser.id.toString());
+                const tickets = await dataService.getTickets(currentUser.id);
+                setTickets(tickets);
+                handleNavigate('tickets');
+                showToast('Ticket creado exitosamente.');
+            } catch (error) {
+                showToast('Error al crear ticket', 'error');
             }
         }
     };
 
-    const handleUpdateSettings = (newSettings: CommunitySettings) => {
-        db.updateCommunitySettings(newSettings);
-        setSettings(db.getCommunitySettings());
-        showToast('Configuración guardada exitosamente.');
+    const updateTicketStatus = async (id: number, status: TicketStatus) => {
+        try {
+            await dataService.updateTicketStatus(id, status);
+            const userFilter = currentUser?.role === 'resident' ? currentUser.id : undefined;
+            // Note: getTickets might need to handle filter properly in dataService if not already
+            const tickets = await dataService.getTickets(userFilter);
+            setTickets(tickets);
+            const backPage = currentUser?.role === 'admin' ? 'admin-tickets' : 'tickets';
+            handleNavigate(backPage);
+            showToast('Estado del ticket actualizado.');
+        } catch (error) {
+            showToast('Error al actualizar ticket', 'error');
+        }
     };
 
-    if (isLoading || !reserveFund || !settings) {
+    const addReservation = async (resData: Omit<Reservation, 'id'>): Promise<boolean> => {
+        try {
+            await dataService.createReservation(resData);
+            const reservations = await dataService.getReservations();
+            setReservations(reservations);
+            showToast('Reserva creada exitosamente');
+            return true;
+        } catch (error) {
+            showToast('Error: El horario ya está ocupado o hubo un error.', 'error');
+            return false;
+        }
+    };
+
+    const cancelReservation = async (id: number) => {
+        try {
+            await dataService.cancelReservation(id);
+            const reservations = await dataService.getReservations();
+            setReservations(reservations);
+            showToast('Reserva cancelada');
+        } catch (error) {
+            showToast('Error al cancelar reserva', 'error');
+        }
+    };
+
+    const handleConfirmPayment = async () => {
+        if (currentUser) {
+            try {
+                await dataService.payAllDebts(currentUser.id);
+                loadData(currentUser);
+                handleNavigate('payment-receipt', pageParams);
+            } catch (error) {
+                showToast('Error al procesar pago', 'error');
+            }
+        }
+    }
+
+    const addNotice = async (noticeData: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) => {
+        try {
+            await dataService.createNotice(noticeData);
+            const notices = await dataService.getNotices();
+            setNotices(notices);
+            handleNavigate('admin-notices');
+            showToast('Aviso guardado como borrador.');
+        } catch (error: any) {
+            console.error("App: Error creating notice", error);
+            showToast(`Error al crear aviso: ${error.message || 'Desconocido'}`, 'error');
+        }
+    };
+
+    const approveNotice = async (id: number) => {
+        try {
+            await dataService.approveNotice(id);
+            const notices = await dataService.getNotices();
+            setNotices(notices);
+            handleNavigate('admin-notices');
+            showToast('Aviso publicado exitosamente.');
+        } catch (error: any) {
+            console.error("App: Error approving notice", error);
+            showToast(`Error al publicar aviso: ${error.message || 'Desconocido'}`, 'error');
+        }
+    };
+
+    const addUser = async (userData: Omit<User, 'id' | 'role'>) => {
+        // Creating users requires Supabase Admin API or inviting them.
+        // For now, we will show a message.
+        showToast('Para añadir usuarios, use el Dashboard de Supabase.', 'info');
+        // db.addUser(userData);
+        // loadData(currentUser || undefined);
+        // handleNavigate('admin-units');
+    };
+
+    const handleUpdateUser = async (id: string | number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email' | 'unidad'>>) => {
+        try {
+            await dataService.updateUser(id, data);
+            if (currentUser) loadData(currentUser);
+            handleNavigate('admin-units');
+            showToast('Unidad actualizada exitosamente.');
+        } catch (error) {
+            showToast('Error al actualizar unidad', 'error');
+        }
+    };
+
+    const handleDeleteUser = async (id: string | number) => {
+        if (window.confirm('¿Estás seguro de que quieres eliminar esta unidad? Esta acción no se puede deshacer.')) {
+            try {
+                await dataService.deleteUser(id);
+                if (currentUser) loadData(currentUser);
+                showToast('Unidad eliminada.');
+            } catch (error) {
+                showToast('Error al eliminar unidad', 'error');
+            }
+        }
+    };
+
+    const handleAddExpense = async (expenseData: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => {
+        try {
+            await dataService.addExpense(expenseData);
+            const expenses = await dataService.getExpenses();
+            setExpenses(expenses);
+            showToast('Gasto enviado a revisión.');
+        } catch (error: any) {
+            console.error("App: Error creating expense", JSON.stringify(error, null, 2));
+            showToast(`Error al crear gasto: ${error.message || error.details || 'Desconocido'}`, 'error');
+        }
+    };
+
+    const handleApproveExpense = async (id: number) => {
+        try {
+            await dataService.approveExpense(id);
+            const expenses = await dataService.getExpenses();
+            setExpenses(expenses);
+            showToast('Gasto aprobado.');
+        } catch (error: any) {
+            console.error("App: Error approving expense", error);
+            showToast(`Error al aprobar gasto: ${error.message || 'Desconocido'}`, 'error');
+        }
+    };
+
+    const handleRejectExpense = async (id: number, motivo: string) => {
+        try {
+            await dataService.rejectExpense(id, motivo);
+            const expenses = await dataService.getExpenses();
+            setExpenses(expenses);
+            showToast('Gasto rechazado.', 'info');
+        } catch (error: any) {
+            console.error("App: Error rejecting expense", error);
+            showToast(`Error al rechazar gasto: ${error.message || 'Desconocido'}`, 'error');
+        }
+    }
+
+    const handleCloseMonth = async () => {
+        if (window.confirm('¿Estás seguro de cerrar el mes? Esta acción generará un nuevo informe financiero con los gastos aprobados y no se puede deshacer.')) {
+            try {
+                const newStatement = await dataService.closeMonthAndGenerateStatement();
+                if (newStatement) {
+                    const expenses = await dataService.getExpenses();
+                    setExpenses(expenses);
+                    // Refresh statements if we had a getter for them
+                    showToast(`Informe de ${newStatement.mes} generado exitosamente.`);
+                } else {
+                    showToast('No hay gastos aprobados para cerrar el mes.', 'error');
+                }
+            } catch (error) {
+                showToast('Error al cerrar el mes', 'error');
+            }
+        }
+    };
+
+    const handleUpdateSettings = async (newSettings: CommunitySettings) => {
+        try {
+            await dataService.updateCommunitySettings(newSettings);
+            const settings = await dataService.getSettings();
+            setSettings(settings);
+            showToast('Configuración guardada exitosamente.');
+        } catch (error) {
+            showToast('Error al guardar configuración', 'error');
+        }
+    };
+
+    if (isLoading) {
+        return <div className="p-4 space-y-4"><SkeletonLoader className="h-24 w-full" /><SkeletonLoader className="h-48 w-full" /></div>
+    }
+
+    if (!currentUser) {
+        return (
+            <>
+                {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+                <LoginScreen />
+            </>
+        );
+    }
+
+    if (!reserveFund || !settings) {
         return <div className="p-4 space-y-4"><SkeletonLoader className="h-24 w-full" /><SkeletonLoader className="h-48 w-full" /></div>
     }
 
@@ -234,9 +405,7 @@ function App() {
         <>
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
-            {!currentUser ? (
-                <LoginScreen onLogin={handleLogin} users={users} />
-            ) : currentUser.role === 'admin' ? (
+            {currentUser.role === 'admin' ? (
                 <AdminApp
                     page={page}
                     pageParams={pageParams}
@@ -262,6 +431,8 @@ function App() {
                     rejectExpense={handleRejectExpense}
                     closeMonth={handleCloseMonth}
                     updateSettings={handleUpdateSettings}
+                    theme={theme}
+                    toggleTheme={toggleTheme}
                 />
             ) : (
                 <ResidentApp
