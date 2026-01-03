@@ -57,6 +57,58 @@
         .dark ::-webkit-scrollbar-thumb {
             background-color: rgba(75, 85, 99, 0.5);
         }
+
+        /* --- Global Print Styles --- */
+        @media print {
+            @page {
+                size: A4;
+                margin: 12mm;
+            }
+
+            body {
+                background: white;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Isolation Strategy */
+            body.printing * {
+                visibility: hidden;
+            }
+
+            body.printing [data-print-root],
+            body.printing [data-print-root] * {
+                visibility: visible;
+            }
+
+            body.printing [data-print-root] {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+
+            /* Table & Layout Safety */
+            tr, td, th, .break-inside-avoid {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+        }
     </style>
     <script>
         // Previene el "flash of unstyled content" (FOUC) al cargar el tema oscuro

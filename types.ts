@@ -58,6 +58,9 @@ export interface Notice {
 export interface Amenity {
   id: string;
   nombre: string;
+  foto: string;
+  capacidad: number;
+  descripcion: string;
 }
 
 export interface Reservation {
@@ -174,6 +177,7 @@ export type Page =
   | 'ticket-create'
   | 'notices'
   | 'notice-detail'
+  | 'amenities'
   | 'reservations'
   | 'profile'
   | 'more'

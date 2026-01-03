@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react';
-import { Page, User, CommonExpenseDebt, ParkingDebt, Ticket, Notice, Amenity, Reservation, FinancialStatement, ReserveFund, Expense, TicketStatus, NoticeStatus } from '../types';
-import { Header } from './Shared';
-import { ResidentTabBar } from './ResidentTabBar';
+import { User, CommonExpenseDebt, ParkingDebt, Ticket, Notice, Amenity, Reservation, FinancialStatement, Page, NoticeStatus, Expense, PaymentRecord } from '../types';
 import { HomeScreen } from './HomeScreen';
-import { PaymentsScreen, PaymentMethodScreen, PaymentConfirmScreen, PaymentReceiptScreen } from './PaymentsScreen';
-import { TicketsScreen, TicketDetailScreen, CreateTicketScreen } from './TicketsScreen';
-import { NoticesScreen, NoticeDetailScreen } from './NoticesScreen';
+import { PaymentsScreen } from './PaymentsScreen';
+import { CreateTicketScreen } from './TicketsScreen';
+import { TicketsScreen } from './TicketsScreen';
+import { NoticesScreen } from './NoticesScreen';
+import { AmenitiesScreen } from './AmenitiesScreen'; // Assuming this exists or will be fixed if not
 import { ReservationsScreen } from './ReservationsScreen';
 import { ProfileScreen } from './ProfileScreen';
-import { MoreScreen } from './MoreScreen';
-import { FinancialStatementsScreen, ReserveFundScreen } from './FinancialScreen';
-import { ResidentExpensesScreen } from './ResidentExpensesScreen';
+import { ResidentTabBar } from './ResidentTabBar';
+import { Header } from './Shared';
+import { ExpenseStatementModal } from './ExpenseStatementModal';
 
 interface ResidentAppProps {
     page: Page;
@@ -23,93 +23,77 @@ interface ResidentAppProps {
     amenities: Amenity[];
     reservations: Reservation[];
     financialStatements: FinancialStatement[];
-    reserveFund: ReserveFund;
+    reserveFund: number;
     unreadNoticesCount: number;
     theme: 'light' | 'dark';
     expenses: Expense[];
+    paymentHistory: PaymentRecord[];
     handleNavigate: (page: Page, params?: any) => void;
     handleLogout: () => void;
     toggleTheme: () => void;
-    addTicket: (data: any) => void;
-    updateTicketStatus: (id: number, status: TicketStatus) => void;
-    addReservation: (data: any) => Promise<boolean>;
+    addTicket: (ticket: Pick<Ticket, 'titulo' | 'descripcion' | 'foto'>) => void;
+    updateTicketStatus: (id: number, status: any) => void;
+    addReservation: (res: Omit<Reservation, 'id'>) => void;
     cancelReservation: (id: number) => void;
-    handleConfirmPayment: () => void;
+    handleConfirmPayment: (debtId: number, type: 'common' | 'parking', method: string) => void;
     showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }
 
 export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
-    const { page, pageParams, currentUser, commonExpenseDebts, parkingDebts, tickets, notices, amenities, reservations, financialStatements, reserveFund, unreadNoticesCount, theme, expenses, handleNavigate, handleLogout, toggleTheme, addTicket, updateTicketStatus, addReservation, cancelReservation, handleConfirmPayment, showToast } = props;
+    const { page, pageParams, currentUser, commonExpenseDebts, parkingDebts, tickets, notices, amenities, reservations, financialStatements, reserveFund, unreadNoticesCount, theme, expenses, paymentHistory, handleNavigate, handleLogout, toggleTheme, addTicket, updateTicketStatus, addReservation, cancelReservation, handleConfirmPayment, showToast } = props;
+
+    // State for Expense Statement Modal
+    const [showStatementModal, setShowStatementModal] = React.useState(false);
+    const [statementMonth, setStatementMonth] = React.useState(new Date().toISOString().slice(0, 7));
 
     const publishedNotices = useMemo(() => notices.filter(n => n.status === NoticeStatus.PUBLICADO), [notices]);
 
     const renderPage = () => {
         switch (page) {
-            case 'home': return <HomeScreen user={currentUser} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} expenses={expenses} onNavigate={handleNavigate} showToast={showToast} />;
-            case 'payments': return <PaymentsScreen commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} onNavigate={handleNavigate} />;
-            case 'payment-method': return <PaymentMethodScreen params={pageParams} onNavigate={handleNavigate} />;
-            case 'payment-confirm': return <PaymentConfirmScreen params={pageParams} onConfirm={handleConfirmPayment} onNavigate={handleNavigate} />;
-            case 'payment-receipt': return <PaymentReceiptScreen params={pageParams} user={currentUser} onNavigate={handleNavigate} showToast={showToast} />;
-            case 'tickets': return <TicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
-            case 'ticket-detail': {
-                const ticket = tickets.find(t => t.id === pageParams?.id);
-                return ticket ? <TicketDetailScreen ticket={ticket} onUpdateStatus={updateTicketStatus} /> : <div>Ticket no encontrado</div>;
-            }
+            case 'home': return <HomeScreen user={currentUser} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} expenses={expenses} paymentHistory={paymentHistory} theme={theme} onNavigate={handleNavigate} onDownloadStatement={() => setShowStatementModal(true)} showToast={showToast} />;
+            case 'payments': return <PaymentsScreen commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} paymentHistory={paymentHistory} user={currentUser} onConfirmPayment={handleConfirmPayment} onNavigate={handleNavigate} />;
             case 'ticket-create': return <CreateTicketScreen onAddTicket={addTicket} />;
+            case 'tickets': return <TicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
             case 'notices': return <NoticesScreen notices={publishedNotices} onNavigate={handleNavigate} />;
-            case 'notice-detail': {
-                const notice = publishedNotices.find(n => n.id === pageParams?.id);
-                return notice ? <NoticeDetailScreen notice={notice} showToast={showToast} /> : <div>Aviso no encontrado</div>;
-            }
+            case 'amenities': return <AmenitiesScreen amenities={amenities} onNavigate={handleNavigate} />;
             case 'reservations': return <ReservationsScreen amenities={amenities} reservations={reservations} user={currentUser} onAddReservation={addReservation} onCancelReservation={cancelReservation} />;
-            case 'profile': return <ProfileScreen user={currentUser} onLogout={handleLogout} onToggleTheme={toggleTheme} theme={theme} />;
-            case 'more': return <MoreScreen onNavigate={handleNavigate} />;
-            case 'financial-statements': return <FinancialStatementsScreen statements={financialStatements} showToast={showToast} />;
-            case 'reserve-fund': return <ReserveFundScreen fund={reserveFund} />;
-            case 'resident-expenses': return <ResidentExpensesScreen expenses={expenses} showToast={showToast} />;
-            default: return <HomeScreen user={currentUser} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} expenses={expenses} onNavigate={handleNavigate} showToast={showToast} />;
+            case 'profile': return <ProfileScreen user={currentUser} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} onNavigate={handleNavigate} />;
+            default: return <HomeScreen user={currentUser} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} expenses={expenses} paymentHistory={paymentHistory} theme={theme} onNavigate={handleNavigate} onDownloadStatement={() => setShowStatementModal(true)} showToast={showToast} />;
         }
     };
 
+    const showHeader = ['home', 'payments', 'tickets', 'notices', 'amenities', 'profile'].includes(page);
     const getPageTitle = () => {
         switch (page) {
-            case 'home': return `Bienvenido`;
-            case 'payments': case 'payment-method': case 'payment-confirm': case 'payment-receipt': return 'Pagos';
+            case 'home': return 'Inicio';
+            case 'payments': return 'Mis Pagos';
             case 'tickets': return 'Mis Tickets';
-            case 'ticket-detail': return 'Detalle del Ticket';
-            case 'ticket-create': return 'Crear Ticket';
-            case 'notices': return 'Avisos';
-            case 'notice-detail': return 'Detalle del Aviso';
-            case 'reservations': return 'Reservas';
+            case 'notices': return 'Mural de Avisos';
+            case 'amenities': return 'Espacios Comunes';
             case 'profile': return 'Mi Perfil';
-            case 'more': return 'Más Opciones';
-            case 'financial-statements': return 'Rendición de Cuentas';
-            case 'reserve-fund': return 'Fondo de Reserva';
-            case 'resident-expenses': return 'Detalle de Gastos';
-            default: return 'Condominio';
+            default: return 'Condominio Fácil';
         }
     };
 
-    const showHeader = page !== 'home';
-    const onBackHandler = useMemo(() => {
-        if (!showHeader) return undefined;
-        const backMap: { [key in Page]?: Page } = {
-            'payment-method': 'payments', 'payment-confirm': 'payment-method', 'ticket-detail': 'tickets',
-            'ticket-create': 'tickets', 'notice-detail': 'notices', 'profile': 'more',
-            'reservations': 'more', 'financial-statements': 'more', 'reserve-fund': 'more',
-            'resident-expenses': 'home'
-        };
-        const backTarget = backMap[page];
-        if (backTarget) return () => handleNavigate(backTarget);
-        if (page === 'payment-receipt') return () => handleNavigate('home');
-        return undefined;
-    }, [page, showHeader, handleNavigate]);
+    const onBackHandler = ['ticket-create', 'reservations'].includes(page) ? () => handleNavigate('home') : undefined;
 
     return (
         <div className="max-w-lg mx-auto bg-gray-100 dark:bg-gray-900 min-h-screen pb-24">
             {showHeader && <Header title={getPageTitle()} onBack={onBackHandler} />}
             <main>{renderPage()}</main>
             <ResidentTabBar currentPage={page} onNavigate={handleNavigate} unreadNotices={unreadNoticesCount} />
+
+            {/* Expense Statement Modal */}
+            {showStatementModal && (
+                <ExpenseStatementModal
+                    user={currentUser}
+                    month={statementMonth}
+                    communityExpenses={expenses.filter(e => e.fecha.startsWith(statementMonth))}
+                    payments={paymentHistory}
+                    previousBalance={0} // TODO: Calculate real previous balance based on debts
+                    onClose={() => setShowStatementModal(false)}
+                />
+            )}
         </div>
     );
 };

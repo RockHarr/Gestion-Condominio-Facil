@@ -9,9 +9,10 @@ interface ProfileScreenProps {
     onLogout: () => void;
     onToggleTheme: () => void;
     theme: 'light' | 'dark';
+    onNavigate: (page: any) => void;
 }
 
-export const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, onToggleTheme, theme }) => {
+export const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, onToggleTheme, theme, onNavigate }) => {
     return (
         <div className="p-4 space-y-4">
             <Card className="flex items-center space-x-4">

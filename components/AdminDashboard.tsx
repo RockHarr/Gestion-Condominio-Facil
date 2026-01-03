@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react';
 import { Expense, ExpenseStatus, ExpenseCategory, Page, PaymentRecord, User } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
+import { FinancialCharts } from './FinancialCharts';
 
 // Helper
 const formatCurrency = (amount: number) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount);
@@ -16,9 +17,10 @@ interface AdminDashboardProps {
     onApproveExpense: (id: number) => void;
     onRejectExpense: (id: number, motivo: string) => void;
     onCloseMonth: () => void;
+    theme: 'light' | 'dark';
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymentHistory, users, onNavigate, onAddExpense, onApproveExpense, onRejectExpense, onCloseMonth }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymentHistory, users, onNavigate, onAddExpense, onApproveExpense, onRejectExpense, onCloseMonth, theme }) => {
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const [isRejectModalOpen, setRejectModalOpen] = useState<Expense | null>(null);
 
@@ -82,6 +84,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                     <StatCard title="En Revisión" value={stats.reviewCount} icon="hourglass" colorClass="bg-yellow-500" />
                     <StatCard title="Total Cargados" value={stats.totalExpensesCount} icon="receipt-long" colorClass="bg-indigo-500" />
                 </div>
+
+                {/* Financial Charts */}
+                <FinancialCharts expenses={expenses} payments={paymentHistory} theme={theme} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-6">
@@ -170,7 +175,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
 
                                             <div className="flex justify-end gap-3 pt-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                                 <Button onClick={() => setRejectModalOpen(expense)} variant="danger" className="!w-auto !py-2 !px-4 !text-xs shadow-sm">
-                                                    <Icons name="x-mark" className="w-3 h-3 mr-1.5" /> Rechazar
+                                                    <Icons name="xmark" className="w-3 h-3 mr-1.5" /> Rechazar
                                                 </Button>
                                                 <Button onClick={() => onApproveExpense(expense.id)} className="!w-auto !py-2 !px-4 !text-xs shadow-sm bg-green-600 hover:bg-green-700 focus:ring-green-500">
                                                     <Icons name="check" className="w-3 h-3 mr-1.5" /> Aprobar
@@ -232,7 +237,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                         </Card>
                     </div>
                 </div>
-            </div>
+            </div >
 
             {isCreateModalOpen && (
                 <AdminCreateExpenseModal
@@ -243,16 +248,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                     }}
                 />
             )}
-            {isRejectModalOpen && (
-                <AdminRejectExpenseModal
-                    expense={isRejectModalOpen}
-                    onClose={() => setRejectModalOpen(null)}
-                    onReject={(id, motivo) => {
-                        onRejectExpense(id, motivo);
-                        setRejectModalOpen(null);
-                    }}
-                />
-            )}
+            {
+                isRejectModalOpen && (
+                    <AdminRejectExpenseModal
+                        expense={isRejectModalOpen}
+                        onClose={() => setRejectModalOpen(null)}
+                        onReject={(id, motivo) => {
+                            onRejectExpense(id, motivo);
+                            setRejectModalOpen(null);
+                        }}
+                    />
+                )
+            }
         </>
     );
 };
@@ -348,7 +355,7 @@ export const AdminCreateExpenseModal: React.FC<{
                     <div className="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-4">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white">Cargar Nuevo Gasto</h2>
                         <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-500">
-                            <Icons name="x-mark" className="w-6 h-6" />
+                            <Icons name="xmark" className="w-6 h-6" />
                         </button>
                     </div>
 

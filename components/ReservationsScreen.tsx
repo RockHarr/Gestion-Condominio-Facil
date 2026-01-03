@@ -7,7 +7,7 @@ interface ReservationsScreenProps {
     amenities: Amenity[];
     reservations: Reservation[];
     user: User;
-    onAddReservation: (res: Omit<Reservation, 'id'>) => boolean;
+    onAddReservation: (res: Omit<Reservation, 'id'>) => void;
     onCancelReservation: (id: number) => void;
 }
 
@@ -62,8 +62,8 @@ export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenitie
                                 }}
                                 disabled={reservation && !isMine}
                                 className={`p-3 rounded-lg text-center font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isMine ? 'bg-red-500 text-white hover:bg-red-600' :
-                                        isAvailable ? 'bg-green-500 text-white hover:bg-green-600' :
-                                            'bg-gray-200 dark:bg-gray-700 text-gray-500'
+                                    isAvailable ? 'bg-green-500 text-white hover:bg-green-600' :
+                                        'bg-gray-200 dark:bg-gray-700 text-gray-500'
                                     }`}
                             >
                                 {time}

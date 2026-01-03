@@ -463,10 +463,11 @@ function App() {
                     amenities={amenities}
                     reservations={reservations}
                     financialStatements={financialStatements}
-                    reserveFund={reserveFund}
+                    reserveFund={reserveFund?.montoActual || 0}
                     unreadNoticesCount={unreadNoticesCount}
                     theme={theme}
                     expenses={expenses}
+                    paymentHistory={paymentHistory}
                     handleNavigate={handleNavigate}
                     handleLogout={handleLogout}
                     toggleTheme={toggleTheme}

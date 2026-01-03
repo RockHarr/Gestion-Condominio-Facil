@@ -1,26 +1,34 @@
 import React from 'react';
-import { User, CommonExpenseDebt, ParkingDebt, Expense, Page, ExpenseStatus } from '../types';
-import { Card, Button } from './Shared';
+import { User, CommonExpenseDebt, ParkingDebt, Expense, Page, ExpenseStatus, PaymentRecord } from '../types';
 import Icons from './Icons';
+import { FinancialCharts } from './FinancialCharts';
+import { Card, Button } from './Shared';
 
-// Helper functions
-const formatCurrency = (amount: number) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount);
-const formatPeriod = (period: string) => {
-    const [year, month] = period.split('-');
-    const date = new Date(parseInt(year), parseInt(month) - 1);
-    return date.toLocaleString('es-CL', { month: 'long', year: 'numeric' });
-};
+// ...
 
 interface HomeScreenProps {
     user: User;
     commonExpenseDebts: CommonExpenseDebt[];
     parkingDebts: ParkingDebt[];
     expenses: Expense[];
+    paymentHistory: PaymentRecord[];
+    theme: 'light' | 'dark';
     onNavigate: (page: Page, params?: any) => void;
+    onDownloadStatement: () => void;
     showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ user, commonExpenseDebts, parkingDebts, expenses, onNavigate, showToast }) => {
+export const HomeScreen: React.FC<HomeScreenProps> = ({ user, commonExpenseDebts, parkingDebts, expenses, paymentHistory, theme, onNavigate, onDownloadStatement, showToast }) => {
+
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount);
+    };
+
+    const formatPeriod = (period: string) => {
+        const [year, month] = period.split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1);
+        return date.toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
+    };
 
     const unpaidCommonExpenses = commonExpenseDebts.filter(d => !d.pagado);
     const unpaidParking = parkingDebts.filter(d => !d.pagado);
@@ -92,6 +100,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ user, commonExpenseDebts
                     </div>
                 </div>
 
+                {/* Financial Charts */}
+                <FinancialCharts expenses={expenses} payments={paymentHistory} theme={theme} />
+
                 {/* Community Expenses Summary */}
                 <Card className="!p-0 overflow-hidden border border-gray-100 dark:border-gray-700">
                     <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
@@ -126,13 +137,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ user, commonExpenseDebts
                                 <p className="text-gray-500 text-sm">No hay gastos registrados aún.</p>
                             </div>
                         )}
-                        <Button
-                            onClick={() => onNavigate('resident-expenses')}
-                            variant="secondary"
-                            className="!w-full !mt-6 !py-2.5 !text-sm !bg-gray-100 dark:!bg-gray-700 hover:!bg-gray-200 dark:hover:!bg-gray-600"
-                        >
-                            Ver Detalle Completo
-                        </Button>
+                        <div className="grid grid-cols-2 gap-3 mt-6">
+                            <Button
+                                onClick={() => onNavigate('resident-expenses')}
+                                variant="secondary"
+                                className="!py-2.5 !text-sm !bg-gray-100 dark:!bg-gray-700 hover:!bg-gray-200 dark:hover:!bg-gray-600"
+                            >
+                                Ver Detalle
+                            </Button>
+                            <Button
+                                onClick={onDownloadStatement}
+                                className="!py-2.5 !text-sm shadow-sm"
+                            >
+                                <Icons name="download" className="w-4 h-4 mr-2" />
+                                Descargar PDF
+                            </Button>
+                        </div>
                     </div>
                 </Card>
             </div>

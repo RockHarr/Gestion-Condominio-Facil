@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { CommonExpenseDebt, ParkingDebt, Page, User } from '../types';
+import { User, CommonExpenseDebt, ParkingDebt, PaymentRecord, Page } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
+import { PaymentReceiptModal } from './PaymentReceiptModal';
 
-// Helper function
+// Helper functions (inline to avoid import issues)
 const formatCurrency = (amount: number) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount);
 const formatPeriod = (period: string) => {
+    if (!period) return '';
     const [year, month] = period.split('-');
     const date = new Date(parseInt(year), parseInt(month) - 1);
     return date.toLocaleString('es-CL', { month: 'long', year: 'numeric' });
@@ -14,12 +16,17 @@ const formatPeriod = (period: string) => {
 interface PaymentsScreenProps {
     commonExpenseDebts: CommonExpenseDebt[];
     parkingDebts: ParkingDebt[];
+    paymentHistory: PaymentRecord[];
+    user: User;
+    onConfirmPayment: (debtId: number, type: 'common' | 'parking', method: string) => void;
     onNavigate: (page: Page, params?: any) => void;
 }
 
-export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ commonExpenseDebts, parkingDebts, onNavigate }) => {
+export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ commonExpenseDebts, parkingDebts, paymentHistory, user, onConfirmPayment, onNavigate }) => {
     const unpaidCommonExpenses = commonExpenseDebts.filter(d => !d.pagado);
     const unpaidParking = parkingDebts.filter(d => !d.pagado);
+
+    const [selectedPayment, setSelectedPayment] = useState<PaymentRecord | null>(null);
 
     const itemsToPay = [
         ...unpaidCommonExpenses.map(d => ({ description: `Gasto Común (${formatPeriod(d.mes)})`, amount: d.monto })),
@@ -28,15 +35,20 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ commonExpenseDeb
 
     const totalAmount = itemsToPay.reduce((sum, item) => sum + item.amount, 0);
 
+    const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString('es-CL');
+
     return (
-        <div className="p-4 space-y-6 animate-page">
-            <div className="flex items-center justify-center space-x-2 mb-6">
-                <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">1</div>
-                <div className="h-1 w-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 flex items-center justify-center font-bold text-sm">2</div>
-                <div className="h-1 w-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 flex items-center justify-center font-bold text-sm">3</div>
-            </div>
+        <div className="p-4 space-y-6 animate-page pb-24">
+            {/* Payment Flow Header - Only show if there is debt to pay */}
+            {totalAmount > 0 && (
+                <div className="flex items-center justify-center space-x-2 mb-6">
+                    <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">1</div>
+                    <div className="h-1 w-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 flex items-center justify-center font-bold text-sm">2</div>
+                    <div className="h-1 w-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 flex items-center justify-center font-bold text-sm">3</div>
+                </div>
+            )}
 
             <Card>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Detalle de tu Deuda</h2>
@@ -64,9 +76,56 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ commonExpenseDeb
                     )}
                 </div>
             </Card>
-            <Button onClick={() => onNavigate('payment-method', { totalAmount, itemsToPay })} disabled={totalAmount === 0} className="shadow-lg shadow-blue-500/30">
-                Continuar al Pago
-            </Button>
+
+            {totalAmount > 0 && (
+                <Button onClick={() => onNavigate('payment-method', { totalAmount, itemsToPay })} className="shadow-lg shadow-blue-500/30">
+                    Continuar al Pago
+                </Button>
+            )}
+
+            {/* Payment History Section */}
+            <div className="mt-8">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <Icons name="clock" className="w-6 h-6 text-gray-500" />
+                    Mis Pagos Históricos
+                </h2>
+                <div className="space-y-3">
+                    {paymentHistory.length > 0 ? (
+                        paymentHistory.map((payment) => (
+                            <div key={payment.id} className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                                <div>
+                                    <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(payment.monto)}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">{formatDate(payment.fechaPago)} • {payment.metodoPago}</p>
+                                    {payment.observacion && <p className="text-xs text-gray-400 italic mt-1">{payment.observacion}</p>}
+                                </div>
+                                <div className="flex flex-col items-end gap-2">
+                                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">Confirmado</span>
+                                    <button
+                                        onClick={() => setSelectedPayment(payment)}
+                                        className="text-blue-600 dark:text-blue-400 text-sm font-medium flex items-center gap-1 hover:underline"
+                                    >
+                                        <Icons name="document-text" className="w-4 h-4" />
+                                        Recibo
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-center py-6 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                            No hay pagos registrados.
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Receipt Modal */}
+            {selectedPayment && (
+                <PaymentReceiptModal
+                    payment={selectedPayment}
+                    user={user}
+                    onClose={() => setSelectedPayment(null)}
+                />
+            )}
         </div>
     );
 };
