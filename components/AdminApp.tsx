@@ -5,6 +5,7 @@ import { AdminDashboard } from './AdminDashboard';
 import { AdminTicketsScreen, AdminTicketDetailScreen } from './AdminTickets';
 import { AdminNoticesScreen, AdminNoticeDetailScreen, AdminCreateNoticeScreen } from './AdminNotices';
 import { AdminUnitsScreen, AdminCreateUnitScreen, AdminEditUnitScreen, AdminUnitDetailScreen } from './AdminUnits';
+import { AdminPaymentEntry } from './AdminPaymentEntry';
 import { AdminSettingsScreen } from './AdminSettings';
 import { AdminSidebar, AdminTabBar } from './AdminNavigation';
 import { ProfileScreen } from './ProfileScreen';
@@ -27,23 +28,24 @@ interface AdminAppProps {
     addNotice: (data: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) => void;
     approveNotice: (id: number) => void;
     addUser: (data: Omit<User, 'id' | 'role'>) => void;
-    updateUser: (id: string | number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email' | 'unidad'>>) => void;
+    updateUser: (id: string | number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email' | 'unidad' | 'alicuota'>>) => void;
     deleteUser: (id: string | number) => void;
     addExpense: (data: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => void;
     approveExpense: (id: number) => void;
     rejectExpense: (id: number, motivo: string) => void;
     closeMonth: () => void;
+    registerPayment: (payment: Omit<PaymentRecord, 'id'>) => void;
     updateSettings: (settings: CommunitySettings) => void;
     theme: 'light' | 'dark';
     toggleTheme: () => void;
 }
 
 export const AdminApp: React.FC<AdminAppProps> = (props) => {
-    const { page, pageParams, users, tickets, notices, expenses, settings, paymentHistory, commonExpenseDebts, parkingDebts, handleNavigate, handleLogout, updateTicketStatus, addNotice, approveNotice, addUser, updateUser, deleteUser, addExpense, approveExpense, rejectExpense, closeMonth, updateSettings, theme, toggleTheme } = props;
+    const { page, pageParams, users, tickets, notices, expenses, settings, paymentHistory, commonExpenseDebts, parkingDebts, handleNavigate, handleLogout, updateTicketStatus, addNotice, approveNotice, addUser, updateUser, deleteUser, addExpense, approveExpense, rejectExpense, closeMonth, registerPayment, updateSettings, theme, toggleTheme } = props;
 
     const renderPage = () => {
         switch (page) {
-            case 'admin-dashboard': return <AdminDashboard expenses={expenses} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} />;
+            case 'admin-dashboard': return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} />;
             case 'admin-tickets': return <AdminTicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
             case 'admin-ticket-detail': {
                 const ticket = tickets.find(t => t.id === pageParams?.id);
@@ -55,7 +57,7 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
                 const notice = notices.find(n => n.id === pageParams?.id);
                 return notice ? <AdminNoticeDetailScreen notice={notice} onApprove={approveNotice} /> : <div>Aviso no encontrado</div>;
             }
-            case 'admin-units': return <AdminUnitsScreen users={users} onNavigate={handleNavigate} onDeleteUser={deleteUser} />;
+            case 'admin-units': return <AdminUnitsScreen users={users} paymentHistory={paymentHistory} onNavigate={handleNavigate} onDeleteUser={deleteUser} />;
             case 'admin-unit-create': return <AdminCreateUnitScreen onAddUser={addUser} />;
             case 'admin-unit-edit': {
                 const userToEdit = users.find(u => u.id === pageParams?.id);
@@ -66,9 +68,10 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
                 const userPaymentHistory = paymentHistory.filter(p => p.userId === pageParams?.id);
                 return user ? <AdminUnitDetailScreen user={user} paymentHistory={userPaymentHistory} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} /> : <div>Usuario no encontrado</div>;
             }
+            case 'admin-payment-entry': return <AdminPaymentEntry users={users} onRegisterPayment={registerPayment} />;
             case 'admin-config': return <AdminSettingsScreen settings={settings} onUpdateSettings={updateSettings} />;
             case 'profile': return <ProfileScreen user={props.currentUser} onLogout={handleLogout} onToggleTheme={toggleTheme} theme={theme} />;
-            default: return <AdminDashboard expenses={expenses} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} />;
+            default: return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} />;
         }
     };
 
@@ -84,6 +87,7 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
             case 'admin-unit-create': return 'Añadir Nueva Unidad';
             case 'admin-unit-edit': return 'Editar Unidad';
             case 'admin-unit-detail': return 'Detalle de Unidad';
+            case 'admin-payment-entry': return 'Registrar Pago';
             case 'admin-config': return 'Configuración';
             default: return 'Admin Panel';
         }

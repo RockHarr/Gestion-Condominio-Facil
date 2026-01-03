@@ -78,39 +78,34 @@ export const authService = {
             console.log("AuthService: onAuthStateChange event:", event, "Session:", session?.user?.email);
             if (session?.user) {
                 let profile = null;
-                try {
-                    const { data, error } = await supabase
-                        .from('profiles')
-                        .select('*')
-                        .eq('id', session.user.id)
-                        .single();
+                let attempts = 0;
+                const maxAttempts = 3;
 
-                    if (error) {
-                        // If not found (PGRST116 or 406), try to create it
-                        const newProfile = {
-                            id: session.user.id,
-                            email: session.user.email,
-                            role: 'resident',
-                            nombre: session.user.email?.split('@')[0] || 'Usuario',
-                            unidad: 'Sin Asignar'
-                        };
-
-                        const { data: createdProfile } = await supabase
+                while (attempts < maxAttempts && !profile) {
+                    try {
+                        const { data, error } = await supabase
                             .from('profiles')
-                            .insert(newProfile)
-                            .select()
+                            .select('*')
+                            .eq('id', session.user.id)
                             .single();
 
-                        profile = createdProfile;
-                    } else {
-                        profile = data;
+                        if (!error && data) {
+                            profile = data;
+                            break;
+                        } else {
+                            // If not found, wait and retry (Trigger might be slow)
+                            console.log(`AuthService: Profile not found (attempt ${attempts + 1}), waiting...`);
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        }
+                    } catch (err) {
+                        console.error("AuthService: Exception fetching profile", err);
                     }
-                } catch (err) {
-                    console.error("AuthService: Exception fetching/creating profile", err);
+                    attempts++;
                 }
 
-                // Fallback if creation failed or still null
-                if (!profile && session.user) {
+                // Fallback if still null (Trigger failed or timeout)
+                if (!profile) {
+                    console.warn("AuthService: Profile creation trigger likely failed or timed out. Using fallback.");
                     callback({
                         id: session.user.id,
                         email: session.user.email,

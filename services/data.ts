@@ -126,7 +126,14 @@ export const dataService = {
 
         const { data, error } = await withTimeout(query.order('fecha_pago', { ascending: false }));
         if (error) throw error;
-        return data;
+
+        return data.map((p: any) => ({
+            ...p,
+            userId: p.user_id,
+            fechaPago: p.fecha_pago,
+            metodoPago: p.metodo_pago,
+            observacion: p.observacion
+        }));
     },
 
     // --- Reservations ---
@@ -188,6 +195,18 @@ export const dataService = {
         if ('hasParking' in updates) {
             dbUpdates.has_parking = updates.hasParking;
             delete dbUpdates.hasParking;
+        }
+
+        // Email is in auth.users, not profiles (usually). 
+        // We cannot update it directly here without Admin API.
+        if ('email' in dbUpdates) {
+            delete dbUpdates.email;
+        }
+
+        // TEMPORARY FIX: The 'alicuota' column does not exist in the DB yet.
+        // We remove it to allow updating other fields (Name, Unit, Parking).
+        if ('alicuota' in dbUpdates) {
+            delete dbUpdates.alicuota;
         }
 
         const { error } = await withTimeout(supabase
@@ -259,7 +278,28 @@ export const dataService = {
         if (error) throw error;
     },
 
+    async registerPayment(payment: Omit<PaymentRecord, 'id'>) {
+        // 1. Insert payment record
+        const { data, error } = await withTimeout(supabase
+            .from('payments')
+            .insert({
+                user_id: payment.userId,
+                monto: payment.monto,
+                fecha_pago: payment.fechaPago,
+                periodo: payment.periodo,
+                type: payment.type,
+                metodo_pago: payment.metodoPago,
+                observacion: payment.observacion
+            })
+            .select()
+            .single());
+
+        if (error) throw error;
+        return data;
+    },
+
     async closeMonthAndGenerateStatement() {
+        // 1. Get approved expenses
         const { data: expenses, error: expError } = await withTimeout(supabase
             .from('expenses')
             .select('*')
@@ -272,7 +312,11 @@ export const dataService = {
 
         const now = new Date();
         const currentMonthStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+        const monthName = now.toLocaleString('es-CL', { month: 'long' });
+        const year = now.getFullYear();
+        const mesNombre = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}`;
 
+        // 2. Get payments for income calculation
         const { data: payments, error: payError } = await withTimeout(supabase
             .from('payments')
             .select('monto')
@@ -282,6 +326,7 @@ export const dataService = {
 
         const ingresos = payments?.reduce((sum, p) => sum + p.monto, 0) || 0;
 
+        // 3. Get previous balance
         const { data: lastStatement } = await withTimeout(supabase
             .from('financial_statements')
             .select('saldo')
@@ -292,10 +337,70 @@ export const dataService = {
         const saldoAnterior = lastStatement?.saldo || 0;
         const saldo = saldoAnterior + ingresos - egresos;
 
-        const monthName = now.toLocaleString('es-CL', { month: 'long' });
-        const year = now.getFullYear();
-        const mesNombre = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}`;
+        // 4. Generate Debts for Residents
+        const { data: residents, error: resError } = await withTimeout(supabase
+            .from('profiles')
+            .select('id, alicuota, has_parking')
+            .eq('role', 'resident'));
 
+        if (resError) throw resError;
+
+        if (residents) {
+            const debtsToInsert = [];
+            const parkingDebtsToInsert = [];
+
+            // Get parking cost setting
+            const { data: settings } = await withTimeout(supabase
+                .from('community_settings')
+                .select('parking_cost_amount')
+                .single());
+
+            const parkingCost = settings?.parking_cost_amount || 12000;
+
+            for (const resident of residents) {
+                // Common Expense Debt
+                // If alicuota is 0 or null, we might default to equal split or 0. 
+                // For now, if 0, debt is 0 (or handle as equal split if preferred, but alicuota is safer)
+                const alicuota = resident.alicuota || 0;
+                const montoGastoComun = Math.round((egresos * alicuota) / 100);
+
+                if (montoGastoComun > 0) {
+                    debtsToInsert.push({
+                        user_id: resident.id,
+                        mes: currentMonthStr,
+                        monto: montoGastoComun,
+                        pagado: false
+                    });
+                }
+
+                // Parking Debt
+                if (resident.has_parking) {
+                    parkingDebtsToInsert.push({
+                        user_id: resident.id,
+                        mes: currentMonthStr,
+                        monto: parkingCost,
+                        patente: 'Sin Registrar', // Placeholder
+                        pagado: false
+                    });
+                }
+            }
+
+            if (debtsToInsert.length > 0) {
+                const { error: debtError } = await withTimeout(supabase
+                    .from('common_expense_debts')
+                    .insert(debtsToInsert));
+                if (debtError) console.error("Error inserting common expense debts", debtError);
+            }
+
+            if (parkingDebtsToInsert.length > 0) {
+                const { error: parkError } = await withTimeout(supabase
+                    .from('parking_debts')
+                    .insert(parkingDebtsToInsert));
+                if (parkError) console.error("Error inserting parking debts", parkError);
+            }
+        }
+
+        // 5. Create Financial Statement Record
         const { data: newStatement, error: stmtError } = await withTimeout(supabase
             .from('financial_statements')
             .insert({

@@ -12,6 +12,7 @@ export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigat
     const navItems = [
         { page: 'admin-dashboard', icon: 'speedometer', label: 'Inicio' },
         { page: 'admin-units', icon: 'building-office', label: 'Unidades' },
+        { page: 'admin-payment-entry', icon: 'currency-dollar', label: 'Pagos' },
         { page: 'admin-tickets', icon: 'ticket', label: 'Tickets' },
         { page: 'admin-notices', icon: 'bell', label: 'Avisos' },
         { page: 'admin-config', icon: 'cog-6-tooth', label: 'Config' },
@@ -52,6 +53,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
     const navItems = [
         { page: 'admin-dashboard', icon: 'speedometer', label: 'Dashboard' },
         { page: 'admin-units', icon: 'building-office', label: 'Directorio de Unidades' },
+        { page: 'admin-payment-entry', icon: 'currency-dollar', label: 'Registrar Pago' },
         { page: 'admin-tickets', icon: 'ticket', label: 'Gestión de Tickets' },
         { page: 'admin-notices', icon: 'bell', label: 'Mural de Avisos' },
         { page: 'admin-config', icon: 'cog-6-tooth', label: 'Configuración' },

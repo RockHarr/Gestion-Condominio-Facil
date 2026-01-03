@@ -103,7 +103,8 @@ function App() {
         document.documentElement.classList.toggle('dark', initialTheme === 'dark');
 
         // Check Env Vars
-        if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+        const isDevelopment = (import.meta as any).env.MODE === 'development' || (import.meta as any).env.DEV;
+        if (!(import.meta as any).env.VITE_SUPABASE_URL || !(import.meta as any).env.VITE_SUPABASE_ANON_KEY) {
             showToast("Faltan credenciales de Supabase en .env.local", "error");
         }
 
@@ -296,14 +297,15 @@ function App() {
         // handleNavigate('admin-units');
     };
 
-    const handleUpdateUser = async (id: string | number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email' | 'unidad'>>) => {
+    const handleUpdateUser = async (id: string | number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email' | 'unidad' | 'alicuota'>>) => {
         try {
             await dataService.updateUser(id, data);
             if (currentUser) loadData(currentUser);
             handleNavigate('admin-units');
             showToast('Unidad actualizada exitosamente.');
-        } catch (error) {
-            showToast('Error al actualizar unidad', 'error');
+        } catch (error: any) {
+            console.error("App: Error updating user", error);
+            showToast(`Error al actualizar unidad: ${error.message || error.details || 'Desconocido'}`, 'error');
         }
     };
 
@@ -384,6 +386,20 @@ function App() {
         }
     };
 
+    const handleRegisterPayment = async (payment: Omit<PaymentRecord, 'id'>) => {
+        try {
+            await dataService.registerPayment(payment);
+            // Refresh payments history
+            const allPayments = await dataService.getPaymentHistory();
+            setPaymentHistory(allPayments);
+            showToast('Pago registrado exitosamente.');
+            showToast('Pago registrado exitosamente.');
+            // handleNavigate('admin-units'); // Removed to allow receipt printing
+        } catch (error) {
+            showToast('Error al registrar pago', 'error');
+        }
+    };
+
     if (isLoading) {
         return <div className="p-4 space-y-4"><SkeletonLoader className="h-24 w-full" /><SkeletonLoader className="h-48 w-full" /></div>
     }
@@ -430,6 +446,7 @@ function App() {
                     approveExpense={handleApproveExpense}
                     rejectExpense={handleRejectExpense}
                     closeMonth={handleCloseMonth}
+                    registerPayment={handleRegisterPayment}
                     updateSettings={handleUpdateSettings}
                     theme={theme}
                     toggleTheme={toggleTheme}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useMemo } from 'react';
-import { Expense, ExpenseStatus, ExpenseCategory, Page } from '../types';
+import { Expense, ExpenseStatus, ExpenseCategory, Page, PaymentRecord, User } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
 
@@ -9,6 +9,8 @@ const formatCurrency = (amount: number) => new Intl.NumberFormat('es-CL', { styl
 
 interface AdminDashboardProps {
     expenses: Expense[];
+    paymentHistory: PaymentRecord[];
+    users: User[];
     onNavigate: (page: Page, params?: any) => void;
     onAddExpense: (expense: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => void;
     onApproveExpense: (id: number) => void;
@@ -16,7 +18,7 @@ interface AdminDashboardProps {
     onCloseMonth: () => void;
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, onNavigate, onAddExpense, onApproveExpense, onRejectExpense, onCloseMonth }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymentHistory, users, onNavigate, onAddExpense, onApproveExpense, onRejectExpense, onCloseMonth }) => {
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const [isRejectModalOpen, setRejectModalOpen] = useState<Expense | null>(null);
 
@@ -28,10 +30,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, onNavi
         const expensesWithEvidence = expenses.filter(e => !!e.evidenciaUrl).length;
         const evidencePercentage = totalExpensesCount > 0 ? (expensesWithEvidence / totalExpensesCount) * 100 : 100;
 
-        return { totalApprovedAmount, reviewCount, totalExpensesCount, evidencePercentage };
-    }, [expenses]);
+        // Payment Stats
+        const now = new Date();
+        const currentMonthStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+        const currentMonthPayments = paymentHistory.filter(p => p.periodo === currentMonthStr);
+        const totalCollected = currentMonthPayments.reduce((sum, p) => sum + p.monto, 0);
+
+        return { totalApprovedAmount, reviewCount, totalExpensesCount, evidencePercentage, totalCollected };
+    }, [expenses, paymentHistory]);
 
     const expensesToReview = useMemo(() => expenses.filter(e => e.status === ExpenseStatus.EN_REVISION), [expenses]);
+    const recentPayments = useMemo(() => paymentHistory.slice(0, 5), [paymentHistory]);
 
     const StatCard: React.FC<{ title: string, value: string | number, icon: string, colorClass: string, trend?: string }> = ({ title, value, icon, colorClass, trend }) => (
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 flex items-start justify-between relative overflow-hidden group">
@@ -68,14 +77,50 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, onNavi
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <StatCard title="Gasto Aprobado" value={formatCurrency(stats.totalApprovedAmount)} icon="cash" colorClass="bg-green-500" trend="+12% vs mes anterior" />
+                    <StatCard title="Recaudación Mes" value={formatCurrency(stats.totalCollected)} icon="currency-dollar" colorClass="bg-emerald-500" trend="Ingresos al día" />
+                    <StatCard title="Gasto Aprobado" value={formatCurrency(stats.totalApprovedAmount)} icon="cash" colorClass="bg-blue-500" />
                     <StatCard title="En Revisión" value={stats.reviewCount} icon="hourglass" colorClass="bg-yellow-500" />
-                    <StatCard title="Total Cargados" value={stats.totalExpensesCount} icon="receipt-long" colorClass="bg-blue-500" />
-                    <StatCard title="Con Evidencia" value={`${stats.evidencePercentage.toFixed(0)}%`} icon="document-check" colorClass="bg-indigo-500" />
+                    <StatCard title="Total Cargados" value={stats.totalExpensesCount} icon="receipt-long" colorClass="bg-indigo-500" />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-6">
+                        {/* Recent Payments Section */}
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <Icons name="banknotes" className="w-5 h-5 text-emerald-500" />
+                                Últimos Pagos
+                            </h2>
+                            <button onClick={() => onNavigate('admin-units')} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">Ver todos</button>
+                        </div>
+                        <Card className="!p-0 overflow-hidden border-0 shadow-md mb-6">
+                            {recentPayments.length > 0 ? (
+                                <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                                    {recentPayments.map(payment => {
+                                        const user = users.find(u => u.id === payment.userId);
+                                        return (
+                                            <div key={payment.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex justify-between items-center">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="p-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
+                                                        <Icons name="currency-dollar" className="w-5 h-5" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium text-gray-900 dark:text-white text-sm">
+                                                            {user ? `Unidad ${user.unidad}` : 'Unidad Desconocida'}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(payment.fechaPago).toLocaleDateString('es-CL')} • {payment.metodoPago || 'Pago'}</p>
+                                                    </div>
+                                                </div>
+                                                <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(payment.monto)}</p>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">No hay pagos recientes.</div>
+                            )}
+                        </Card>
+
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <Icons name="clipboard-document-check" className="w-5 h-5 text-blue-500" />

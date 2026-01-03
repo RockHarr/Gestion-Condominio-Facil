@@ -6,6 +6,7 @@ export interface User {
   role: 'resident' | 'admin';
   hasParking: boolean;
   email?: string;
+  alicuota?: number;
 }
 
 export interface CommonExpenseDebt {
@@ -95,6 +96,13 @@ export enum PaymentType {
   ESTACIONAMIENTO = 'Estacionamiento',
 }
 
+export enum PaymentMethod {
+  TRANSFERENCIA = 'Transferencia',
+  EFECTIVO = 'Efectivo',
+  CHEQUE = 'Cheque',
+  OTRO = 'Otro',
+}
+
 export interface PaymentRecord {
   id: number;
   userId: number | string;
@@ -102,6 +110,8 @@ export interface PaymentRecord {
   periodo: string; // Ej: "2025-11"
   monto: number;
   fechaPago: string; // YYYY-MM-DD
+  metodoPago?: PaymentMethod;
+  observacion?: string;
 }
 
 export enum ExpenseStatus {
@@ -181,6 +191,7 @@ export type Page =
   | 'admin-unit-create'
   | 'admin-unit-edit'
   | 'admin-unit-detail'
+  | 'admin-payment-entry'
   | 'admin-config';
 
 export interface ToastMessage {
