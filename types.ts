@@ -56,19 +56,113 @@ export interface Notice {
 }
 
 export interface Amenity {
-  id: string;
-  nombre: string;
-  foto: string;
-  capacidad: number;
-  descripcion: string;
+  id: number;
+  name: string;
+  description?: string;
+  capacity?: number;
+  photoUrl?: string;
+}
+
+export enum ReservationStatus {
+  REQUESTED = 'REQUESTED',
+  REJECTED = 'REJECTED',
+  APPROVED_PENDING_PAYMENT = 'APPROVED_PENDING_PAYMENT',
+  CONFIRMED = 'CONFIRMED',
+  CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED',
+  NO_SHOW = 'NO_SHOW',
+}
+
+export interface ReservationType {
+  id: number;
+  amenity_id: number;
+  name: string;
+  fee_amount: number;
+  deposit_amount: number;
+  max_duration_minutes: number;
+  min_advance_hours?: number;
+  form_schema?: any;
+  rules?: string;
+  requires_approval: boolean;
 }
 
 export interface Reservation {
   id: number;
-  amenityId: string;
-  fecha: string; // YYYY-MM-DD
-  hora: string; // HH:00
-  userId: number | string;
+  amenityId: number;
+  typeId?: number;
+  unitId?: number;
+  userId?: string;
+  startAt: string; // ISO
+  endAt: string; // ISO
+  status: ReservationStatus;
+  isSystem: boolean;
+  systemReason?: string;
+  formData?: any;
+  feeSnapshot?: number;
+  depositSnapshot?: number;
+}
+
+export enum DepositDecisionType {
+  RELEASE = 'RELEASE',
+  RETAIN_PARTIAL = 'RETAIN_PARTIAL',
+  RETAIN_FULL = 'RETAIN_FULL',
+}
+
+export interface DepositDecision {
+  id: number;
+  reservationId: number;
+  decision: DepositDecisionType;
+  retainedAmount: number;
+  reason?: string;
+  decidedBy?: string;
+  decidedAt: string;
+}
+
+export enum IncidentStatus {
+  DRAFT = 'DRAFT',
+  APPROVED = 'APPROVED',
+  CHARGED = 'CHARGED',
+}
+
+export interface Incident {
+  id: number;
+  reservationId: number;
+  description: string;
+  evidenceUrls?: string[];
+  regulationRef?: string;
+  fineAmount: number;
+  status: IncidentStatus;
+}
+
+export enum WeightingStrategy {
+  UNIT = 'UNIT',
+  ALICUOTA = 'ALICUOTA',
+}
+
+export enum PollResultsVisibility {
+  LIVE = 'LIVE',
+  CLOSED = 'CLOSED',
+}
+
+export interface Poll {
+  id: number;
+  question: string;
+  options: string[]; // JSONB array of strings
+  startAt: string;
+  endAt: string;
+  weightingStrategy: WeightingStrategy;
+  showResultsWhen: PollResultsVisibility;
+  weightSnapshotJson?: any;
+  createdBy?: string;
+}
+
+export interface PollResponse {
+  id: number;
+  pollId: number;
+  unitId: number;
+  userId?: string;
+  optionIndex: number;
+  weightUsed: number;
 }
 
 export interface ParkingDebt {
@@ -156,6 +250,7 @@ export interface AppData {
   notices: Notice[];
   amenities: Amenity[];
   reservations: Reservation[];
+  polls: Poll[];
   parkingDebts: ParkingDebt[];
   financialStatements: FinancialStatement[];
   reserveFund: ReserveFund;
@@ -196,7 +291,51 @@ export type Page =
   | 'admin-unit-edit'
   | 'admin-unit-detail'
   | 'admin-payment-entry'
-  | 'admin-config';
+  | 'admin-amenities'
+  | 'admin-reservation-types'
+  | 'admin-reservations'
+  | 'admin-config'
+  | 'polls'
+  | 'admin-polls';
+
+export enum ChargeType {
+  RESERVATION_FEE = 'RESERVATION_FEE',
+  RESERVATION_DEPOSIT = 'RESERVATION_DEPOSIT',
+  FINE = 'FINE',
+  COMMON_EXPENSE = 'COMMON_EXPENSE',
+  PARKING = 'PARKING',
+}
+
+export enum ChargeStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  CANCELLED = 'CANCELLED',
+  RELEASED = 'RELEASED',
+  RETAINED = 'RETAINED',
+}
+
+export enum ChargeReferenceType {
+  RESERVATION = 'RESERVATION',
+  INCIDENT = 'INCIDENT',
+  MONTH = 'MONTH',
+}
+
+export type DbBigInt = number | string;
+
+export interface Charge {
+  id: string; // UUID
+  unitId: DbBigInt;
+  amount: number;
+  currency: string;
+  type: ChargeType;
+  status: ChargeStatus;
+  referenceType: ChargeReferenceType;
+  referenceId: DbBigInt;
+  createdBy?: string;
+  createdAt: string;
+  paidAt?: string;
+  notes?: string;
+}
 
 export interface ToastMessage {
   id: number;

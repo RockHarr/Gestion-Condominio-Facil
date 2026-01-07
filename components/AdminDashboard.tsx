@@ -20,250 +20,6 @@ interface AdminDashboardProps {
     theme: 'light' | 'dark';
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymentHistory, users, onNavigate, onAddExpense, onApproveExpense, onRejectExpense, onCloseMonth, theme }) => {
-    const [isCreateModalOpen, setCreateModalOpen] = useState(false);
-    const [isRejectModalOpen, setRejectModalOpen] = useState<Expense | null>(null);
-
-    const stats = useMemo(() => {
-        const approvedExpenses = expenses.filter(e => e.status === ExpenseStatus.APROBADO);
-        const totalApprovedAmount = approvedExpenses.reduce((sum, e) => sum + e.monto, 0);
-        const reviewCount = expenses.filter(e => e.status === ExpenseStatus.EN_REVISION).length;
-        const totalExpensesCount = expenses.length;
-        const expensesWithEvidence = expenses.filter(e => !!e.evidenciaUrl).length;
-        const evidencePercentage = totalExpensesCount > 0 ? (expensesWithEvidence / totalExpensesCount) * 100 : 100;
-
-        // Payment Stats
-        const now = new Date();
-        const currentMonthStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
-        const currentMonthPayments = paymentHistory.filter(p => p.periodo === currentMonthStr);
-        const totalCollected = currentMonthPayments.reduce((sum, p) => sum + p.monto, 0);
-
-        return { totalApprovedAmount, reviewCount, totalExpensesCount, evidencePercentage, totalCollected };
-    }, [expenses, paymentHistory]);
-
-    const expensesToReview = useMemo(() => expenses.filter(e => e.status === ExpenseStatus.EN_REVISION), [expenses]);
-    const recentPayments = useMemo(() => paymentHistory.slice(0, 5), [paymentHistory]);
-
-    const StatCard: React.FC<{ title: string, value: string | number, icon: string, colorClass: string, trend?: string }> = ({ title, value, icon, colorClass, trend }) => (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 flex items-start justify-between relative overflow-hidden group">
-            <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ${colorClass.replace('bg-', 'text-')}`}>
-                <Icons name={icon} className="w-16 h-16" />
-            </div>
-            <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{title}</p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{value}</h3>
-                {trend && <p className="text-xs text-green-500 mt-2 font-medium flex items-center gap-1"><Icons name="arrow-trending-up" className="w-3 h-3" /> {trend}</p>}
-            </div>
-            <div className={`p-3 rounded-xl ${colorClass} text-white shadow-lg shadow-blue-500/20`}>
-                <Icons name={icon} className="w-6 h-6" />
-            </div>
-        </div>
-    );
-
-    return (
-        <>
-            <div className="p-6 max-w-7xl mx-auto space-y-8 animate-page pb-24">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Panel de Control</h1>
-                        <p className="text-gray-500 dark:text-gray-400">Resumen financiero y operativo del condominio</p>
-                    </div>
-                    <div className="flex gap-3">
-                        <Button onClick={() => onNavigate('admin-notice-create')} variant="secondary" className="!w-auto shadow-sm">
-                            <Icons name="pencil" className="w-4 h-4 mr-2" /> Nuevo Aviso
-                        </Button>
-                        <Button onClick={() => setCreateModalOpen(true)} className="!w-auto shadow-lg shadow-blue-500/30">
-                            <Icons name="plus" className="w-4 h-4 mr-2" /> Cargar Gasto
-                        </Button>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <StatCard title="Recaudación Mes" value={formatCurrency(stats.totalCollected)} icon="currency-dollar" colorClass="bg-emerald-500" trend="Ingresos al día" />
-                    <StatCard title="Gasto Aprobado" value={formatCurrency(stats.totalApprovedAmount)} icon="cash" colorClass="bg-blue-500" />
-                    <StatCard title="En Revisión" value={stats.reviewCount} icon="hourglass" colorClass="bg-yellow-500" />
-                    <StatCard title="Total Cargados" value={stats.totalExpensesCount} icon="receipt-long" colorClass="bg-indigo-500" />
-                </div>
-
-                {/* Financial Charts */}
-                <FinancialCharts expenses={expenses} payments={paymentHistory} theme={theme} />
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2 space-y-6">
-                        {/* Recent Payments Section */}
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <Icons name="banknotes" className="w-5 h-5 text-emerald-500" />
-                                Últimos Pagos
-                            </h2>
-                            <button onClick={() => onNavigate('admin-units')} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">Ver todos</button>
-                        </div>
-                        <Card className="!p-0 overflow-hidden border-0 shadow-md mb-6">
-                            {recentPayments.length > 0 ? (
-                                <div className="divide-y divide-gray-100 dark:divide-gray-700">
-                                    {recentPayments.map(payment => {
-                                        const user = users.find(u => u.id === payment.userId);
-                                        return (
-                                            <div key={payment.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex justify-between items-center">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
-                                                        <Icons name="currency-dollar" className="w-5 h-5" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-medium text-gray-900 dark:text-white text-sm">
-                                                            {user ? `Unidad ${user.unidad}` : 'Unidad Desconocida'}
-                                                        </p>
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(payment.fechaPago).toLocaleDateString('es-CL')} • {payment.metodoPago || 'Pago'}</p>
-                                                    </div>
-                                                </div>
-                                                <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(payment.monto)}</p>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            ) : (
-                                <div className="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">No hay pagos recientes.</div>
-                            )}
-                        </Card>
-
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <Icons name="clipboard-document-check" className="w-5 h-5 text-blue-500" />
-                                Cola de Aprobación
-                            </h2>
-                            {stats.reviewCount > 0 && (
-                                <span className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
-                                    {stats.reviewCount} pendientes
-                                </span>
-                            )}
-                        </div>
-
-                        <Card className="!p-0 overflow-hidden border-0 shadow-md">
-                            {expensesToReview.length > 0 ? (
-                                <div className="divide-y divide-gray-100 dark:divide-gray-700">
-                                    {expensesToReview.map(expense => (
-                                        <div key={expense.id} className="p-5 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group">
-                                            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-3">
-                                                <div className="flex items-start gap-4">
-                                                    <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
-                                                        <Icons name="receipt-percent" className="w-6 h-6" />
-                                                    </div>
-                                                    <div>
-                                                        <h3 className="font-bold text-gray-900 dark:text-white text-lg">{expense.descripcion}</h3>
-                                                        <div className="flex flex-wrap gap-2 mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                                            <span className="flex items-center gap-1"><Icons name="tag" className="w-3 h-3" /> {expense.categoria}</span>
-                                                            <span className="flex items-center gap-1"><Icons name="calendar" className="w-3 h-3" /> {new Date(expense.fecha).toLocaleDateString('es-CL')}</span>
-                                                        </div>
-                                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                                            {expense.proveedor || 'Proveedor no especificado'} • {expense.numeroDocumento || 'S/D'}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="font-bold text-xl text-gray-900 dark:text-white">{formatCurrency(expense.monto)}</p>
-                                                    {expense.evidenciaUrl ? (
-                                                        <a href={expense.evidenciaUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline mt-1">
-                                                            <Icons name="paper-clip" className="w-3 h-3" /> Ver Evidencia
-                                                        </a>
-                                                    ) : (
-                                                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-yellow-600 dark:text-yellow-400 mt-1">
-                                                            <Icons name="exclamation-triangle" className="w-3 h-3" /> Sin Evidencia
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            <div className="flex justify-end gap-3 pt-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                                <Button onClick={() => setRejectModalOpen(expense)} variant="danger" className="!w-auto !py-2 !px-4 !text-xs shadow-sm">
-                                                    <Icons name="xmark" className="w-3 h-3 mr-1.5" /> Rechazar
-                                                </Button>
-                                                <Button onClick={() => onApproveExpense(expense.id)} className="!w-auto !py-2 !px-4 !text-xs shadow-sm bg-green-600 hover:bg-green-700 focus:ring-green-500">
-                                                    <Icons name="check" className="w-3 h-3 mr-1.5" /> Aprobar
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="text-center py-12 px-4">
-                                    <div className="w-16 h-16 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500">
-                                        <Icons name="check-badge" className="w-8 h-8" />
-                                    </div>
-                                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">¡Todo al día!</h3>
-                                    <p className="text-gray-500 dark:text-gray-400 mt-1">No hay gastos pendientes de revisión en este momento.</p>
-                                </div>
-                            )}
-                        </Card>
-                    </div>
-
-                    <div className="space-y-6">
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <Icons name="cog" className="w-5 h-5 text-gray-400" />
-                            Acciones Rápidas
-                        </h2>
-                        <Card className="space-y-4">
-                            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
-                                <h3 className="font-bold text-blue-900 dark:text-blue-100 mb-2">Cierre de Mes</h3>
-                                <p className="text-sm text-blue-700 dark:text-blue-300 mb-4">
-                                    Finaliza el periodo contable actual y genera los gastos comunes.
-                                </p>
-                                <Button
-                                    onClick={onCloseMonth}
-                                    disabled={stats.reviewCount > 0 || expenses.filter(e => e.status === ExpenseStatus.APROBADO).length === 0}
-                                    className="w-full shadow-sm"
-                                >
-                                    <Icons name="lock-closed" className="w-4 h-4 mr-2" /> Cerrar Mes
-                                </Button>
-                                {stats.reviewCount > 0 && (
-                                    <p className="text-xs text-red-500 mt-2 text-center">
-                                        * Debes revisar todos los gastos pendientes
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-3 text-sm">Accesos Directos</h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <button onClick={() => onNavigate('admin-units')} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
-                                        <Icons name="building-office" className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-                                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Unidades</span>
-                                    </button>
-                                    <button onClick={() => onNavigate('admin-tickets')} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
-                                        <Icons name="ticket" className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-                                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Tickets</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </Card>
-                    </div>
-                </div>
-            </div >
-
-            {isCreateModalOpen && (
-                <AdminCreateExpenseModal
-                    onClose={() => setCreateModalOpen(false)}
-                    onAddExpense={(data) => {
-                        onAddExpense(data);
-                        setCreateModalOpen(false);
-                    }}
-                />
-            )}
-            {
-                isRejectModalOpen && (
-                    <AdminRejectExpenseModal
-                        expense={isRejectModalOpen}
-                        onClose={() => setRejectModalOpen(null)}
-                        onReject={(id, motivo) => {
-                            onRejectExpense(id, motivo);
-                            setRejectModalOpen(null);
-                        }}
-                    />
-                )
-            }
-        </>
-    );
-};
-
 export const AdminCreateExpenseModal: React.FC<{
     onClose: () => void;
     onAddExpense: (expense: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => void
@@ -506,5 +262,253 @@ export const AdminRejectExpenseModal: React.FC<{
                 </div>
             </Card>
         </div>
+    );
+};
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymentHistory, users, onNavigate, onAddExpense, onApproveExpense, onRejectExpense, onCloseMonth, theme }) => {
+    const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+    const [isRejectModalOpen, setRejectModalOpen] = useState<Expense | null>(null);
+
+    const stats = useMemo(() => {
+        const approvedExpenses = expenses.filter(e => e.status === ExpenseStatus.APROBADO);
+        const totalApprovedAmount = approvedExpenses.reduce((sum, e) => sum + e.monto, 0);
+        const reviewCount = expenses.filter(e => e.status === ExpenseStatus.EN_REVISION).length;
+        const totalExpensesCount = expenses.length;
+        const expensesWithEvidence = expenses.filter(e => !!e.evidenciaUrl).length;
+        const evidencePercentage = totalExpensesCount > 0 ? (expensesWithEvidence / totalExpensesCount) * 100 : 100;
+
+        // Payment Stats
+        const now = new Date();
+        const currentMonthStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+        const currentMonthPayments = paymentHistory.filter(p => p.periodo === currentMonthStr);
+        const totalCollected = currentMonthPayments.reduce((sum, p) => sum + p.monto, 0);
+
+        return { totalApprovedAmount, reviewCount, totalExpensesCount, evidencePercentage, totalCollected };
+    }, [expenses, paymentHistory]);
+
+    const expensesToReview = useMemo(() => expenses.filter(e => e.status === ExpenseStatus.EN_REVISION), [expenses]);
+    const recentPayments = useMemo(() => paymentHistory.slice(0, 5), [paymentHistory]);
+
+    const StatCard: React.FC<{ title: string, value: string | number, icon: string, colorClass: string, trend?: string }> = ({ title, value, icon, colorClass, trend }) => (
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 flex items-start justify-between relative overflow-hidden group">
+            <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ${colorClass.replace('bg-', 'text-')}`}>
+                <Icons name={icon} className="w-16 h-16" />
+            </div>
+            <div>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{title}</p>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{value}</h3>
+                {trend && <p className="text-xs text-green-500 mt-2 font-medium flex items-center gap-1"><Icons name="arrow-trending-up" className="w-3 h-3" /> {trend}</p>}
+            </div>
+            <div className={`p-3 rounded-xl ${colorClass} text-white shadow-lg shadow-blue-500/20`}>
+                <Icons name={icon} className="w-6 h-6" />
+            </div>
+        </div>
+    );
+
+    return (
+        <>
+            <div className="p-6 max-w-7xl mx-auto space-y-8 animate-page pb-24">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Panel de Control</h1>
+                        <p className="text-gray-500 dark:text-gray-400">Resumen financiero y operativo del condominio</p>
+                    </div>
+                    <div className="flex gap-3">
+                        <Button onClick={() => onNavigate('admin-notice-create')} variant="secondary" className="!w-auto shadow-sm">
+                            <Icons name="pencil" className="w-4 h-4 mr-2" /> Nuevo Aviso
+                        </Button>
+                        <Button onClick={() => setCreateModalOpen(true)} className="!w-auto shadow-lg shadow-blue-500/30">
+                            <Icons name="plus" className="w-4 h-4 mr-2" /> Cargar Gasto
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <StatCard title="Recaudación Mes" value={formatCurrency(stats.totalCollected)} icon="currency-dollar" colorClass="bg-emerald-500" trend="Ingresos al día" />
+                    <StatCard title="Gasto Aprobado" value={formatCurrency(stats.totalApprovedAmount)} icon="cash" colorClass="bg-blue-500" />
+                    <StatCard title="En Revisión" value={stats.reviewCount} icon="hourglass" colorClass="bg-yellow-500" />
+                    <StatCard title="Total Cargados" value={stats.totalExpensesCount} icon="receipt-long" colorClass="bg-indigo-500" />
+                </div>
+
+                {/* Financial Charts */}
+                <FinancialCharts expenses={expenses} payments={paymentHistory} theme={theme} />
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 space-y-6">
+                        {/* Recent Payments Section */}
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <Icons name="banknotes" className="w-5 h-5 text-emerald-500" />
+                                Últimos Pagos
+                            </h2>
+                            <button onClick={() => onNavigate('admin-units')} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">Ver todos</button>
+                        </div>
+                        <Card className="!p-0 overflow-hidden border-0 shadow-md mb-6">
+                            {recentPayments.length > 0 ? (
+                                <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                                    {recentPayments.map(payment => {
+                                        const user = users.find(u => u.id === payment.userId);
+                                        return (
+                                            <div key={payment.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex justify-between items-center">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="p-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
+                                                        <Icons name="currency-dollar" className="w-5 h-5" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium text-gray-900 dark:text-white text-sm">
+                                                            {user ? `Unidad ${user.unidad}` : 'Unidad Desconocida'}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(payment.fechaPago).toLocaleDateString('es-CL')} • {payment.metodoPago || 'Pago'}</p>
+                                                    </div>
+                                                </div>
+                                                <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(payment.monto)}</p>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">No hay pagos recientes.</div>
+                            )}
+                        </Card>
+
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <Icons name="clipboard-document-check" className="w-5 h-5 text-blue-500" />
+                                Cola de Aprobación
+                            </h2>
+                            {stats.reviewCount > 0 && (
+                                <span className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                                    {stats.reviewCount} pendientes
+                                </span>
+                            )}
+                        </div>
+
+                        <Card className="!p-0 overflow-hidden border-0 shadow-md">
+                            {expensesToReview.length > 0 ? (
+                                <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                                    {expensesToReview.map(expense => (
+                                        <div key={expense.id} className="p-5 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group">
+                                            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-3">
+                                                <div className="flex items-start gap-4">
+                                                    <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                                                        <Icons name="receipt-percent" className="w-6 h-6" />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="font-bold text-gray-900 dark:text-white text-lg">{expense.descripcion}</h3>
+                                                        <div className="flex flex-wrap gap-2 mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                                            <span className="flex items-center gap-1"><Icons name="tag" className="w-3 h-3" /> {expense.categoria}</span>
+                                                            <span className="flex items-center gap-1"><Icons name="calendar" className="w-3 h-3" /> {new Date(expense.fecha).toLocaleDateString('es-CL')}</span>
+                                                        </div>
+                                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                                            {expense.proveedor || 'Proveedor no especificado'} • {expense.numeroDocumento || 'S/D'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="font-bold text-xl text-gray-900 dark:text-white">{formatCurrency(expense.monto)}</p>
+                                                    {expense.evidenciaUrl ? (
+                                                        <a href={expense.evidenciaUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline mt-1">
+                                                            <Icons name="paper-clip" className="w-3 h-3" /> Ver Evidencia
+                                                        </a>
+                                                    ) : (
+                                                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-yellow-600 dark:text-yellow-400 mt-1">
+                                                            <Icons name="exclamation-triangle" className="w-3 h-3" /> Sin Evidencia
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="flex justify-end gap-3 pt-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                                                <Button onClick={() => setRejectModalOpen(expense)} variant="danger" className="!w-auto !py-2 !px-4 !text-xs shadow-sm">
+                                                    <Icons name="xmark" className="w-3 h-3 mr-1.5" /> Rechazar
+                                                </Button>
+                                                <Button onClick={() => onApproveExpense(expense.id)} className="!w-auto !py-2 !px-4 !text-xs shadow-sm bg-green-600 hover:bg-green-700 focus:ring-green-500">
+                                                    <Icons name="check" className="w-3 h-3 mr-1.5" /> Aprobar
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-12 px-4">
+                                    <div className="w-16 h-16 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500">
+                                        <Icons name="check-badge" className="w-8 h-8" />
+                                    </div>
+                                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">¡Todo al día!</h3>
+                                    <p className="text-gray-500 dark:text-gray-400 mt-1">No hay gastos pendientes de revisión en este momento.</p>
+                                </div>
+                            )}
+                        </Card>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <Icons name="cog" className="w-5 h-5 text-gray-400" />
+                            Acciones Rápidas
+                        </h2>
+                        <Card className="space-y-4">
+                            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                                <h3 className="font-bold text-blue-900 dark:text-blue-100 mb-2">Cierre de Mes</h3>
+                                <p className="text-sm text-blue-700 dark:text-blue-300 mb-4">
+                                    Finaliza el periodo contable actual y genera los gastos comunes.
+                                </p>
+                                <Button
+                                    onClick={onCloseMonth}
+                                    disabled={stats.reviewCount > 0 || expenses.filter(e => e.status === ExpenseStatus.APROBADO).length === 0}
+                                    className="w-full shadow-sm"
+                                >
+                                    <Icons name="lock-closed" className="w-4 h-4 mr-2" /> Cerrar Mes
+                                </Button>
+                                {stats.reviewCount > 0 && (
+                                    <p className="text-xs text-red-500 mt-2 text-center">
+                                        * Debes revisar todos los gastos pendientes
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-3 text-sm">Accesos Directos</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <button onClick={() => onNavigate('admin-units')} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
+                                        <Icons name="building-office" className="w-6 h-6 mx-auto mb-2 text-gray-400" />
+                                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Unidades</span>
+                                    </button>
+                                    <button onClick={() => onNavigate('admin-tickets')} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
+                                        <Icons name="ticket" className="w-6 h-6 mx-auto mb-2 text-gray-400" />
+                                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Tickets</span>
+                                    </button>
+                                    <button onClick={() => onNavigate('admin-amenities')} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
+                                        <Icons name="key" className="w-6 h-6 mx-auto mb-2 text-gray-400" />
+                                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Espacios</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            </div >
+
+            {isCreateModalOpen && (
+                <AdminCreateExpenseModal
+                    onClose={() => setCreateModalOpen(false)}
+                    onAddExpense={(data) => {
+                        onAddExpense(data);
+                        setCreateModalOpen(false);
+                    }}
+                />
+            )}
+            {
+                isRejectModalOpen && (
+                    <AdminRejectExpenseModal
+                        expense={isRejectModalOpen}
+                        onClose={() => setRejectModalOpen(null)}
+                        onReject={(id, motivo) => {
+                            onRejectExpense(id, motivo);
+                            setRejectModalOpen(null);
+                        }}
+                    />
+                )
+            }
+        </>
     );
 };

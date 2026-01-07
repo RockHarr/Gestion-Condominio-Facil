@@ -8,6 +8,8 @@ import { SkeletonLoader, Toast } from './components/Shared';
 import { LoginScreen } from './components/LoginScreen';
 import { ResidentApp } from './components/ResidentApp';
 import { AdminApp } from './components/AdminApp';
+import { AdminReservationsInbox } from './components/AdminReservationsInbox';
+import { AdminPollsManager } from './components/AdminPollsManager';
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +45,7 @@ function App() {
             // Load public/common data
             const [fetchedNotices, fetchedAmenities, fetchedReservations, fetchedExpenses, fetchedSettings] = await Promise.all([
                 dataService.getNotices(),
-                db.getAmenities(), // Not migrated yet
+                dataService.getAmenities(),
                 dataService.getReservations(),
                 dataService.getExpenses(),
                 dataService.getSettings()
@@ -477,6 +479,7 @@ function App() {
                     cancelReservation={cancelReservation}
                     handleConfirmPayment={handleConfirmPayment}
                     showToast={showToast}
+                    onRefreshData={() => loadData(currentUser)}
                 />
             )}
         </>

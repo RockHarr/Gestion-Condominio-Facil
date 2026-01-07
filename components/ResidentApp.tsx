@@ -9,8 +9,11 @@ import { AmenitiesScreen } from './AmenitiesScreen'; // Assuming this exists or 
 import { ReservationsScreen } from './ReservationsScreen';
 import { ProfileScreen } from './ProfileScreen';
 import { ResidentTabBar } from './ResidentTabBar';
-import { Header } from './Shared';
+import { Header, Card, Button } from './Shared';
+import Icons from './Icons';
 import { ExpenseStatementModal } from './ExpenseStatementModal';
+import { AvailabilityCalendar } from './AvailabilityCalendar';
+import { ReservationRequestModal } from './ReservationRequestModal';
 
 interface ResidentAppProps {
     page: Page;
@@ -37,7 +40,11 @@ interface ResidentAppProps {
     cancelReservation: (id: number) => void;
     handleConfirmPayment: (debtId: number, type: 'common' | 'parking', method: string) => void;
     showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
+    onRefreshData?: () => void;
 }
+
+import { MyReservationsScreen } from './MyReservationsScreen';
+import { PollsScreen } from './PollsScreen';
 
 export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
     const { page, pageParams, currentUser, commonExpenseDebts, parkingDebts, tickets, notices, amenities, reservations, financialStatements, reserveFund, unreadNoticesCount, theme, expenses, paymentHistory, handleNavigate, handleLogout, toggleTheme, addTicket, updateTicketStatus, addReservation, cancelReservation, handleConfirmPayment, showToast } = props;
@@ -48,6 +55,10 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
 
     const publishedNotices = useMemo(() => notices.filter(n => n.status === NoticeStatus.PUBLICADO), [notices]);
 
+    const [selectedAmenityForBooking, setSelectedAmenityForBooking] = React.useState<Amenity | null>(null);
+    const [selectedDateForBooking, setSelectedDateForBooking] = React.useState<Date | null>(null);
+    const [reservationRefreshTrigger, setReservationRefreshTrigger] = React.useState(0);
+
     const renderPage = () => {
         switch (page) {
             case 'home': return <HomeScreen user={currentUser} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} expenses={expenses} paymentHistory={paymentHistory} theme={theme} onNavigate={handleNavigate} onDownloadStatement={() => setShowStatementModal(true)} showToast={showToast} />;
@@ -56,13 +67,82 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
             case 'tickets': return <TicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
             case 'notices': return <NoticesScreen notices={publishedNotices} onNavigate={handleNavigate} />;
             case 'amenities': return <AmenitiesScreen amenities={amenities} onNavigate={handleNavigate} />;
-            case 'reservations': return <ReservationsScreen amenities={amenities} reservations={reservations} user={currentUser} onAddReservation={addReservation} onCancelReservation={cancelReservation} />;
+            case 'reservations':
+                return (
+                    <div className="space-y-6 animate-in fade-in duration-500">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Reservas</h2>
+                        </div>
+
+                        {/* Amenity Selector */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {amenities.map(amenity => (
+                                <button
+                                    key={amenity.id}
+                                    onClick={() => setSelectedAmenityForBooking(amenity)}
+                                    className={`p-4 rounded-xl border-2 transition-all text-left ${selectedAmenityForBooking?.id === amenity.id
+                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 ring-2 ring-blue-200 dark:ring-blue-800'
+                                        : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-gray-800'
+                                        }`}
+                                >
+                                    <h3 className="font-bold text-gray-900 dark:text-white">{amenity.name}</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">{amenity.description}</p>
+                                </button>
+                            ))}
+                        </div>
+
+                        {selectedAmenityForBooking ? (
+                            <div className="animate-in slide-in-from-bottom-4 duration-500">
+                                <AvailabilityCalendar
+                                    amenityId={selectedAmenityForBooking.id}
+                                    onSelectDate={(date) => setSelectedDateForBooking(date)}
+                                    refreshTrigger={reservationRefreshTrigger}
+                                />
+                            </div>
+                        ) : (
+                            <Card className="p-8 text-center border-dashed border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                                <Icons name="building-office" className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Selecciona un espacio</h3>
+                                <p className="text-gray-500 dark:text-gray-400">Elige un espacio común arriba para ver su disponibilidad.</p>
+                            </Card>
+                        )}
+
+                        {/* Booking Modal */}
+                        {selectedAmenityForBooking && selectedDateForBooking && (
+                            <ReservationRequestModal
+                                amenity={selectedAmenityForBooking}
+                                selectedDate={selectedDateForBooking}
+                                onClose={() => setSelectedDateForBooking(null)}
+                                onSuccess={() => {
+                                    setSelectedDateForBooking(null);
+                                    showToast('Solicitud de reserva enviada exitosamente.');
+                                    setReservationRefreshTrigger(prev => prev + 1);
+                                    props.onRefreshData?.();
+                                }}
+                            />
+                        )}
+
+                        {/* My Reservations Section */}
+                        <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 animate-in fade-in duration-700 delay-150">
+                            <MyReservationsScreen
+                                reservations={reservations}
+                                amenities={amenities}
+                                currentUser={currentUser}
+                                onCancelReservation={cancelReservation}
+                                onRefresh={props.onRefreshData || (() => { })}
+                            />
+                        </div>
+                    </div>
+                );
+
+            case 'polls': return <PollsScreen />;
+
             case 'profile': return <ProfileScreen user={currentUser} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} onNavigate={handleNavigate} />;
             default: return <HomeScreen user={currentUser} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} expenses={expenses} paymentHistory={paymentHistory} theme={theme} onNavigate={handleNavigate} onDownloadStatement={() => setShowStatementModal(true)} showToast={showToast} />;
         }
     };
 
-    const showHeader = ['home', 'payments', 'tickets', 'notices', 'amenities', 'profile'].includes(page);
+    const showHeader = ['home', 'payments', 'tickets', 'notices', 'amenities', 'polls', 'profile'].includes(page);
     const getPageTitle = () => {
         switch (page) {
             case 'home': return 'Inicio';
@@ -70,6 +150,7 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
             case 'tickets': return 'Mis Tickets';
             case 'notices': return 'Mural de Avisos';
             case 'amenities': return 'Espacios Comunes';
+            case 'polls': return 'Votaciones';
             case 'profile': return 'Mi Perfil';
             default: return 'Condominio Fácil';
         }

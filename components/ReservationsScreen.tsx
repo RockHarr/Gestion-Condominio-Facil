@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Amenity, Reservation, User } from '../types';
+import { Amenity, Reservation, User, ReservationStatus } from '../types';
 import { Card } from './Shared';
 import Icons from './Icons';
 
@@ -31,8 +31,8 @@ export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenitie
         <div className="p-4 space-y-4">
             <Card>
                 <label htmlFor="amenity-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Seleccionar Espacio Común</label>
-                <select id="amenity-select" value={selectedAmenity} onChange={e => setSelectedAmenity(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                    {amenities.map(a => <option key={a.id} value={a.id}>{a.nombre}</option>)}
+                <select id="amenity-select" value={selectedAmenity} onChange={e => setSelectedAmenity(Number(e.target.value))} className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                    {amenities.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                 </select>
             </Card>
 
@@ -44,7 +44,12 @@ export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenitie
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                     {timeslots.map(time => {
-                        const reservation = reservations.find(r => r.amenityId === selectedAmenity && r.fecha === dateString && r.hora === time);
+                        const reservation = reservations.find(r => {
+                            if (r.amenityId !== selectedAmenity) return false;
+                            const rDate = r.startAt.split('T')[0];
+                            const rTime = r.startAt.split('T')[1].substring(0, 5);
+                            return rDate === dateString && rTime === time;
+                        });
                         const isMine = reservation?.userId === user.id;
                         const isAvailable = !reservation;
 
@@ -53,7 +58,19 @@ export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenitie
                                 key={time}
                                 onClick={() => {
                                     if (isAvailable) {
-                                        onAddReservation({ amenityId: selectedAmenity, fecha: dateString, hora: time, userId: user.id })
+                                        const startAt = `${dateString}T${time}:00`;
+                                        const [hour, minute] = time.split(':').map(Number);
+                                        const endHour = hour + 1;
+                                        const endAt = `${dateString}T${endHour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
+
+                                        onAddReservation({
+                                            amenityId: selectedAmenity,
+                                            startAt,
+                                            endAt,
+                                            userId: String(user.id),
+                                            status: ReservationStatus.REQUESTED,
+                                            isSystem: false
+                                        })
                                     } else if (isMine) {
                                         if (window.confirm('¿Seguro que quieres cancelar esta reserva?')) {
                                             onCancelReservation(reservation.id);

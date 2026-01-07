@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { Ticket, Notice, Reservation, PaymentRecord, Expense, CommunitySettings, TicketStatus, NoticeStatus, User } from '../types';
+import { Ticket, Notice, Reservation, PaymentRecord, Expense, CommunitySettings, TicketStatus, NoticeStatus, User, Amenity } from '../types';
 
 // Helper for timeouts
 const withTimeout = async <T>(promise: PromiseLike<T>, ms = 10000): Promise<T> => {
@@ -101,6 +101,27 @@ export const dataService = {
         return data;
     },
 
+    async getPollResults(pollId: number) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('get_poll_results', {
+                p_poll_id: pollId
+            }));
+        if (error) throw error;
+        return data;
+    },
+
+    async getPollOptions(pollId: number) {
+        const { data, error } = await withTimeout(supabase
+            .from('poll_options')
+            .select('*')
+            .eq('poll_id', pollId)
+            .order('option_index', { ascending: true }));
+        if (error) throw error;
+        return data;
+    },
+
+    async getMyVote(pollId: number) { /* Implementation for getMyVote */ },
+
     // --- Debts & Payments ---
     async getCommonExpenseDebts(userId?: string | number) {
         let query = supabase.from('common_expense_debts').select('*');
@@ -143,7 +164,35 @@ export const dataService = {
             .select('*'));
 
         if (error) throw error;
-        return data;
+
+        return data.map((r: any) => ({
+            id: r.id,
+            amenityId: r.amenity_id,
+            userId: r.user_id,
+            startAt: r.start_at,
+            endAt: r.end_at,
+            status: r.status,
+            isSystem: r.is_system,
+            systemReason: r.system_reason,
+            formData: r.form_data
+        })) as Reservation[];
+    },
+
+    async getAmenities() {
+        const { data, error } = await withTimeout(supabase
+            .from('amenities')
+            .select('*')
+            .order('id', { ascending: true }));
+
+        if (error) throw error;
+
+        return data.map((a: any) => ({
+            id: a.id,
+            name: a.name,
+            description: a.description,
+            capacity: a.capacity,
+            photoUrl: a.photo_url
+        })) as Amenity[];
     },
 
     async createReservation(reservation: any) {
@@ -159,9 +208,153 @@ export const dataService = {
 
     async cancelReservation(id: number) {
         const { error } = await withTimeout(supabase
+            .rpc('cancel_reservation', { p_reservation_id: id }));
+        if (error) throw error;
+    },
+
+    async approveReservation(id: number) {
+        const { error } = await withTimeout(supabase
+            .rpc('approve_reservation', { p_reservation_id: id }));
+        if (error) throw error;
+    },
+
+    async rejectReservation(id: number) {
+        const { error } = await withTimeout(supabase
             .from('reservations')
-            .delete()
+            .update({ status: 'REJECTED' })
             .eq('id', id));
+        if (error) throw error;
+    },
+
+    async createSystemReservation(amenityId: number, startAt: string, endAt: string, reason: string) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('create_system_reservation', {
+                p_amenity_id: amenityId,
+                p_start_at: startAt,
+                p_end_at: endAt,
+                p_reason: reason
+            }));
+        if (error) throw error;
+        return data;
+    },
+
+    async decideDeposit(reservationId: number, decision: 'RELEASE' | 'RETAIN_PARTIAL' | 'RETAIN_FULL', retainedAmount?: number, reason?: string) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('decide_deposit', {
+                p_reservation_id: reservationId,
+                p_decision: decision,
+                p_retained_amount: retainedAmount,
+                p_reason: reason
+            }));
+        if (error) throw error;
+        return data;
+    },
+
+    async reportIncident(reservationId: number, description: string, amount: number, evidenceUrl?: string) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('report_incident', {
+                p_reservation_id: reservationId,
+                p_description: description,
+                p_amount: amount,
+                p_evidence_url: evidenceUrl
+            }));
+        if (error) throw error;
+        return data;
+    },
+
+    // Voting
+    async getPolls() {
+        const { data, error } = await withTimeout(supabase
+            .from('polls')
+            .select('*')
+            .order('created_at', { ascending: false }));
+        if (error) throw error;
+        return data;
+    },
+
+    async createPoll(question: string, options: string[], startAt: string, endAt: string, strategy: 'UNIT' | 'ALICUOTA', showResultsWhen: 'LIVE' | 'CLOSED') {
+        const { data, error } = await withTimeout(supabase
+            .rpc('create_poll', {
+                p_question: question,
+                p_options: options,
+                p_start_at: startAt,
+                p_end_at: endAt,
+                p_strategy: strategy,
+                p_show_results_when: showResultsWhen
+            }));
+        if (error) throw error;
+        return data;
+    },
+
+    async submitVote(pollId: number, optionId: number) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('submit_vote', {
+                p_poll_id: pollId,
+                p_option_id: optionId
+            }));
+        if (error) throw error;
+        return data;
+    },
+
+    async closePollEarly(pollId: number, reason: string) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('close_poll_early', {
+                p_poll_id: pollId,
+                p_reason: reason
+            }));
+        if (error) throw error;
+        return data;
+    },
+
+    async getPollResults(pollId: number) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('get_poll_results', {
+                p_poll_id: pollId
+            }));
+        if (error) throw error;
+        return data;
+    },
+
+    async getPollOptions(pollId: number) {
+        const { data, error } = await withTimeout(supabase
+            .from('poll_options')
+            .select('*')
+            .eq('poll_id', pollId)
+            .order('option_index', { ascending: true }));
+        if (error) throw error;
+        return data;
+    },
+
+    async getMyVote(pollId: number) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return null;
+
+        const { data, error } = await withTimeout(supabase
+            .from('poll_responses')
+            .select('option_id')
+            .eq('poll_id', pollId)
+            .eq('user_id', user.id)
+            .maybeSingle());
+
+        if (error) throw error;
+        return data;
+    },
+
+    async getChargesByReservation(reservationId: number) {
+        const { data, error } = await withTimeout(supabase
+            .from('charges')
+            .select('*')
+            .eq('reference_id', reservationId)
+            .in('type', ['RESERVATION_FEE', 'RESERVATION_DEPOSIT', 'FINE']));
+        if (error) throw error;
+        return data; // Types will be cast in component or here if imported
+    },
+
+    async payCharge(chargeId: string) {
+        const { error } = await withTimeout(supabase
+            .from('charges')
+            .update({ status: 'PAID', paid_at: new Date().toISOString() })
+            .eq('id', chargeId));
         if (error) throw error;
     },
 

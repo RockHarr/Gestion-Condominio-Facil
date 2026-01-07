@@ -9,6 +9,9 @@ import { AdminPaymentEntry } from './AdminPaymentEntry';
 import { AdminSettingsScreen } from './AdminSettings';
 import { AdminSidebar, AdminTabBar } from './AdminNavigation';
 import { ProfileScreen } from './ProfileScreen';
+import { AmenitiesManager } from './AmenitiesManager';
+import { ReservationTypesManager } from './ReservationTypesManager';
+import { AdminReservationsInbox } from './AdminReservationsInbox';
 
 interface AdminAppProps {
     page: Page;
@@ -45,7 +48,7 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
 
     const renderPage = () => {
         switch (page) {
-            case 'admin-dashboard': return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} />;
+            case 'admin-dashboard': return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} theme={theme} />;
             case 'admin-tickets': return <AdminTicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
             case 'admin-ticket-detail': {
                 const ticket = tickets.find(t => t.id === pageParams?.id);
@@ -69,9 +72,13 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
                 return user ? <AdminUnitDetailScreen user={user} paymentHistory={userPaymentHistory} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} /> : <div>Usuario no encontrado</div>;
             }
             case 'admin-payment-entry': return <AdminPaymentEntry users={users} onRegisterPayment={registerPayment} />;
+            case 'admin-amenities': return <AmenitiesManager onNavigate={handleNavigate} />;
+            case 'admin-amenities': return <AmenitiesManager onNavigate={handleNavigate} />;
+            case 'admin-reservation-types': return <ReservationTypesManager onNavigate={handleNavigate} amenityId={pageParams?.amenityId} />;
+            case 'admin-reservations': return <AdminReservationsInbox onNavigate={handleNavigate} />;
             case 'admin-config': return <AdminSettingsScreen settings={settings} onUpdateSettings={updateSettings} />;
-            case 'profile': return <ProfileScreen user={props.currentUser} onLogout={handleLogout} onToggleTheme={toggleTheme} theme={theme} />;
-            default: return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} />;
+            case 'profile': return <ProfileScreen user={props.currentUser} onLogout={handleLogout} onToggleTheme={toggleTheme} theme={theme} onNavigate={handleNavigate} />;
+            default: return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} theme={theme} />;
         }
     };
 
@@ -88,6 +95,10 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
             case 'admin-unit-edit': return 'Editar Unidad';
             case 'admin-unit-detail': return 'Detalle de Unidad';
             case 'admin-payment-entry': return 'Registrar Pago';
+            case 'admin-amenities': return 'Gestión de Espacios';
+            case 'admin-amenities': return 'Gestión de Espacios';
+            case 'admin-reservation-types': return 'Tipos de Reserva';
+            case 'admin-reservations': return 'Bandeja de Reservas';
             case 'admin-config': return 'Configuración';
             default: return 'Admin Panel';
         }
@@ -101,6 +112,7 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
             'admin-unit-create': 'admin-units',
             'admin-unit-edit': 'admin-units',
             'admin-unit-detail': 'admin-units',
+            'admin-reservation-types': 'admin-amenities',
         };
         const backTarget = backMap[page];
         if (backTarget) return () => handleNavigate(backTarget);

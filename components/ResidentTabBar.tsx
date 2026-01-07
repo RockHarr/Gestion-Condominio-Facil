@@ -14,9 +14,10 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
         { page: 'payments', icon: 'wallet', label: 'Pagos' },
         { page: 'tickets', icon: 'ticket', label: 'Tickets' },
         { page: 'notices', icon: 'bell', label: 'Avisos' },
+        { page: 'polls', icon: 'chartBar', label: 'Votar' },
         { page: 'more', icon: 'ellipsis-horizontal-circle', label: 'Más' },
     ];
-    const mainPages = ['home', 'payments', 'tickets', 'notices', 'more'];
+    const mainPages = ['home', 'payments', 'tickets', 'notices', 'polls', 'more'];
 
     const getActiveTab = () => {
         if (mainPages.includes(currentPage)) return currentPage;
