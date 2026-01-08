@@ -274,8 +274,9 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tarifa (CLP)</label>
+                                    <label htmlFor="fee" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tarifa (CLP)</label>
                                     <input
+                                        id="fee"
                                         type="number"
                                         value={fee}
                                         onChange={e => setFee(e.target.value)}
@@ -284,8 +285,9 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Garantía (CLP)</label>
+                                    <label htmlFor="deposit" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Garantía (CLP)</label>
                                     <input
+                                        id="deposit"
                                         type="number"
                                         value={deposit}
                                         onChange={e => setDeposit(e.target.value)}
@@ -296,8 +298,9 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duración Máxima (minutos)</label>
+                                <label htmlFor="maxDuration" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duración Máxima (minutos)</label>
                                 <input
+                                    id="maxDuration"
                                     type="number"
                                     value={maxDuration}
                                     onChange={e => setMaxDuration(e.target.value)}
@@ -308,8 +311,9 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Reglas de Uso</label>
+                                <label htmlFor="rules" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Reglas de Uso</label>
                                 <textarea
+                                    id="rules"
                                     value={rules}
                                     onChange={e => setRules(e.target.value)}
                                     rows={3}

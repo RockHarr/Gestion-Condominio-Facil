@@ -35,8 +35,8 @@ export default defineConfig({
    * Usamos el build de Vite (por eso en CI corremos `npm run build` antes).
    */
   webServer: {
-    command: 'npx vite preview --port 3000 --strictPort',
+    command: 'npx vite --port 3000 --strictPort',
     port: 3000,
-    reuseExistingServer: !process.env.CI, // Reutiliza server en local, no en CI
+    reuseExistingServer: !process.env.CI,
   },
 });

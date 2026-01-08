@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Reservation, ReservationStatus } from '../types';
+import { Reservation, ReservationStatus, Page } from '../types';
 import { Card, Button, SkeletonLoader } from './Shared';
 import { IncidentModal } from './IncidentModal';
 import { DepositDecisionModal } from './DepositDecisionModal';
 import { dataService } from '../services/data';
 
 interface AdminReservationsInboxProps {
-    onNavigate: (page: string) => void;
+    onNavigate: (page: Page) => void;
 }
 
 export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ onNavigate }) => {

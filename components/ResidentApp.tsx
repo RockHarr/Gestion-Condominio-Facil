@@ -59,6 +59,15 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
     const [selectedDateForBooking, setSelectedDateForBooking] = React.useState<Date | null>(null);
     const [reservationRefreshTrigger, setReservationRefreshTrigger] = React.useState(0);
 
+    React.useEffect(() => {
+        if (page === 'reservations' && pageParams?.amenityId) {
+            const amenity = amenities.find(a => a.id === pageParams.amenityId);
+            if (amenity) {
+                setSelectedAmenityForBooking(amenity);
+            }
+        }
+    }, [page, pageParams, amenities]);
+
     const renderPage = () => {
         switch (page) {
             case 'home': return <HomeScreen user={currentUser} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} expenses={expenses} paymentHistory={paymentHistory} theme={theme} onNavigate={handleNavigate} onDownloadStatement={() => setShowStatementModal(true)} showToast={showToast} />;
@@ -136,7 +145,7 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
                 );
 
             case 'polls': return <PollsScreen />;
-
+            case 'more': return <ProfileScreen user={currentUser} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} onNavigate={handleNavigate} />;
             case 'profile': return <ProfileScreen user={currentUser} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} onNavigate={handleNavigate} />;
             default: return <HomeScreen user={currentUser} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} expenses={expenses} paymentHistory={paymentHistory} theme={theme} onNavigate={handleNavigate} onDownloadStatement={() => setShowStatementModal(true)} showToast={showToast} />;
         }

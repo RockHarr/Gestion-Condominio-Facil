@@ -73,7 +73,7 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
             }
             case 'admin-payment-entry': return <AdminPaymentEntry users={users} onRegisterPayment={registerPayment} />;
             case 'admin-amenities': return <AmenitiesManager onNavigate={handleNavigate} />;
-            case 'admin-amenities': return <AmenitiesManager onNavigate={handleNavigate} />;
+
             case 'admin-reservation-types': return <ReservationTypesManager onNavigate={handleNavigate} amenityId={pageParams?.amenityId} />;
             case 'admin-reservations': return <AdminReservationsInbox onNavigate={handleNavigate} />;
             case 'admin-config': return <AdminSettingsScreen settings={settings} onUpdateSettings={updateSettings} />;
@@ -96,7 +96,7 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
             case 'admin-unit-detail': return 'Detalle de Unidad';
             case 'admin-payment-entry': return 'Registrar Pago';
             case 'admin-amenities': return 'Gestión de Espacios';
-            case 'admin-amenities': return 'Gestión de Espacios';
+
             case 'admin-reservation-types': return 'Tipos de Reserva';
             case 'admin-reservations': return 'Bandeja de Reservas';
             case 'admin-config': return 'Configuración';

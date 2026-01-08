@@ -112,18 +112,19 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
                     </div>
                     <div className="overflow-hidden">
                         <p className="text-sm font-bold text-gray-900 dark:text-white truncate">Administrador</p>
-                        <Button variant="ghost" onClick={() => onNavigate('amenities')} className="w-full justify-start">
+                        <Button variant="ghost" onClick={() => onNavigate('admin-amenities')} className="w-full justify-start">
                             <Icons name="home" className="w-4 h-4 mr-2" />
                             Espacios Comunes
                         </Button>
-                        <Button variant="ghost" onClick={() => onNavigate('reservations')} className="w-full justify-start">
+                        <Button variant="ghost" onClick={() => onNavigate('admin-reservations')} className="w-full justify-start">
                             <Icons name="calendar" className="w-4 h-4 mr-2" />
                             Reservas
                         </Button>
-                        <Button variant="ghost" onClick={() => onNavigate('polls')} className="w-full justify-start">
+                        {/* Polls feature not yet implemented in AdminApp */}
+                        {/* <Button variant="ghost" onClick={() => onNavigate('polls')} className="w-full justify-start">
                             <Icons name="chartBar" className="w-4 h-4 mr-2" />
                             Votaciones
-                        </Button>
+                        </Button> */}
                     </div>
                 </div>
                 <Button onClick={onLogout} variant="secondary" className="w-full justify-center text-sm">

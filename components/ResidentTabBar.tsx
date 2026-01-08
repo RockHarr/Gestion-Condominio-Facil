@@ -13,11 +13,12 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
         { page: 'home', icon: 'home', label: 'Inicio' },
         { page: 'payments', icon: 'wallet', label: 'Pagos' },
         { page: 'tickets', icon: 'ticket', label: 'Tickets' },
+        { page: 'amenities', icon: 'building-office', label: 'Espacios' },
         { page: 'notices', icon: 'bell', label: 'Avisos' },
         { page: 'polls', icon: 'chartBar', label: 'Votar' },
         { page: 'more', icon: 'ellipsis-horizontal-circle', label: 'Más' },
     ];
-    const mainPages = ['home', 'payments', 'tickets', 'notices', 'polls', 'more'];
+    const mainPages = ['home', 'payments', 'tickets', 'amenities', 'notices', 'polls', 'more'];
 
     const getActiveTab = () => {
         if (mainPages.includes(currentPage)) return currentPage;

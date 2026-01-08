@@ -17,6 +17,7 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
     const [startTime, setStartTime] = useState('10:00');
     const [endTime, setEndTime] = useState('14:00');
     const [loading, setLoading] = useState(false);
+    const [fetchingTypes, setFetchingTypes] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -24,6 +25,7 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
     }, [amenity.id]);
 
     const fetchTypes = async () => {
+        setFetchingTypes(true);
         const { data, error } = await supabase
             .from('reservation_types')
             .select('*')
@@ -35,6 +37,7 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
                 setSelectedTypeId(data[0].id);
             }
         }
+        setFetchingTypes(false);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -49,7 +52,11 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
         }
 
         const selectedType = types.find(t => t.id === selectedTypeId);
-        if (!selectedType) return;
+
+        if (!selectedType) {
+            setLoading(false);
+            return;
+        }
 
         // Construct timestamps
         // Note: selectedDate is local date from calendar (00:00:00)
@@ -71,6 +78,7 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
         }
 
         const durationMinutes = (endAt.getTime() - startAt.getTime()) / (1000 * 60);
+
         if (selectedType.max_duration_minutes && durationMinutes > selectedType.max_duration_minutes) {
             setError(`La duración máxima es de ${selectedType.max_duration_minutes / 60} horas.`);
             setLoading(false);
@@ -78,13 +86,19 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
         }
 
         try {
-            const { data, error } = await supabase.rpc('request_reservation', {
+            const rpcPromise = supabase.rpc('request_reservation', {
                 p_amenity_id: amenity.id,
                 p_type_id: selectedTypeId,
                 p_start_at: startAt.toISOString(),
                 p_end_at: endAt.toISOString(),
                 p_form_data: {} // Placeholder for future custom forms
             });
+
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('RPC Request timed out after 5s')), 5000)
+            );
+
+            const { data, error } = await Promise.race([rpcPromise, timeoutPromise]) as any;
 
             if (error) throw error;
 
@@ -126,21 +140,29 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {types.length > 1 && (
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de Evento</label>
-                            <select
-                                value={selectedTypeId || ''}
-                                onChange={e => setSelectedTypeId(Number(e.target.value))}
-                                className="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-2.5 px-3"
-                                required
-                            >
-                                <option value="">Seleccionar...</option>
-                                {types.map(t => (
-                                    <option key={t.id} value={t.id}>{t.name}</option>
-                                ))}
-                            </select>
-                        </div>
+                    {fetchingTypes ? (
+                        <div className="text-center py-4 text-gray-500">Cargando tipos de reserva...</div>
+                    ) : types.length === 0 ? (
+                        <div className="text-center py-4 text-red-500">No hay tipos de reserva disponibles para este espacio.</div>
+                    ) : (
+                        <>
+                            {types.length > 1 && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de Evento</label>
+                                    <select
+                                        value={selectedTypeId || ''}
+                                        onChange={e => setSelectedTypeId(Number(e.target.value))}
+                                        className="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-2.5 px-3"
+                                        required
+                                    >
+                                        <option value="">Seleccionar...</option>
+                                        {types.map(t => (
+                                            <option key={t.id} value={t.id}>{t.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </>
                     )}
 
                     <div className="grid grid-cols-2 gap-4">

@@ -306,39 +306,7 @@ export const dataService = {
         return data;
     },
 
-    async getPollResults(pollId: number) {
-        const { data, error } = await withTimeout(supabase
-            .rpc('get_poll_results', {
-                p_poll_id: pollId
-            }));
-        if (error) throw error;
-        return data;
-    },
 
-    async getPollOptions(pollId: number) {
-        const { data, error } = await withTimeout(supabase
-            .from('poll_options')
-            .select('*')
-            .eq('poll_id', pollId)
-            .order('option_index', { ascending: true }));
-        if (error) throw error;
-        return data;
-    },
-
-    async getMyVote(pollId: number) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return null;
-
-        const { data, error } = await withTimeout(supabase
-            .from('poll_responses')
-            .select('option_id')
-            .eq('poll_id', pollId)
-            .eq('user_id', user.id)
-            .maybeSingle());
-
-        if (error) throw error;
-        return data;
-    },
 
     async getChargesByReservation(reservationId: number) {
         const { data, error } = await withTimeout(supabase
