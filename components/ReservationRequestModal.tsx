@@ -107,17 +107,28 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
         } catch (err: any) {
             console.error('Error requesting reservation:', err);
             // Check for overlap error in various properties
-            const errorMessage = err.message || err.details || '';
+            let errorMessage = err.message || err.details || '';
+
+            // Map technical concurrency error to user friendly message
             if (
-                errorMessage.includes('no_overlap_reservations') ||
-                err.code === '23P01' ||
-                errorMessage.toLowerCase().includes('conflicting key value violates exclusion constraint')
+                errorMessage.includes('reservations_no_overlap_excl') ||
+                errorMessage.includes('exclusion constraint') ||
+                (err.code === '23P01')
             ) {
-                setError('Ya existe una reserva para este horario. Por favor selecciona otro.');
-            } else {
-                setError(errorMessage || 'Error al solicitar la reserva.');
+                errorMessage = 'Horario no disponible (alguien reservó recién). Elige otro horario.';
             }
-        } finally {
+
+            if (
+                errorMessage.includes('overlap') ||
+                errorMessage.includes('existente') ||
+                errorMessage.includes('conflicts with existing key')
+            ) {
+                if (!errorMessage.includes('Horario no disponible')) {
+                    errorMessage = 'Ya existe una reserva en ese horario.';
+                }
+            }
+
+            setError(errorMessage || 'Error al solicitar reserva.');
             setLoading(false);
         }
     };
