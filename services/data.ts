@@ -97,7 +97,19 @@ export const dataService = {
             .select('*')
             .single());
 
-        if (error) throw error;
+        if (error) {
+            // If no settings found, return defaults (or create them if we could)
+            if (error.code === 'PGRST116') {
+                console.warn("DataService: No community settings found, using defaults.");
+                return {
+                    commonExpense: 50000,
+                    parkingCost: 10000,
+                    id: 1
+                };
+            }
+            console.error("DataService: Error fetching settings", error);
+            throw error;
+        }
         return data;
     },
 
@@ -159,13 +171,35 @@ export const dataService = {
 
     // --- Reservations ---
     async getReservations() {
-        const { data, error } = await withTimeout(supabase
+        // 1. Fetch reservations without the join
+        const { data: reservations, error } = await withTimeout(supabase
             .from('reservations')
             .select('*'));
 
         if (error) throw error;
 
-        return data.map((r: any) => ({
+        // 2. Extract unique user IDs
+        const userIds = Array.from(new Set(reservations.map((r: any) => r.user_id).filter(Boolean)));
+
+        // 3. Fetch profiles for these users
+        let profilesMap: Record<string, any> = {};
+        if (userIds.length > 0) {
+            const { data: profiles, error: profilesError } = await withTimeout(supabase
+                .from('profiles')
+                .select('id, nombre, unidad')
+                .in('id', userIds));
+
+            if (profilesError) {
+                console.error('DataService: Error fetching profiles for reservations:', profilesError);
+            } else {
+                profiles?.forEach((p: any) => {
+                    profilesMap[p.id] = p;
+                });
+            }
+        }
+
+        // 4. Merge data
+        return reservations.map((r: any) => ({
             id: r.id,
             amenityId: r.amenity_id,
             userId: r.user_id,
@@ -174,7 +208,8 @@ export const dataService = {
             status: r.status,
             isSystem: r.is_system,
             systemReason: r.system_reason,
-            formData: r.form_data
+            formData: r.form_data,
+            user: profilesMap[r.user_id] || undefined // Map the manually fetched user data
         })) as Reservation[];
     },
 
@@ -196,11 +231,27 @@ export const dataService = {
     },
 
     async createReservation(reservation: any) {
+        // 1. Get a reservation type for this amenity (default to first found)
+        const { data: types, error: typeError } = await withTimeout(supabase
+            .from('reservation_types')
+            .select('id')
+            .eq('amenity_id', reservation.amenityId)
+            .limit(1));
+
+        if (typeError) throw typeError;
+        if (!types || types.length === 0) throw new Error("No reservation type found for this amenity");
+
+        const typeId = types[0].id;
+
+        // 2. Call RPC
         const { data, error } = await withTimeout(supabase
-            .from('reservations')
-            .insert(reservation)
-            .select()
-            .single());
+            .rpc('request_reservation', {
+                p_amenity_id: reservation.amenityId,
+                p_type_id: typeId,
+                p_start_at: reservation.startAt,
+                p_end_at: reservation.endAt,
+                p_form_data: {}
+            }));
 
         if (error) throw error;
         return data;
@@ -224,6 +275,31 @@ export const dataService = {
             .update({ status: 'REJECTED' })
             .eq('id', id));
         if (error) throw error;
+    },
+
+    async confirmReservationPayment(reservationId: number, payment: Omit<PaymentRecord, 'id'>) {
+        // 1. Register the payment
+        const { error: payError } = await withTimeout(supabase
+            .from('payments')
+            .insert({
+                user_id: payment.userId,
+                monto: payment.monto,
+                fecha_pago: payment.fechaPago,
+                periodo: payment.periodo,
+                type: payment.type,
+                metodo_pago: payment.metodoPago,
+                observacion: payment.observacion
+            }));
+
+        if (payError) throw payError;
+
+        // 2. Update reservation status to CONFIRMED
+        const { error: resError } = await withTimeout(supabase
+            .from('reservations')
+            .update({ status: 'CONFIRMED' })
+            .eq('id', reservationId));
+
+        if (resError) throw resError;
     },
 
     async createSystemReservation(amenityId: number, startAt: string, endAt: string, reason: string) {

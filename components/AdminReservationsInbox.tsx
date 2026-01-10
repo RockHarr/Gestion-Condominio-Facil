@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Reservation, ReservationStatus, Page } from '../types';
 import { Card, Button, SkeletonLoader } from './Shared';
 import { IncidentModal } from './IncidentModal';
+import Icons from './Icons';
 import { DepositDecisionModal } from './DepositDecisionModal';
+import { ReservationPaymentModal } from './ReservationPaymentModal';
 import { dataService } from '../services/data';
 
 interface AdminReservationsInboxProps {
@@ -12,9 +14,10 @@ interface AdminReservationsInboxProps {
 export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ onNavigate }) => {
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'pending' | 'upcoming' | 'history'>('pending');
+    const [activeTab, setActiveTab] = useState<'pending' | 'upcoming' | 'history' | 'all'>('pending');
     const [selectedReservationForIncident, setSelectedReservationForIncident] = useState<Reservation | null>(null);
     const [selectedReservationForDeposit, setSelectedReservationForDeposit] = useState<Reservation | null>(null);
+    const [selectedReservationForPayment, setSelectedReservationForPayment] = useState<Reservation | null>(null);
 
     const loadData = async () => {
         setLoading(true);
@@ -34,11 +37,14 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
 
     const filteredReservations = reservations.filter(r => {
         if (activeTab === 'pending') {
-            return r.status === ReservationStatus.REQUESTED || r.status === ReservationStatus.APPROVED_PENDING_PAYMENT;
+            return r.status === ReservationStatus.REQUESTED;
         } else if (activeTab === 'upcoming') {
-            return r.status === ReservationStatus.CONFIRMED && new Date(r.startAt) > new Date();
+            return (r.status === ReservationStatus.CONFIRMED || r.status === ReservationStatus.APPROVED_PENDING_PAYMENT) && new Date(r.startAt) > new Date();
+        } else if (activeTab === 'all') {
+            return true;
         } else {
-            return [ReservationStatus.COMPLETED, ReservationStatus.CANCELLED, ReservationStatus.REJECTED, ReservationStatus.NO_SHOW].includes(r.status) || (r.status === ReservationStatus.CONFIRMED && new Date(r.startAt) <= new Date());
+            return [ReservationStatus.COMPLETED, ReservationStatus.CANCELLED, ReservationStatus.REJECTED, ReservationStatus.NO_SHOW].includes(r.status) ||
+                ((r.status === ReservationStatus.CONFIRMED || r.status === ReservationStatus.APPROVED_PENDING_PAYMENT) && new Date(r.startAt) <= new Date());
         }
     }).sort((a, b) => new Date(b.startAt).getTime() - new Date(a.startAt).getTime());
 
@@ -57,14 +63,48 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
 
     if (loading) return <div className="p-6"><SkeletonLoader className="h-64 w-full" /></div>;
 
+    const counts = {
+        pending: reservations.filter(r => r.status === ReservationStatus.REQUESTED).length,
+        upcoming: reservations.filter(r => (r.status === ReservationStatus.CONFIRMED || r.status === ReservationStatus.APPROVED_PENDING_PAYMENT) && new Date(r.startAt) > new Date()).length,
+        history: reservations.filter(r => [ReservationStatus.COMPLETED, ReservationStatus.CANCELLED, ReservationStatus.REJECTED, ReservationStatus.NO_SHOW].includes(r.status) || (r.status === ReservationStatus.CONFIRMED && new Date(r.startAt) <= new Date())).length,
+        all: reservations.length
+    };
+
     return (
         <div className="p-6 max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Reservas</h2>
                 <div className="flex space-x-2">
-                    <Button variant={activeTab === 'pending' ? 'primary' : 'secondary'} onClick={() => setActiveTab('pending')}>Pendientes</Button>
-                    <Button variant={activeTab === 'upcoming' ? 'primary' : 'secondary'} onClick={() => setActiveTab('upcoming')}>Próximas</Button>
-                    <Button variant={activeTab === 'history' ? 'primary' : 'secondary'} onClick={() => setActiveTab('history')}>Historial</Button>
+                    <Button variant={activeTab === 'pending' ? 'primary' : 'secondary'} onClick={() => setActiveTab('pending')} className="relative">
+                        Pendientes
+                        {counts.pending > 0 && (
+                            <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                {counts.pending}
+                            </span>
+                        )}
+                    </Button>
+                    <Button variant={activeTab === 'upcoming' ? 'primary' : 'secondary'} onClick={() => setActiveTab('upcoming')} className="relative">
+                        Próximas
+                        {counts.upcoming > 0 && (
+                            <span className="ml-2 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                {counts.upcoming}
+                            </span>
+                        )}
+                    </Button>
+                    <Button variant={activeTab === 'history' ? 'primary' : 'secondary'} onClick={() => setActiveTab('history')} className="relative">
+                        Historial
+                        {counts.history > 0 && (
+                            <span className="ml-2 bg-gray-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                {counts.history}
+                            </span>
+                        )}
+                    </Button>
+                    <Button variant={activeTab === 'all' ? 'primary' : 'secondary'} onClick={() => setActiveTab('all')} className="relative">
+                        Todas
+                        <span className="ml-2 bg-gray-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                            {counts.all}
+                        </span>
+                    </Button>
                 </div>
             </div>
 
@@ -87,6 +127,24 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
                     onSuccess={() => {
                         setSelectedReservationForDeposit(null);
                         loadData();
+                    }}
+                />
+            )}
+
+            {selectedReservationForPayment && (
+                <ReservationPaymentModal
+                    reservation={selectedReservationForPayment}
+                    onClose={() => setSelectedReservationForPayment(null)}
+                    onSuccess={async (paymentData) => {
+                        try {
+                            await dataService.confirmReservationPayment(selectedReservationForPayment.id, paymentData);
+                            setSelectedReservationForPayment(null);
+                            loadData();
+                            // Optional: Show success toast
+                        } catch (error) {
+                            console.error("Error registering payment:", error);
+                            alert("Error al registrar el pago");
+                        }
                     }}
                 />
             )}
@@ -114,7 +172,13 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
                                     {new Date(reservation.startAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -
                                     {new Date(reservation.endAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </p>
-                                {reservation.userId && <p className="text-xs text-gray-500 mt-1">Usuario: {reservation.userId}</p>}
+                                {reservation.user ? (
+                                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 font-medium">
+                                        {reservation.user.nombre} • Unidad {reservation.user.unidad}
+                                    </p>
+                                ) : (
+                                    reservation.userId && <p className="text-xs text-gray-500 mt-1">Usuario ID: {reservation.userId}</p>
+                                )}
                             </div>
 
                             <div className="flex gap-2 w-full md:w-auto flex-wrap justify-end">
@@ -125,16 +189,43 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
                                     </>
                                 )}
                                 {activeTab === 'upcoming' && (
-                                    <Button variant="danger" onClick={() => handleStatusChange(reservation.id, 'cancel')}>Cancelar</Button>
-                                )}
-                                {activeTab === 'history' && !reservation.isSystem && (reservation.status === ReservationStatus.COMPLETED || reservation.status === ReservationStatus.NO_SHOW) && (
                                     <>
-                                        <Button variant="secondary" onClick={() => setSelectedReservationForDeposit(reservation)}>
-                                            Gestionar Garantía
-                                        </Button>
-                                        <Button variant="danger" onClick={() => setSelectedReservationForIncident(reservation)}>
-                                            Reportar Incidente
-                                        </Button>
+                                        {reservation.status === ReservationStatus.APPROVED_PENDING_PAYMENT && (
+                                            <Button
+                                                className="bg-green-600 hover:bg-green-700 text-white"
+                                                onClick={() => setSelectedReservationForPayment(reservation)}
+                                            >
+                                                <Icons name="currency-dollar" className="w-4 h-4 mr-1" />
+                                                Registrar Pago
+                                            </Button>
+                                        )}
+                                        <Button variant="danger" onClick={() => handleStatusChange(reservation.id, 'cancel')}>Cancelar</Button>
+                                    </>
+                                )}
+                                {activeTab === 'history' && !reservation.isSystem && (
+                                    <>
+                                        {(reservation.status === ReservationStatus.COMPLETED || reservation.status === ReservationStatus.NO_SHOW) && (
+                                            <>
+                                                <Button variant="secondary" onClick={() => setSelectedReservationForDeposit(reservation)}>
+                                                    Gestionar Garantía
+                                                </Button>
+                                                <Button variant="danger" onClick={() => setSelectedReservationForIncident(reservation)}>
+                                                    Reportar Incidente
+                                                </Button>
+                                            </>
+                                        )}
+                                        {reservation.status === ReservationStatus.APPROVED_PENDING_PAYMENT && (
+                                            <>
+                                                <Button
+                                                    className="bg-green-600 hover:bg-green-700 text-white"
+                                                    onClick={() => setSelectedReservationForPayment(reservation)}
+                                                >
+                                                    <Icons name="currency-dollar" className="w-4 h-4 mr-1" />
+                                                    Registrar Pago
+                                                </Button>
+                                                <Button variant="danger" onClick={() => handleStatusChange(reservation.id, 'cancel')}>Cancelar</Button>
+                                            </>
+                                        )}
                                     </>
                                 )}
                             </div>

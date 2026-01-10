@@ -13,8 +13,7 @@ export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigat
         { page: 'admin-dashboard', icon: 'speedometer', label: 'Inicio' },
         { page: 'admin-units', icon: 'building-office', label: 'Unidades' },
         { page: 'admin-payment-entry', icon: 'currency-dollar', label: 'Pagos' },
-        { page: 'admin-payment-entry', icon: 'currency-dollar', label: 'Pagos' },
-        { page: 'admin-reservations', icon: 'calendar', label: 'Reservas' },
+        { page: 'admin-reservations', icon: 'calendar-days', label: 'Reservas' },
         { page: 'admin-tickets', icon: 'ticket', label: 'Tickets' },
         { page: 'admin-notices', icon: 'bell', label: 'Avisos' },
         { page: 'admin-config', icon: 'cog-6-tooth', label: 'Config' },
@@ -56,8 +55,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
         { page: 'admin-dashboard', icon: 'speedometer', label: 'Dashboard' },
         { page: 'admin-units', icon: 'building-office', label: 'Directorio de Unidades' },
         { page: 'admin-payment-entry', icon: 'currency-dollar', label: 'Registrar Pago' },
-        { page: 'admin-payment-entry', icon: 'currency-dollar', label: 'Registrar Pago' },
-        { page: 'admin-reservations', icon: 'calendar', label: 'Gestión de Reservas' },
+        { page: 'admin-amenities', icon: 'home', label: 'Espacios Comunes' },
+        { page: 'admin-reservations', icon: 'calendar-days', label: 'Gestión de Reservas' },
         { page: 'admin-tickets', icon: 'ticket', label: 'Gestión de Tickets' },
         { page: 'admin-notices', icon: 'bell', label: 'Mural de Avisos' },
         { page: 'admin-config', icon: 'cog-6-tooth', label: 'Configuración' },
@@ -112,19 +111,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
                     </div>
                     <div className="overflow-hidden">
                         <p className="text-sm font-bold text-gray-900 dark:text-white truncate">Administrador</p>
-                        <Button variant="ghost" onClick={() => onNavigate('admin-amenities')} className="w-full justify-start">
-                            <Icons name="home" className="w-4 h-4 mr-2" />
-                            Espacios Comunes
-                        </Button>
-                        <Button variant="ghost" onClick={() => onNavigate('admin-reservations')} className="w-full justify-start">
-                            <Icons name="calendar" className="w-4 h-4 mr-2" />
-                            Reservas
-                        </Button>
-                        {/* Polls feature not yet implemented in AdminApp */}
-                        {/* <Button variant="ghost" onClick={() => onNavigate('polls')} className="w-full justify-start">
-                            <Icons name="chartBar" className="w-4 h-4 mr-2" />
-                            Votaciones
-                        </Button> */}
                     </div>
                 </div>
                 <Button onClick={onLogout} variant="secondary" className="w-full justify-center text-sm">

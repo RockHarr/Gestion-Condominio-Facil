@@ -50,7 +50,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
                 <form onSubmit={handleLogin} className="mt-8 space-y-6">
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="email" className="sr-only">Correo Electrónico</label>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
                             <input
                                 id="email"
                                 type="email"
@@ -64,7 +64,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
 
                         {usePassword && (
                             <div className="animate-in fade-in slide-in-from-top-2 duration-200">
-                                <label htmlFor="password" className="sr-only">Contraseña</label>
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contraseña</label>
                                 <input
                                     id="password"
                                     type="password"

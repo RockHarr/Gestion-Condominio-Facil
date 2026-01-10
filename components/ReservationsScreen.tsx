@@ -12,7 +12,7 @@ interface ReservationsScreenProps {
 }
 
 export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenities, reservations, user, onAddReservation, onCancelReservation }) => {
-    const [selectedAmenity, setSelectedAmenity] = useState(amenities[0].id);
+    const [selectedAmenity, setSelectedAmenity] = useState(amenities.length > 0 ? amenities[0].id : 0);
     const [currentDate, setCurrentDate] = useState(new Date('2025-11-10'));
 
     const timeslots = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
@@ -31,9 +31,13 @@ export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenitie
         <div className="p-4 space-y-4">
             <Card>
                 <label htmlFor="amenity-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Seleccionar Espacio Común</label>
-                <select id="amenity-select" value={selectedAmenity} onChange={e => setSelectedAmenity(Number(e.target.value))} className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                    {amenities.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-                </select>
+                {amenities.length > 0 ? (
+                    <select id="amenity-select" value={selectedAmenity} onChange={e => setSelectedAmenity(Number(e.target.value))} className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        {amenities.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    </select>
+                ) : (
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">No hay espacios comunes disponibles.</p>
+                )}
             </Card>
 
             <Card>
@@ -78,12 +82,16 @@ export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenitie
                                     }
                                 }}
                                 disabled={reservation && !isMine}
-                                className={`p-3 rounded-lg text-center font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isMine ? 'bg-red-500 text-white hover:bg-red-600' :
+                                className={`p-3 rounded-lg text-center font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1 ${isMine ? 'bg-red-500 text-white hover:bg-red-600' :
                                     isAvailable ? 'bg-green-500 text-white hover:bg-green-600' :
                                         'bg-gray-200 dark:bg-gray-700 text-gray-500'
                                     }`}
+                                aria-label={`${time} - ${isMine ? 'Tu reserva' : isAvailable ? 'Disponible' : 'Ocupado'}`}
                             >
-                                {time}
+                                <span>{time}</span>
+                                <span className="text-xs font-normal">
+                                    {isMine ? 'Mío' : isAvailable ? 'Libre' : 'Ocupado'}
+                                </span>
                             </button>
                         )
                     })}

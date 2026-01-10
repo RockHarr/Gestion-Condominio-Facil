@@ -100,6 +100,10 @@ export interface Reservation {
   formData?: any;
   feeSnapshot?: number;
   depositSnapshot?: number;
+  user?: {
+    nombre: string;
+    unidad: string;
+  };
 }
 
 export enum DepositDecisionType {
@@ -191,6 +195,8 @@ export interface ReserveFund {
 export enum PaymentType {
   GASTO_COMUN = 'Gasto Común',
   ESTACIONAMIENTO = 'Estacionamiento',
+  RESERVA = 'Reserva',
+  USO_ESPACIO = 'Uso de Espacio',
 }
 
 export enum PaymentMethod {

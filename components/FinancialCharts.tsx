@@ -91,6 +91,7 @@ export const FinancialCharts: React.FC<FinancialChartsProps> = ({ expenses, paym
                             <Tooltip
                                 formatter={(value: number | undefined) => value !== undefined ? formatCurrency(value) : ''}
                                 contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb', color: textColor }}
+                                itemStyle={{ color: textColor }}
                             />
                             <Legend />
                         </PieChart>
@@ -119,6 +120,7 @@ export const FinancialCharts: React.FC<FinancialChartsProps> = ({ expenses, paym
                             <Tooltip
                                 formatter={(value: number | undefined) => value !== undefined ? formatCurrency(value) : ''}
                                 contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb', color: textColor }}
+                                itemStyle={{ color: textColor }}
                             />
                             <Legend />
                             <Bar dataKey="Ingresos" fill="#10b981" radius={[4, 4, 0, 0]} />

@@ -442,9 +442,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                     </div>
 
                     <div className="space-y-6">
+                        {/* Shortcuts Section - Moved to top for better visibility */}
+                        <div>
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+                                <Icons name="squares-2x2" className="w-5 h-5 text-blue-500" />
+                                Accesos Directos
+                            </h2>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button onClick={() => onNavigate('admin-units')} className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md transition-all text-center group">
+                                    <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <Icons name="building-office" className="w-5 h-5" />
+                                    </div>
+                                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Unidades</span>
+                                </button>
+                                <button onClick={() => onNavigate('admin-tickets')} className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700 hover:shadow-md transition-all text-center group">
+                                    <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <Icons name="ticket" className="w-5 h-5" />
+                                    </div>
+                                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Tickets</span>
+                                </button>
+                                <button onClick={() => onNavigate('admin-amenities')} className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md transition-all text-center group col-span-2">
+                                    <div className="flex items-center justify-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Icons name="key" className="w-5 h-5" />
+                                        </div>
+                                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Administrar Espacios</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Icons name="cog" className="w-5 h-5 text-gray-400" />
-                            Acciones Rápidas
+                            Gestión Mensual
                         </h2>
                         <Card className="space-y-4">
                             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
@@ -464,24 +494,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                                         * Debes revisar todos los gastos pendientes
                                     </p>
                                 )}
-                            </div>
-
-                            <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-3 text-sm">Accesos Directos</h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <button onClick={() => onNavigate('admin-units')} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
-                                        <Icons name="building-office" className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-                                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Unidades</span>
-                                    </button>
-                                    <button onClick={() => onNavigate('admin-tickets')} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
-                                        <Icons name="ticket" className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-                                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Tickets</span>
-                                    </button>
-                                    <button onClick={() => onNavigate('admin-amenities')} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
-                                        <Icons name="key" className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-                                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Espacios</span>
-                                    </button>
-                                </div>
                             </div>
                         </Card>
                     </div>
