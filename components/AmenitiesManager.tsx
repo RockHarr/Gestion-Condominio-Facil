@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { dataService } from '../services/data';
 import { Amenity, Page } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
@@ -28,13 +29,8 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
     const fetchAmenities = async () => {
         try {
             setLoading(true);
-            const { data, error } = await supabase
-                .from('amenities')
-                .select('*')
-                .order('id', { ascending: true });
-
-            if (error) throw error;
-            setAmenities(data || []);
+            const data = await dataService.getAmenities();
+            setAmenities(data);
         } catch (error) {
             console.error('Error fetching amenities:', error);
             alert('Error al cargar los espacios comunes');

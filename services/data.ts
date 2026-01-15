@@ -113,6 +113,16 @@ export const dataService = {
         return data;
     },
 
+    async getFinancialKpis(periodStart: string, periodEnd: string) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('get_financial_kpis', {
+                p_period_start: periodStart,
+                p_period_end: periodEnd
+            }));
+        if (error) throw error;
+        return data;
+    },
+
     async getPollResults(pollId: number) {
         const { data, error } = await withTimeout(supabase
             .rpc('get_poll_results', {
@@ -277,29 +287,69 @@ export const dataService = {
         if (error) throw error;
     },
 
-    async confirmReservationPayment(reservationId: number, payment: Omit<PaymentRecord, 'id'>) {
-        // 1. Register the payment
-        const { error: payError } = await withTimeout(supabase
-            .from('payments')
-            .insert({
-                user_id: payment.userId,
-                monto: payment.monto,
-                fecha_pago: payment.fechaPago,
-                periodo: payment.periodo,
-                type: payment.type,
-                metodo_pago: payment.metodoPago,
-                observacion: payment.observacion
+    async getPendingChargesByUnit(unitId: number) {
+        const { data, error } = await withTimeout(supabase
+            .from('charges')
+            .select('*')
+            .eq('unit_id', unitId)
+            .eq('status', 'PENDING')
+            .order('created_at', { ascending: true }));
+
+        if (error) throw error;
+        return data || [];
+    },
+
+    async getChargesByReference(referenceType: 'RESERVATION' | 'INCIDENT' | 'MONTH', referenceId: number) {
+        const { data, error } = await withTimeout(supabase
+            .from('charges')
+            .select('*')
+            .eq('reference_type', referenceType)
+            .eq('reference_id', referenceId)
+            .order('created_at', { ascending: true }));
+
+        if (error) throw error;
+        return data || [];
+    },
+
+    async confirmChargePayment(chargeId: string, method: string, note?: string) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('confirm_charge_payment', {
+                p_charge_id: chargeId,
+                p_method: method,
+                p_note: note
             }));
 
-        if (payError) throw payError;
+        if (error) throw error;
+        return data;
+    },
 
-        // 2. Update reservation status to CONFIRMED
-        const { error: resError } = await withTimeout(supabase
-            .from('reservations')
-            .update({ status: 'CONFIRMED' })
-            .eq('id', reservationId));
+    async confirmReservationPayment(reservationId: number, payment: Omit<PaymentRecord, 'id'>) {
+        // 1. Get PENDING charges for this reservation
+        const charges = await this.getChargesByReference('RESERVATION', reservationId);
+        const pendingCharges = charges.filter(c => c.status === 'PENDING');
 
-        if (resError) throw resError;
+        if (pendingCharges.length === 0) {
+            // Check if already confirmed
+            const { data: res } = await withTimeout(supabase
+                .from('reservations')
+                .select('status')
+                .eq('id', reservationId)
+                .single());
+
+            if (res?.status === 'CONFIRMED') return { success: true, message: 'Ya pagado' };
+            throw new Error('No hay cargos pendientes para esta reserva');
+        }
+
+        // 2. Confirm each charge via RPC
+        for (const charge of pendingCharges) {
+            await this.confirmChargePayment(
+                charge.id,
+                payment.metodoPago || 'Transferencia',
+                payment.observacion
+            );
+        }
+
+        return { success: true };
     },
 
     async createSystemReservation(amenityId: number, startAt: string, endAt: string, reason: string) {

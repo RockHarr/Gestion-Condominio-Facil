@@ -10,7 +10,8 @@ interface ReservationPaymentModalProps {
 }
 
 export const ReservationPaymentModal: React.FC<ReservationPaymentModalProps> = ({ reservation, onClose, onSuccess }) => {
-    const [monto, setMonto] = useState<string>(reservation.feeSnapshot?.toString() || '0');
+    const totalAmount = (reservation.feeSnapshot || 0) + (reservation.depositSnapshot || 0);
+    const [monto, setMonto] = useState<string>(totalAmount.toString());
     const [metodoPago, setMetodoPago] = useState<PaymentMethod>(PaymentMethod.TRANSFERENCIA);
     const [observacion, setObservacion] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);

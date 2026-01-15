@@ -265,9 +265,32 @@ export const AdminRejectExpenseModal: React.FC<{
     );
 };
 
+import { dataService } from '../services/data';
+import { FinancialKpis } from '../types';
+
+// ... (imports remain the same)
+
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymentHistory, users, onNavigate, onAddExpense, onApproveExpense, onRejectExpense, onCloseMonth, theme }) => {
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const [isRejectModalOpen, setRejectModalOpen] = useState<Expense | null>(null);
+    const [financialKpis, setFinancialKpis] = useState<FinancialKpis | null>(null);
+
+    // Fetch Financial KPIs
+    React.useEffect(() => {
+        const fetchKpis = async () => {
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+            const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
+
+            try {
+                const kpis = await dataService.getFinancialKpis(startOfMonth, endOfMonth);
+                setFinancialKpis(kpis);
+            } catch (error) {
+                console.error("Error fetching financial KPIs:", error);
+            }
+        };
+        fetchKpis();
+    }, [expenses, paymentHistory]); // Re-fetch when data changes
 
     const stats = useMemo(() => {
         const approvedExpenses = expenses.filter(e => e.status === ExpenseStatus.APROBADO);
@@ -277,14 +300,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
         const expensesWithEvidence = expenses.filter(e => !!e.evidenciaUrl).length;
         const evidencePercentage = totalExpensesCount > 0 ? (expensesWithEvidence / totalExpensesCount) * 100 : 100;
 
-        // Payment Stats
-        const now = new Date();
-        const currentMonthStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
-        const currentMonthPayments = paymentHistory.filter(p => p.periodo === currentMonthStr);
-        const totalCollected = currentMonthPayments.reduce((sum, p) => sum + p.monto, 0);
-
-        return { totalApprovedAmount, reviewCount, totalExpensesCount, evidencePercentage, totalCollected };
-    }, [expenses, paymentHistory]);
+        return { totalApprovedAmount, reviewCount, totalExpensesCount, evidencePercentage };
+    }, [expenses]);
 
     const expensesToReview = useMemo(() => expenses.filter(e => e.status === ExpenseStatus.EN_REVISION), [expenses]);
     const recentPayments = useMemo(() => paymentHistory.slice(0, 5), [paymentHistory]);
@@ -324,10 +341,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <StatCard title="Recaudación Mes" value={formatCurrency(stats.totalCollected)} icon="currency-dollar" colorClass="bg-emerald-500" trend="Ingresos al día" />
-                    <StatCard title="Gasto Aprobado" value={formatCurrency(stats.totalApprovedAmount)} icon="cash" colorClass="bg-blue-500" />
-                    <StatCard title="En Revisión" value={stats.reviewCount} icon="hourglass" colorClass="bg-yellow-500" />
-                    <StatCard title="Total Cargados" value={stats.totalExpensesCount} icon="receipt-long" colorClass="bg-indigo-500" />
+                    <StatCard
+                        title="Recaudación Mes"
+                        value={financialKpis ? formatCurrency(financialKpis.total_collected) : '...'}
+                        icon="currency-dollar"
+                        colorClass="bg-emerald-500"
+                        trend="Ingresos al día"
+                    />
+                    <StatCard
+                        title="Garantías en Custodia"
+                        value={financialKpis ? formatCurrency(financialKpis.deposits_custody) : '...'}
+                        icon="lock-closed"
+                        colorClass="bg-purple-500"
+                        trend="Saldo vivo"
+                    />
+                    <StatCard
+                        title="Gasto Aprobado"
+                        value={formatCurrency(stats.totalApprovedAmount)}
+                        icon="cash"
+                        colorClass="bg-blue-500"
+                    />
+                    <StatCard
+                        title="En Revisión"
+                        value={stats.reviewCount}
+                        icon="hourglass"
+                        colorClass="bg-yellow-500"
+                    />
                 </div>
 
                 {/* Financial Charts */}
@@ -356,9 +395,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                                                     </div>
                                                     <div>
                                                         <p className="font-medium text-gray-900 dark:text-white text-sm">
-                                                            {user ? `Unidad ${user.unidad}` : 'Unidad Desconocida'}
+                                                            {user ? `Unidad ${user.unidad}` : payment.type === 'Reserva' ? 'Reserva' : 'Unidad Desconocida'}
                                                         </p>
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(payment.fechaPago).toLocaleDateString('es-CL')} • {payment.metodoPago || 'Pago'}</p>
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                            {new Date(payment.fechaPago).toLocaleDateString('es-CL')} • {payment.type === 'Reserva' ? 'Pago de Reserva' : (payment.metodoPago || 'Pago')}
+                                                        </p>
                                                     </div>
                                                 </div>
                                                 <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(payment.monto)}</p>

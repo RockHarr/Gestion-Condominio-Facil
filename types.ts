@@ -348,3 +348,10 @@ export interface ToastMessage {
   message: string;
   type: 'success' | 'error' | 'info';
 }
+
+export interface FinancialKpis {
+  total_collected: number;
+  deposits_custody: number;
+  pending_review_count: number;
+  total_expenses_approved: number;
+}

@@ -82,13 +82,20 @@ export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenitie
                                     }
                                 }}
                                 disabled={reservation && !isMine}
-                                className={`p-3 rounded-lg text-center font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1 ${isMine ? 'bg-red-500 text-white hover:bg-red-600' :
-                                    isAvailable ? 'bg-green-500 text-white hover:bg-green-600' :
-                                        'bg-gray-200 dark:bg-gray-700 text-gray-500'
+                                className={`p-3 rounded-lg text-center font-semibold transition-all flex flex-col items-center justify-center gap-1 border-2 
+                                    ${isMine
+                                        ? 'bg-red-500 text-white border-red-700 hover:bg-red-600'
+                                        : isAvailable
+                                            ? 'bg-green-500 text-white border-green-700 hover:bg-green-600'
+                                            : 'bg-gray-200 dark:bg-gray-700 text-gray-500 border-gray-300 dark:border-gray-600 cursor-not-allowed opacity-75'
                                     }`}
                                 aria-label={`${time} - ${isMine ? 'Tu reserva' : isAvailable ? 'Disponible' : 'Ocupado'}`}
                             >
-                                <span>{time}</span>
+                                <div className="flex items-center gap-1">
+                                    <span>{time}</span>
+                                    {isMine && <Icons name="user" className="w-3 h-3" />}
+                                    {!isMine && !isAvailable && <Icons name="lock-closed" className="w-3 h-3" />}
+                                </div>
                                 <span className="text-xs font-normal">
                                     {isMine ? 'Mío' : isAvailable ? 'Libre' : 'Ocupado'}
                                 </span>

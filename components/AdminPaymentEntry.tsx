@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { User, PaymentRecord, PaymentType, PaymentMethod } from '../types';
+import { dataService } from '../services/data';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
 import { PaymentReceiptModal } from './PaymentReceiptModal';
 
+interface ExtendedUser extends User {
+    unit_id?: number; // Optional as not all users might have it populated in frontend yet
+}
+
 interface AdminPaymentEntryProps {
-    users: User[];
+    users: ExtendedUser[];
     onRegisterPayment: (payment: Omit<PaymentRecord, 'id'>) => void;
 }
 
@@ -16,6 +21,7 @@ export const AdminPaymentEntry: React.FC<AdminPaymentEntryProps> = ({ users, onR
     const [metodoPago, setMetodoPago] = useState<PaymentMethod>(PaymentMethod.TRANSFERENCIA);
     const [observacion, setObservacion] = useState<string>('');
     const [paymentType, setPaymentType] = useState<PaymentType>(PaymentType.GASTO_COMUN);
+    const [unitSearch, setUnitSearch] = useState('');
 
     // State for the generated receipt
     const [lastPayment, setLastPayment] = useState<PaymentRecord | null>(null);
@@ -25,7 +31,11 @@ export const AdminPaymentEntry: React.FC<AdminPaymentEntryProps> = ({ users, onR
     const currentPeriod = new Date().toISOString().slice(0, 7); // YYYY-MM
     const [periodo, setPeriodo] = useState<string>(currentPeriod);
 
-    const residents = users.filter(u => u.role === 'resident');
+    const residents = users.filter(u =>
+        u.role === 'resident' &&
+        (u.unidad.toLowerCase().includes(unitSearch.toLowerCase()) ||
+            u.nombre.toLowerCase().includes(unitSearch.toLowerCase()))
+    );
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,6 +67,52 @@ export const AdminPaymentEntry: React.FC<AdminPaymentEntryProps> = ({ users, onR
         setMonto('');
         setObservacion('');
         setSelectedUserId('');
+        setPendingCharges([]);
+    };
+
+    // Pending Charges Logic
+    const [pendingCharges, setPendingCharges] = React.useState<any[]>([]);
+
+    React.useEffect(() => {
+        if (selectedUserId) {
+            const user = users.find(u => u.id === selectedUserId);
+            if (user && user.unit_id) {
+                dataService.getPendingChargesByUnit(user.unit_id).then(setPendingCharges).catch(console.error);
+            } else {
+                setPendingCharges([]);
+            }
+        } else {
+            setPendingCharges([]);
+        }
+    }, [selectedUserId, users]);
+
+    const handlePayCharge = async (charge: any) => {
+        if (!window.confirm(`¿Confirmar pago de ${charge.type} por $${charge.amount}?`)) return;
+
+        try {
+            await dataService.confirmChargePayment(charge.id, metodoPago, `Pago manual admin: ${observacion}`);
+            alert('Pago registrado correctamente');
+            setPendingCharges(prev => prev.filter(c => c.id !== charge.id));
+
+            // Generate pseudo-receipt for UI
+            const user = users.find(u => u.id === selectedUserId);
+            if (user) {
+                setLastPayment({
+                    id: Date.now(),
+                    userId: user.id,
+                    type: charge.type === 'RESERVATION_FEE' ? PaymentType.RESERVA : PaymentType.GASTO_COMUN, // Simplified mapping
+                    monto: charge.amount,
+                    fechaPago: new Date().toISOString().split('T')[0],
+                    periodo: currentPeriod,
+                    metodoPago,
+                    observacion: `Pago Cargo #${charge.id}`
+                });
+                setShowReceipt(true);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Error al procesar pago');
+        }
     };
 
     const getSelectedUser = () => users.find(u => u.id === lastPayment?.userId);
@@ -74,19 +130,35 @@ export const AdminPaymentEntry: React.FC<AdminPaymentEntryProps> = ({ users, onR
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Unidad / Residente</label>
-                                <select
-                                    value={selectedUserId}
-                                    onChange={(e) => setSelectedUserId(e.target.value)}
-                                    className="block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
-                                    required
-                                >
-                                    <option value="">Seleccionar unidad...</option>
-                                    {residents.map(user => (
-                                        <option key={user.id} value={user.id}>
-                                            {user.unidad} - {user.nombre}
+                                <div className="space-y-2">
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <Icons name="magnifying-glass" className="h-4 w-4 text-gray-400" />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            placeholder="Buscar unidad o nombre..."
+                                            value={unitSearch}
+                                            onChange={(e) => setUnitSearch(e.target.value)}
+                                            className="block w-full pl-9 rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-2 px-3 text-sm"
+                                        />
+                                    </div>
+                                    <select
+                                        value={selectedUserId}
+                                        onChange={(e) => setSelectedUserId(e.target.value)}
+                                        className="block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
+                                        required
+                                    >
+                                        <option value="">
+                                            {residents.length === 0 ? 'No hay resultados' : 'Seleccionar unidad...'}
                                         </option>
-                                    ))}
-                                </select>
+                                        {residents.map(user => (
+                                            <option key={user.id} value={user.id}>
+                                                {user.unidad} - {user.nombre}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -221,6 +293,37 @@ export const AdminPaymentEntry: React.FC<AdminPaymentEntryProps> = ({ users, onR
                                 <Icons name="printer" className="w-4 h-4 mr-2" />
                                 Imprimir Comprobante
                             </Button>
+                        </div>
+                    )}
+
+                    {/* Pending Charges List */}
+                    {pendingCharges.length > 0 && (
+                        <div className="bg-orange-50 dark:bg-orange-900/20 rounded-2xl p-6 border border-orange-100 dark:border-orange-800">
+                            <h3 className="font-bold text-orange-900 dark:text-orange-100 mb-4 flex items-center gap-2">
+                                <Icons name="exclamation-circle" className="w-5 h-5" />
+                                Cargos Pendientes
+                            </h3>
+                            <div className="space-y-3">
+                                {pendingCharges.map(charge => (
+                                    <div key={charge.id} className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                                        <div>
+                                            <p className="font-bold text-gray-900 dark:text-white text-sm">{charge.type}</p>
+                                            <p className="text-xs text-gray-500">#{charge.id.slice(0, 8)}</p>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <span className="font-bold text-gray-900 dark:text-white">
+                                                {new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(charge.amount)}
+                                            </span>
+                                            <button
+                                                onClick={() => handlePayCharge(charge)}
+                                                className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition-colors"
+                                            >
+                                                Cobrar
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>
