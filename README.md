@@ -1,81 +1,49 @@
-# Gestión Condominio Fácil — RockCode
+Gestión Condominio Fácil - Resumen de Producto
+📋 Visión General
+Gestión Condominio Fácil es una plataforma integral diseñada para simplificar y profesionalizar la administración de comunidades residenciales. Centraliza la comunicación, las finanzas y la gestión de espacios comunes en una interfaz moderna, segura y fácil de usar, eliminando la dependencia de hojas de cálculo dispersas y chats informales.
 
-*En desarrollo*
+🚀 Módulos Principales (Estado Actual)
+1. Módulo Financiero (Validado)
+El corazón del sistema, asegurando transparencia total.
 
-Prototipo funcional de plataforma liviana para la gestión de gastos
-comunes y comunicación básica en condominios y edificios pequeños.
+Registro de Pagos: Flujo optimizado para administradores con validación inmediata.
+Dashboard de Ingresos: KPIs en tiempo real (Ingresos del mes, deuda acumulada).
+Gastos y Aprobaciones: Sistema de rendición de cuentas donde cada gasto debe ser aprobado, generando trazabilidad.
+Auditoría: Cálculo automático de balances basado en datos reales (ingresos reales vs. proyectados).
+2. Gestión de Espacios Comunes (Validado)
+Elimina conflictos entre vecinos por el uso de Amenities.
 
-Pensado para administradores que hoy trabajan con Excel, correos y
-WhatsApp, y necesitan algo más ordenado pero sin la complejidad de un
-ERP grande.
+Reservas en Tiempo Real: Calendario unificado para Quincho, Piscina, Sala de Eventos, etc.
+Reglas de Negocio: Prevención automática de topes de horario.
+Gestión Admin: Capacidad para que la administración bloquee espacios o cree reservas manuales para residentes offline.
+3. Comunicación y Comunidad
+Mejora la convivencia y el flujo de información.
 
-## Problema que resuelve
+Tickets de Soporte: Canal formal para reportar problemas (mantención, ruidos, seguridad).
+Avisos Oficiales: Tablón digital para comunicados importantes, asegurando que todos los residentes estén informados.
+4. Seguridad y Control (Validado QA)
+Infraestructura robusta para proteger la información sensible.
 
-Muchos condominios y edificios:
+Roles y Permisos (RLS): Estricta separación de datos. Los residentes solo ven su propia información; los administradores tienen visión global.
+Protección de Datos: Seguridad a nivel de base de datos (PostgreSQL/Supabase) imposible de saltar desde el frontend.
+🔮 Roadmap: Próximas Mejoras
+Para la versión 2.0, sugerimos enfocar el desarrollo en la automatización y la extensión del servicio.
 
-- Llevan los gastos comunes en planillas sueltas.
-- No tienen un lugar único donde ver deuda, pagos y avisos.
-- Dependen de correos manuales y mensajes dispersos.
+Corto Plazo (Quick Wins)
+ Notificaciones por Email: Enviar correos automáticos al confirmar una reserva o al aprobar un pago (usando Resend o SendGrid).
+ Generación de PDF: Permitir descargar comprobantes de pago y estados de cuenta mensuales en PDF.
+ Historial de Cambios: Log de auditoría para ver quién modificó qué cosa (importante para administraciones compartidas).
+Mediano Plazo
+ Pasarela de Pagos (Webpay/Stripe): Permitir a los residentes pagar gastos comunes directamente desde la app, conciliando automáticamente el pago.
+ Gestión de Invitados: Módulo para que los residentes registren visitas (con patente y RUT) para agilizar el control en conserjería.
+ Votaciones Online: Sistema para realizar asambleas o encuestas rápidas de forma digital.
+Largo Plazo
+ App Móvil Nativa (React Native): Versión instalable con notificaciones push.
+ Integración IoT: Apertura de portones o puertas de amenities vinculada a la reserva activa en la app.
+✅ Estado Técnica
+El sistema ha pasado una Auditoría de Calidad Completa (Enero 2026), validando:
 
-**Gestión Condominio Fácil** apunta a:
-
-- Simplificar el cálculo y publicación de gastos comunes.
-- Registrar pagos de manera ordenada.
-- Entregar un panel simple para que residentes vean su situación
-  y los avisos del edificio.
-
-## Módulos v1 (MVP)
-
-> Esto es un MVP en construcción, no un producto terminado.
-
-El alcance funcional esperado para la v1 es:
-
-### 1. Administración de unidades
-
-- Lista de departamentos / casas (ej: 101, 102, 201…).
-- Definición de coeficiente de participación por unidad.
-
-### 2. Gastos comunes y prorrateo
-
-- Registro de gastos del mes (monto, categoría, comentario).
-- Cálculo automático de gasto común por unidad según coeficiente.
-- Resumen mensual en tabla (total por unidad, total general).
-
-### 3. Registro de pagos
-
-- Registro de pagos por unidad (monto, fecha, medio de pago, nota).
-- Indicadores básicos:
-  - unidades al día / atrasadas,
-  - deuda acumulada.
-
-### 4. Tablón de avisos
-
-- Publicación de avisos (texto + fecha).
-- Listado de avisos visibles para residentes.
-
-### 5. Vista residente (solo lectura v1)
-
-- Acceso básico por unidad / identificador simple.
-- Visualización de:
-  - deuda actual,
-  - últimos pagos registrados,
-  - avisos del condominio.
-
-## Tecnologías
-
-Este proyecto fue generado inicialmente desde una plantilla de Google AI
-Studio y se está adaptando a las necesidades de RockCode y del producto
-“Gestión Condominio Fácil”.
-
-- TypeScript
-- React
-- Vite
-
-## Ejecutar en local
-
-Prerrequisito: Node.js instalado.
-
-1. Instalar dependencias:
-
-   ```bash
-   npm install
+Integridad de datos en transacciones financieras.
+Seguridad de acceso y lógica de negocio en reservas.
+Estabilidad del despliegue y scripts de base de datos.
+Versión: 1.0 (Stable) Stack: React, Supabase, PostgreSQL.
