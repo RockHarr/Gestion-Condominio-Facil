@@ -6,7 +6,7 @@ Gestión Condominio Fácil es una plataforma integral diseñada para simplificar
 
 ## 🚀 Módulos Principales (Estado Actual)
 
-1) Módulo Financiero (Validado)
+### 1) Módulo Financiero (Validado)
 El corazón del sistema, asegurando transparencia total.
 
 Registro de Pagos: Flujo optimizado para administradores con validación inmediata.
@@ -14,20 +14,20 @@ Dashboard de Ingresos: KPIs en tiempo real (Ingresos del mes, deuda acumulada).
 Gastos y Aprobaciones: Sistema de rendición de cuentas donde cada gasto debe ser aprobado, generando trazabilidad.
 Auditoría: Cálculo automático de balances basado en datos reales (ingresos reales vs. proyectados).
 
-2) Gestión de Espacios Comunes (Validado)
+### 2) Gestión de Espacios Comunes (Validado)
 Elimina conflictos entre vecinos por el uso de Amenities.
 
 - Reservas en Tiempo Real: Calendario unificado para Quincho, Piscina, Sala de Eventos, etc.
 - Reglas de Negocio: Prevención automática de topes de horario.
 - Gestión Admin: Capacidad para que la administración bloquee espacios o cree reservas manuales para residentes offline.
 
-3) Comunicación y Comunidad
+### 3) Comunicación y Comunidad
 Mejora la convivencia y el flujo de información.
 
 - Tickets de Soporte: Canal formal para reportar problemas (mantención, ruidos, seguridad).
 - Avisos Oficiales: Tablón digital para comunicados importantes, asegurando que todos los residentes estén informados.
   
-4) Seguridad y Control (Validado QA)
+### 4) Seguridad y Control (Validado QA)
 Infraestructura robusta para proteger la información sensible.
 
 - Roles y Permisos (RLS): Estricta separación de datos. Los residentes solo ven su propia información; los administradores tienen visión global.
