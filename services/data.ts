@@ -267,6 +267,18 @@ export const dataService = {
         return data;
     },
 
+    async createReservationAsAdmin(amenityId: number, userId: string, startAt: string, endAt: string) {
+        const { data, error } = await withTimeout(supabase
+            .rpc('create_reservation_as_admin', {
+                p_amenity_id: amenityId,
+                p_user_id: userId,
+                p_start_at: startAt,
+                p_end_at: endAt
+            }));
+        if (error) throw error;
+        return data;
+    },
+
     async cancelReservation(id: number) {
         const { error } = await withTimeout(supabase
             .rpc('cancel_reservation', { p_reservation_id: id }));

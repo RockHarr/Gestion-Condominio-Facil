@@ -5,6 +5,7 @@ import { IncidentModal } from './IncidentModal';
 import Icons from './Icons';
 import { DepositDecisionModal } from './DepositDecisionModal';
 import { ReservationPaymentModal } from './ReservationPaymentModal';
+import { AdminCreateReservationModal } from './AdminCreateReservationModal'; // Import
 import { dataService } from '../services/data';
 
 interface AdminReservationsInboxProps {
@@ -18,6 +19,7 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
     const [selectedReservationForIncident, setSelectedReservationForIncident] = useState<Reservation | null>(null);
     const [selectedReservationForDeposit, setSelectedReservationForDeposit] = useState<Reservation | null>(null);
     const [selectedReservationForPayment, setSelectedReservationForPayment] = useState<Reservation | null>(null);
+    const [showCreateModal, setShowCreateModal] = useState(false); // New state
 
     const loadData = async () => {
         setLoading(true);
@@ -73,39 +75,47 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
     return (
         <div className="p-6 max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Reservas</h2>
-                <div className="flex space-x-2">
-                    <Button variant={activeTab === 'pending' ? 'primary' : 'secondary'} onClick={() => setActiveTab('pending')} className="relative">
-                        Pendientes
-                        {counts.pending > 0 && (
-                            <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                                {counts.pending}
-                            </span>
-                        )}
-                    </Button>
-                    <Button variant={activeTab === 'upcoming' ? 'primary' : 'secondary'} onClick={() => setActiveTab('upcoming')} className="relative">
-                        Próximas
-                        {counts.upcoming > 0 && (
-                            <span className="ml-2 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                                {counts.upcoming}
-                            </span>
-                        )}
-                    </Button>
-                    <Button variant={activeTab === 'history' ? 'primary' : 'secondary'} onClick={() => setActiveTab('history')} className="relative">
-                        Historial
-                        {counts.history > 0 && (
-                            <span className="ml-2 bg-gray-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                                {counts.history}
-                            </span>
-                        )}
-                    </Button>
-                    <Button variant={activeTab === 'all' ? 'primary' : 'secondary'} onClick={() => setActiveTab('all')} className="relative">
-                        Todas
-                        <span className="ml-2 bg-gray-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                            {counts.all}
-                        </span>
-                    </Button>
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Reservas</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Administra las solicitudes y uso de espacios comunes</p>
                 </div>
+
+                <Button onClick={() => setShowCreateModal(true)} className="shadow-lg shadow-blue-500/30">
+                    <Icons name="plus" className="w-4 h-4 mr-2" /> Nueva Reserva
+                </Button>
+            </div>
+
+            <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
+                <Button variant={activeTab === 'pending' ? 'primary' : 'secondary'} onClick={() => setActiveTab('pending')} className="relative whitespace-nowrap">
+                    Pendientes
+                    {counts.pending > 0 && (
+                        <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                            {counts.pending}
+                        </span>
+                    )}
+                </Button>
+                <Button variant={activeTab === 'upcoming' ? 'primary' : 'secondary'} onClick={() => setActiveTab('upcoming')} className="relative whitespace-nowrap">
+                    Próximas
+                    {counts.upcoming > 0 && (
+                        <span className="ml-2 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                            {counts.upcoming}
+                        </span>
+                    )}
+                </Button>
+                <Button variant={activeTab === 'history' ? 'primary' : 'secondary'} onClick={() => setActiveTab('history')} className="relative whitespace-nowrap">
+                    Historial
+                    {counts.history > 0 && (
+                        <span className="ml-2 bg-gray-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                            {counts.history}
+                        </span>
+                    )}
+                </Button>
+                <Button variant={activeTab === 'all' ? 'primary' : 'secondary'} onClick={() => setActiveTab('all')} className="relative whitespace-nowrap">
+                    Todas
+                    <span className="ml-2 bg-gray-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                        {counts.all}
+                    </span>
+                </Button>
             </div>
 
             {/* Modals */}
@@ -126,6 +136,16 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
                     onClose={() => setSelectedReservationForDeposit(null)}
                     onSuccess={() => {
                         setSelectedReservationForDeposit(null);
+                        loadData();
+                    }}
+                />
+            )}
+
+            {showCreateModal && (
+                <AdminCreateReservationModal
+                    onClose={() => setShowCreateModal(false)}
+                    onSuccess={() => {
+                        setShowCreateModal(false);
                         loadData();
                     }}
                 />

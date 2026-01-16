@@ -306,6 +306,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
     const expensesToReview = useMemo(() => expenses.filter(e => e.status === ExpenseStatus.EN_REVISION), [expenses]);
     const recentPayments = useMemo(() => paymentHistory.slice(0, 5), [paymentHistory]);
 
+    const currentMonthName = useMemo(() => {
+        const now = new Date();
+        const str = now.toLocaleString('es-CL', { month: 'long', year: 'numeric' });
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }, []);
+
     const StatCard: React.FC<{ title: string, value: string | number, icon: string, colorClass: string, trend?: string }> = ({ title, value, icon, colorClass, trend }) => (
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 flex items-start justify-between relative overflow-hidden group">
             <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ${colorClass.replace('bg-', 'text-')}`}>
@@ -328,7 +334,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Panel de Control</h1>
-                        <p className="text-gray-500 dark:text-gray-400">Resumen financiero y operativo del condominio</p>
+                        <p className="text-gray-500 dark:text-gray-400">
+                            Resumen financiero y operativo • <span className="font-medium text-blue-600 dark:text-blue-400">{currentMonthName}</span>
+                        </p>
                     </div>
                     <div className="flex gap-3">
                         <Button onClick={() => onNavigate('admin-notice-create')} variant="secondary" className="!w-auto shadow-sm">
@@ -340,9 +348,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                     </div>
                 </div>
 
+                {stats.reviewCount > 0 && (
+                    <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 rounded-r-lg flex items-start justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+                        <div className="flex gap-3">
+                            <Icons name="exclamation-triangle" className="w-6 h-6 text-yellow-500 flex-shrink-0" />
+                            <div>
+                                <h3 className="text-sm font-bold text-yellow-800 dark:text-yellow-200">
+                                    Acción Requerida: {stats.reviewCount} {stats.reviewCount === 1 ? 'gasto pendiente' : 'gastos pendientes'}
+                                </h3>
+                                <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                                    Hay gastos reportados que requieren tu aprobación para cerrar el mes correctamente.
+                                </p>
+                            </div>
+                        </div>
+                        <Button
+                            variant="secondary"
+                            className="!w-auto !text-xs !py-1.5 !px-3 bg-white dark:bg-gray-800 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800 hover:bg-yellow-50 dark:hover:bg-yellow-900"
+                            onClick={() => {
+                                const element = document.getElementById('approval-queue');
+                                element?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                        >
+                            Ver Pendientes
+                        </Button>
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard
-                        title="Recaudación Mes"
+                        title={`Recaudación ${currentMonthName}`}
                         value={financialKpis ? formatCurrency(financialKpis.total_collected) : '...'}
                         icon="currency-dollar"
                         colorClass="bg-emerald-500"
@@ -412,7 +446,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                             )}
                         </Card>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between" id="approval-queue">
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <Icons name="clipboard-document-check" className="w-5 h-5 text-blue-500" />
                                 Cola de Aprobación
