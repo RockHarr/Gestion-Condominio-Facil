@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { authService } from '../services/auth';
 import { Card, Button } from './Shared';
+import Icons from './Icons';
 
 interface LoginScreenProps { }
 
@@ -8,6 +9,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [usePassword, setUsePassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
@@ -65,15 +67,25 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
                         {usePassword && (
                             <div className="animate-in fade-in slide-in-from-top-2 duration-200">
                                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contraseña</label>
-                                <input
-                                    id="password"
-                                    type="password"
-                                    required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Contraseña"
-                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                                />
+                                <div className="relative">
+                                    <input
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        required
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Contraseña"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pr-10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none"
+                                        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                    >
+                                        <Icons name={showPassword ? "eye-slash" : "eye"} className="w-5 h-5" />
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -85,8 +97,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
                     )}
 
                     <div className="space-y-3">
-                        <Button type="submit" disabled={loading} className="w-full">
-                            {loading ? 'Procesando...' : (usePassword ? 'Iniciar Sesión' : 'Enviar enlace de acceso')}
+                        <Button type="submit" isLoading={loading} className="w-full">
+                            {usePassword ? 'Iniciar Sesión' : 'Enviar enlace de acceso'}
                         </Button>
 
                         <button
