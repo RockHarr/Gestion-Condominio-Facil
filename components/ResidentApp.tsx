@@ -167,6 +167,24 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
 
     const onBackHandler = ['ticket-create', 'reservations'].includes(page) ? () => handleNavigate('home') : undefined;
 
+    const previousBalance = useMemo(() => {
+        const unpaidCommonExpenses = commonExpenseDebts.filter(
+            (debt) => !debt.pagado && debt.mes < statementMonth
+        );
+        const unpaidParkingDebts = parkingDebts.filter(
+            (debt) => !debt.pagado && debt.mes < statementMonth
+        );
+        const totalCommonDebt = unpaidCommonExpenses.reduce(
+            (sum, debt) => sum + debt.monto,
+            0
+        );
+        const totalParkingDebt = unpaidParkingDebts.reduce(
+            (sum, debt) => sum + debt.monto,
+            0
+        );
+        return totalCommonDebt + totalParkingDebt;
+    }, [commonExpenseDebts, parkingDebts, statementMonth]);
+
     return (
         <div className="max-w-lg mx-auto bg-gray-100 dark:bg-gray-900 min-h-screen pb-24">
             {showHeader && <Header title={getPageTitle()} onBack={onBackHandler} />}
@@ -180,7 +198,7 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
                     month={statementMonth}
                     communityExpenses={expenses.filter(e => e.fecha.startsWith(statementMonth))}
                     payments={paymentHistory}
-                    previousBalance={0} // TODO: Calculate real previous balance based on debts
+                    previousBalance={previousBalance}
                     onClose={() => setShowStatementModal(false)}
                 />
             )}
