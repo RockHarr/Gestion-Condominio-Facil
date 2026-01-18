@@ -181,46 +181,77 @@ export const dataService = {
 
     // --- Reservations ---
     async getReservations() {
-        // 1. Fetch reservations without the join
-        const { data: reservations, error } = await withTimeout(supabase
-            .from('reservations')
-            .select('*'));
+        try {
+            // Fetch reservations with the joined user profile data
+            // Note: This requires a Foreign Key from reservations.user_id to public.profiles.id
+            const { data: reservations, error } = await withTimeout(supabase
+                .from('reservations')
+                .select('*, user:profiles(id, nombre, unidad)'));
 
-        if (error) throw error;
+            if (error) throw error;
 
-        // 2. Extract unique user IDs
-        const userIds = Array.from(new Set(reservations.map((r: any) => r.user_id).filter(Boolean)));
+            // Map data
+            return reservations.map((r: any) => ({
+                id: r.id,
+                amenityId: r.amenity_id,
+                userId: r.user_id,
+                startAt: r.start_at,
+                endAt: r.end_at,
+                status: r.status,
+                isSystem: r.is_system,
+                systemReason: r.system_reason,
+                formData: r.form_data,
+                user: r.user // Supabase returns the joined data in the 'user' property
+            })) as Reservation[];
 
-        // 3. Fetch profiles for these users
-        let profilesMap: Record<string, any> = {};
-        if (userIds.length > 0) {
-            const { data: profiles, error: profilesError } = await withTimeout(supabase
-                .from('profiles')
-                .select('id, nombre, unidad')
-                .in('id', userIds));
+        } catch (error: any) {
+            // Fallback to manual join if optimization fails (e.g. migration not applied)
+            if (error.code === 'PGRST200') {
+                console.warn("getReservations: Optimized query failed (likely missing FK), falling back to manual join.");
 
-            if (profilesError) {
-                console.error('DataService: Error fetching profiles for reservations:', profilesError);
-            } else {
-                profiles?.forEach((p: any) => {
-                    profilesMap[p.id] = p;
-                });
+                // 1. Fetch reservations without the join
+                const { data: reservations, error: resError } = await withTimeout(supabase
+                    .from('reservations')
+                    .select('*'));
+
+                if (resError) throw resError;
+
+                // 2. Extract unique user IDs
+                const userIds = Array.from(new Set(reservations.map((r: any) => r.user_id).filter(Boolean)));
+
+                // 3. Fetch profiles for these users
+                const profilesMap: Record<string, any> = {};
+                if (userIds.length > 0) {
+                    const { data: profiles, error: profilesError } = await withTimeout(supabase
+                        .from('profiles')
+                        .select('id, nombre, unidad')
+                        .in('id', userIds));
+
+                    if (profilesError) {
+                        console.error('DataService: Error fetching profiles for reservations:', profilesError);
+                    } else {
+                        profiles?.forEach((p: any) => {
+                            profilesMap[p.id] = p;
+                        });
+                    }
+                }
+
+                // 4. Merge data
+                return reservations.map((r: any) => ({
+                    id: r.id,
+                    amenityId: r.amenity_id,
+                    userId: r.user_id,
+                    startAt: r.start_at,
+                    endAt: r.end_at,
+                    status: r.status,
+                    isSystem: r.is_system,
+                    systemReason: r.system_reason,
+                    formData: r.form_data,
+                    user: profilesMap[r.user_id] || undefined
+                })) as Reservation[];
             }
+            throw error;
         }
-
-        // 4. Merge data
-        return reservations.map((r: any) => ({
-            id: r.id,
-            amenityId: r.amenity_id,
-            userId: r.user_id,
-            startAt: r.start_at,
-            endAt: r.end_at,
-            status: r.status,
-            isSystem: r.is_system,
-            systemReason: r.system_reason,
-            formData: r.form_data,
-            user: profilesMap[r.user_id] || undefined // Map the manually fetched user data
-        })) as Reservation[];
     },
 
     async getAmenities() {
