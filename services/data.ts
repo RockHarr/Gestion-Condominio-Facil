@@ -353,13 +353,13 @@ export const dataService = {
         }
 
         // 2. Confirm each charge via RPC
-        for (const charge of pendingCharges) {
-            await this.confirmChargePayment(
+        await Promise.all(pendingCharges.map(charge =>
+            this.confirmChargePayment(
                 charge.id,
                 payment.metodoPago || 'Transferencia',
                 payment.observacion
-            );
-        }
+            )
+        ));
 
         return { success: true };
     },
