@@ -77,44 +77,49 @@ export const authService = {
         return supabase.auth.onAuthStateChange(async (event, session) => {
             console.log("AuthService: onAuthStateChange event:", event, "Session:", session?.user?.email);
             if (session?.user) {
-                let profile = null;
-                let attempts = 0;
-                const maxAttempts = 3;
+                // Try to fetch profile once
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
 
-                while (attempts < maxAttempts && !profile) {
-                    try {
-                        const { data, error } = await supabase
-                            .from('profiles')
-                            .select('*')
-                            .eq('id', session.user.id)
-                            .single();
-
-                        if (!error && data) {
-                            profile = data;
-                            break;
-                        } else {
-                            // If not found, wait and retry (Trigger might be slow)
-                            console.log(`AuthService: Profile not found (attempt ${attempts + 1}), waiting...`);
-                            await new Promise(resolve => setTimeout(resolve, 1000));
-                        }
-                    } catch (err) {
-                        console.error("AuthService: Exception fetching profile", err);
-                    }
-                    attempts++;
-                }
-
-                // Fallback if still null (Trigger failed or timeout)
-                if (!profile) {
-                    console.warn("AuthService: Profile creation trigger likely failed or timed out. Using fallback.");
+                if (profile && !error) {
+                    callback({ ...session.user, ...profile });
+                } else {
+                    // Profile not found yet (Trigger latency).
+                    // 1. Send Optimistic Update immediately so UI is unblocked
+                    console.log("AuthService: Profile not found, applying optimistic update...");
                     callback({
                         id: session.user.id,
                         email: session.user.email,
-                        role: 'resident', // Default role
+                        role: 'resident', // Default prediction
                         nombre: session.user.email?.split('@')[0] || 'Usuario',
                         unidad: 'Sin Asignar'
                     });
-                } else {
-                    callback({ ...session.user, ...profile });
+
+                    // 2. Listen for the profile creation in real-time
+                    console.log("AuthService: Listening for profile creation...");
+                    const channel = supabase.channel(`profile_creation:${session.user.id}`)
+                        .on('postgres_changes', {
+                            event: 'INSERT',
+                            schema: 'public',
+                            table: 'profiles',
+                            filter: `id=eq.${session.user.id}`
+                        }, (payload) => {
+                            console.log("AuthService: Profile created event received", payload);
+                            const newProfile = payload.new;
+                            // Update with actual data
+                            callback({ ...session.user, ...newProfile });
+                            // Cleanup
+                            supabase.removeChannel(channel);
+                        })
+                        .subscribe();
+
+                    // Safety cleanup if profile never arrives
+                    setTimeout(() => {
+                        supabase.removeChannel(channel);
+                    }, 60000);
                 }
             } else {
                 callback(null);
