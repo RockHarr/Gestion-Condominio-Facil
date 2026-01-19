@@ -482,12 +482,6 @@ export const dataService = {
             delete dbUpdates.email;
         }
 
-        // TEMPORARY FIX: The 'alicuota' column does not exist in the DB yet.
-        // We remove it to allow updating other fields (Name, Unit, Parking).
-        if ('alicuota' in dbUpdates) {
-            delete dbUpdates.alicuota;
-        }
-
         const { error } = await withTimeout(supabase
             .from('profiles')
             .update(dbUpdates)
