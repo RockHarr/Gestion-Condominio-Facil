@@ -42,9 +42,9 @@ export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenitie
 
             <Card>
                 <div className="flex justify-between items-center mb-4">
-                    <button onClick={() => changeDay(-1)} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"><Icons name="chevronLeft" /></button>
+                    <button onClick={() => changeDay(-1)} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Día anterior"><Icons name="chevronLeft" /></button>
                     <h3 className="font-semibold text-lg text-gray-900 dark:text-white">{currentDate.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' })}</h3>
-                    <button onClick={() => changeDay(1)} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"><Icons name="chevronRight" /></button>
+                    <button onClick={() => changeDay(1)} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Día siguiente"><Icons name="chevronRight" /></button>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                     {timeslots.map(time => {

@@ -122,10 +122,10 @@ export const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({ amen
                     {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                 </h3>
                 <div className="flex gap-2">
-                    <button onClick={handlePrevMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                    <button onClick={handlePrevMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded" aria-label="Mes anterior">
                         <Icons name="chevronLeft" className="w-5 h-5" />
                     </button>
-                    <button onClick={handleNextMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                    <button onClick={handleNextMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded" aria-label="Mes siguiente">
                         <Icons name="chevronRight" className="w-5 h-5" />
                     </button>
                 </div>

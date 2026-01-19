@@ -88,6 +88,7 @@ export const AdminUnitsScreen: React.FC<AdminUnitsScreenProps> = ({ users, payme
                                         <button
                                             onClick={(e) => toggleMenu(e, resident.id)}
                                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                            aria-label="Opciones de unidad"
                                         >
                                             <Icons name="ellipsis-vertical" className="w-5 h-5" />
                                         </button>

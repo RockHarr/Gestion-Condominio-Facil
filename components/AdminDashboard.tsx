@@ -110,7 +110,7 @@ export const AdminCreateExpenseModal: React.FC<{
                 <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                     <div className="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-4">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white">Cargar Nuevo Gasto</h2>
-                        <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                        <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-500" aria-label="Cerrar modal">
                             <Icons name="xmark" className="w-6 h-6" />
                         </button>
                     </div>
