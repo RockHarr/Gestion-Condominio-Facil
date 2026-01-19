@@ -34,22 +34,18 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
             <div className="flex justify-around">
                 {navItems.map(item => {
                     const isActive = activeTab === item.page;
+                    const hasBadge = item.page === 'more' && unreadNotices > 0;
+
                     return (
                         <button
                             key={item.page}
-                            data-testid={`tab-${item.page}`}
                             onClick={() => onNavigate(item.page as Page)}
                             className={`flex flex-col items-center justify-center w-full pt-2 pb-1 text-sm font-medium focus:outline-none transition-colors duration-200 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
-                            aria-current={isActive ? 'page' : undefined}
                         >
                             <div className="relative">
                                 <Icons name={item.icon} className="w-7 h-7" />
-                                {item.page === 'notices' && unreadNotices > 0 && (
-                                    <span
-                                        data-testid="tab-notices-badge"
-                                        className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full"
-                                    >
-                                        {unreadNotices}
+                                {hasBadge && (
+                                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full animate-pulse">
                                     </span>
                                 )}
                             </div>

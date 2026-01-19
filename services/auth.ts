@@ -75,55 +75,35 @@ export const authService = {
 
     onAuthStateChange(callback: (user: any) => void) {
         return supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log("AuthService: onAuthStateChange event:", event, "Session:", session?.user?.email);
-            if (session?.user) {
-                // Try to fetch profile once
-                const { data: profile, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
+            console.log(`AuthService: Event ${event}`, session?.user?.email);
 
-                if (profile && !error) {
-                    callback({ ...session.user, ...profile });
-                } else {
-                    // Profile not found yet (Trigger latency).
-                    // 1. Send Optimistic Update immediately so UI is unblocked
-                    console.log("AuthService: Profile not found, applying optimistic update...");
-                    callback({
-                        id: session.user.id,
-                        email: session.user.email,
-                        role: 'resident', // Default prediction
-                        nombre: session.user.email?.split('@')[0] || 'Usuario',
-                        unidad: 'Sin Asignar'
-                    });
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
+                if (session?.user) {
+                    // Try to fetch profile once
+                    const { data: profile, error } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', session.user.id)
+                        .single();
 
-                    // 2. Listen for the profile creation in real-time
-                    console.log("AuthService: Listening for profile creation...");
-                    const channel = supabase.channel(`profile_creation:${session.user.id}`)
-                        .on('postgres_changes', {
-                            event: 'INSERT',
-                            schema: 'public',
-                            table: 'profiles',
-                            filter: `id=eq.${session.user.id}`
-                        }, (payload) => {
-                            console.log("AuthService: Profile created event received", payload);
-                            const newProfile = payload.new;
-                            // Update with actual data
-                            callback({ ...session.user, ...newProfile });
-                            // Cleanup
-                            supabase.removeChannel(channel);
-                        })
-                        .subscribe();
-
-                    // Safety cleanup if profile never arrives
-                    setTimeout(() => {
-                        supabase.removeChannel(channel);
-                    }, 60000);
+                    if (profile && !error) {
+                        callback({ ...session.user, ...profile });
+                    } else {
+                        // Profile not found yet (Trigger latency) or error
+                        console.log("AuthService: Profile not found, applying optimistic update...");
+                        callback({
+                            id: session.user.id,
+                            email: session.user.email,
+                            role: 'resident', // Default prediction
+                            nombre: session.user.email?.split('@')[0] || 'Usuario',
+                            unidad: 'Sin Asignar'
+                        });
+                    }
                 }
-            } else {
+            } else if (event === 'SIGNED_OUT') {
                 callback(null);
             }
+            // Ignore other events like PASSWORD_RECOVERY to avoid state thrashing
         });
     }
 };

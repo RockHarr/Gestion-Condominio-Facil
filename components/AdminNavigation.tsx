@@ -6,35 +6,60 @@ import { Button } from './Shared';
 interface AdminTabBarProps {
     currentPage: Page;
     onNavigate: (page: Page) => void;
+    pendingRequestsCount?: number;
 }
 
-export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigate }) => {
+export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigate, pendingRequestsCount = 0 }) => {
+    // 4 Main Items for Admin
     const navItems = [
         { page: 'admin-dashboard', icon: 'speedometer', label: 'Inicio' },
-        { page: 'admin-units', icon: 'building-office', label: 'Unidades' },
         { page: 'admin-payment-entry', icon: 'currency-dollar', label: 'Pagos' },
-        { page: 'admin-reservations', icon: 'calendar-days', label: 'Reservas' },
-        { page: 'admin-tickets', icon: 'ticket', label: 'Tickets' },
-        { page: 'admin-notices', icon: 'bell', label: 'Avisos' },
-        { page: 'admin-config', icon: 'cog-6-tooth', label: 'Config' },
-        { page: 'profile', icon: 'user', label: 'Perfil' },
+        {
+            page: 'admin-requests',
+            icon: 'inbox-stack',
+            label: 'Solicitudes',
+            badge: pendingRequestsCount
+        },
+        { page: 'admin-menu', icon: 'bars-3', label: 'Menú' },
     ];
 
+    const getActiveTab = () => {
+        // Direct match
+        if (['admin-dashboard', 'admin-payment-entry', 'admin-requests', 'admin-menu'].includes(currentPage)) return currentPage;
+
+        // Requests sub-pages
+        if (['admin-tickets', 'admin-reservations', 'admin-ticket-detail'].includes(currentPage)) return 'admin-requests';
+
+        // Menu sub-pages
+        if (['admin-units', 'admin-notices', 'admin-amenities', 'admin-config', 'profile', 'admin-unit-create', 'admin-unit-edit', 'admin-unit-detail', 'admin-notice-create', 'admin-notice-detail', 'admin-reservation-types'].includes(currentPage)) return 'admin-menu';
+
+        return 'admin-dashboard';
+    };
+
+    const activeTab = getActiveTab();
+
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 md:hidden pb-safe">
+        <nav className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 md:hidden pb-safe">
             <div className="flex justify-around items-center h-16">
                 {navItems.map(item => {
-                    const isActive = currentPage === item.page || (currentPage as string).startsWith(item.page);
+                    const isActive = activeTab === item.page;
                     return (
                         <button
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
                             className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-200 ${isActive
-                                ? 'text-blue-600 dark:text-blue-400 transform scale-105'
+                                ? 'text-blue-600 dark:text-blue-400'
                                 : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
                                 }`}
                         >
-                            <Icons name={item.icon} className={`w-6 h-6 ${isActive ? 'stroke-2' : 'stroke-1.5'}`} />
+                            <div className="relative">
+                                <Icons name={item.icon} className={`w-6 h-6 ${isActive ? 'stroke-2' : 'stroke-1.5'}`} />
+                                {item.badge && item.badge > 0 && (
+                                    <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full border border-white dark:border-gray-900">
+                                        {item.badge}
+                                    </span>
+                                )}
+                            </div>
                             <span className="text-[10px] font-medium tracking-wide">{item.label}</span>
                         </button>
                     );
@@ -48,16 +73,18 @@ interface AdminSidebarProps {
     currentPage: Page;
     onNavigate: (page: Page) => void;
     onLogout: () => void;
+    pendingTicketsCount?: number;
+    pendingReservationsCount?: number;
 }
 
-export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavigate, onLogout }) => {
+export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavigate, onLogout, pendingTicketsCount = 0, pendingReservationsCount = 0 }) => {
     const navItems = [
         { page: 'admin-dashboard', icon: 'speedometer', label: 'Dashboard' },
         { page: 'admin-units', icon: 'building-office', label: 'Directorio de Unidades' },
         { page: 'admin-payment-entry', icon: 'currency-dollar', label: 'Registrar Pago' },
         { page: 'admin-amenities', icon: 'home', label: 'Espacios Comunes' },
-        { page: 'admin-reservations', icon: 'calendar-days', label: 'Gestión de Reservas' },
-        { page: 'admin-tickets', icon: 'ticket', label: 'Gestión de Tickets' },
+        { page: 'admin-reservations', icon: 'calendar-days', label: 'Gestión de Reservas', badge: pendingReservationsCount },
+        { page: 'admin-tickets', icon: 'ticket', label: 'Gestión de Tickets', badge: pendingTicketsCount },
         { page: 'admin-notices', icon: 'bell', label: 'Mural de Avisos' },
         { page: 'admin-config', icon: 'cog-6-tooth', label: 'Configuración' },
         { page: 'profile', icon: 'user', label: 'Mi Perfil' },
@@ -96,7 +123,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
                                     }`}
                             />
                             {item.label}
-                            {isActive && (
+                            {item.badge && item.badge > 0 && (
+                                <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">
+                                    {item.badge}
+                                </span>
+                            )}
+                            {isActive && !item.badge && (
                                 <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400"></div>
                             )}
                         </button>

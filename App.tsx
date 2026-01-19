@@ -463,6 +463,7 @@ function App() {
                     paymentHistory={paymentHistory}
                     commonExpenseDebts={commonExpenseDebts}
                     parkingDebts={parkingDebts}
+                    reservations={reservations}
                     handleNavigate={handleNavigate}
                     handleLogout={handleLogout}
                     updateTicketStatus={updateTicketStatus}

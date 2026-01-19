@@ -301,6 +301,8 @@ export type Page =
   | 'admin-reservation-types'
   | 'admin-reservations'
   | 'admin-config'
+  | 'admin-requests'
+  | 'admin-menu'
   | 'polls'
   | 'admin-polls';
 

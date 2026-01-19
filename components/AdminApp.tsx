@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Page, User, Ticket, Notice, Expense, CommunitySettings, PaymentRecord, CommonExpenseDebt, ParkingDebt, TicketStatus } from '../types';
+import { Page, User, Ticket, Notice, Expense, CommunitySettings, PaymentRecord, CommonExpenseDebt, ParkingDebt, TicketStatus, Reservation } from '../types';
 import { Header } from './Shared';
 import { AdminDashboard } from './AdminDashboard';
 import { AdminTicketsScreen, AdminTicketDetailScreen } from './AdminTickets';
@@ -12,6 +12,8 @@ import { ProfileScreen } from './ProfileScreen';
 import { AmenitiesManager } from './AmenitiesManager';
 import { ReservationTypesManager } from './ReservationTypesManager';
 import { AdminReservationsInbox } from './AdminReservationsInbox';
+import { AdminRequestsScreen } from './AdminRequestsScreen';
+import { AdminMenuScreen } from './AdminMenuScreen';
 
 interface AdminAppProps {
     page: Page;
@@ -25,6 +27,7 @@ interface AdminAppProps {
     paymentHistory: PaymentRecord[];
     commonExpenseDebts: CommonExpenseDebt[];
     parkingDebts: ParkingDebt[];
+    reservations: Reservation[];
     handleNavigate: (page: Page, params?: any) => void;
     handleLogout: () => void;
     updateTicketStatus: (id: number, status: TicketStatus) => void;
@@ -44,7 +47,7 @@ interface AdminAppProps {
 }
 
 export const AdminApp: React.FC<AdminAppProps> = (props) => {
-    const { page, pageParams, users, tickets, notices, expenses, settings, paymentHistory, commonExpenseDebts, parkingDebts, handleNavigate, handleLogout, updateTicketStatus, addNotice, approveNotice, addUser, updateUser, deleteUser, addExpense, approveExpense, rejectExpense, closeMonth, registerPayment, updateSettings, theme, toggleTheme } = props;
+    const { page, pageParams, users, tickets, notices, expenses, settings, paymentHistory, commonExpenseDebts, parkingDebts, reservations, handleNavigate, handleLogout, updateTicketStatus, addNotice, approveNotice, addUser, updateUser, deleteUser, addExpense, approveExpense, rejectExpense, closeMonth, registerPayment, updateSettings, theme, toggleTheme } = props;
 
     const renderPage = () => {
         switch (page) {
@@ -75,7 +78,7 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
             case 'admin-amenities': return <AmenitiesManager onNavigate={handleNavigate} />;
 
             case 'admin-reservation-types': return <ReservationTypesManager onNavigate={handleNavigate} amenityId={pageParams?.amenityId} />;
-            case 'admin-reservations': return <AdminReservationsInbox onNavigate={handleNavigate} />;
+            case 'admin-reservations': return <AdminReservationsInbox reservations={reservations} onNavigate={handleNavigate} />;
             case 'admin-config': return <AdminSettingsScreen settings={settings} onUpdateSettings={updateSettings} />;
             case 'profile': return <ProfileScreen user={props.currentUser} onLogout={handleLogout} onToggleTheme={toggleTheme} theme={theme} onNavigate={handleNavigate} />;
             default: return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} theme={theme} />;
@@ -119,9 +122,13 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
         return undefined;
     }, [page, handleNavigate]);
 
+    // Counts for badges
+    const pendingTicketsCount = tickets.filter(t => t.estado === TicketStatus.NUEVO).length;
+    const pendingReservationsCount = reservations.filter(r => r.status === 'REQUESTED').length;
+
     return (
         <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-            <AdminSidebar currentPage={page} onNavigate={handleNavigate} onLogout={handleLogout} />
+            <AdminSidebar currentPage={page} onNavigate={handleNavigate} onLogout={handleLogout} pendingTicketsCount={pendingTicketsCount} pendingReservationsCount={pendingReservationsCount} />
             <div className="flex-1 flex flex-col overflow-hidden">
                 <div className="md:hidden">
                     <Header title={getPageTitle()} onBack={onBackHandler} onLogout={handleLogout} />

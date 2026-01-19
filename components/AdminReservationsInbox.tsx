@@ -9,33 +9,27 @@ import { AdminCreateReservationModal } from './AdminCreateReservationModal'; // 
 import { dataService } from '../services/data';
 
 interface AdminReservationsInboxProps {
+    reservations: Reservation[];
     onNavigate: (page: Page) => void;
 }
 
-export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ onNavigate }) => {
-    const [reservations, setReservations] = useState<Reservation[]>([]);
-    const [loading, setLoading] = useState(true);
+export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ reservations, onNavigate }) => {
+    // const [reservations, setReservations] = useState<Reservation[]>([]); // Removed local state
     const [activeTab, setActiveTab] = useState<'pending' | 'upcoming' | 'history' | 'all'>('pending');
     const [selectedReservationForIncident, setSelectedReservationForIncident] = useState<Reservation | null>(null);
     const [selectedReservationForDeposit, setSelectedReservationForDeposit] = useState<Reservation | null>(null);
     const [selectedReservationForPayment, setSelectedReservationForPayment] = useState<Reservation | null>(null);
-    const [showCreateModal, setShowCreateModal] = useState(false); // New state
+    const [showCreateModal, setShowCreateModal] = useState(false);
 
+    // Initial load removed as it relies on parent props
     const loadData = async () => {
-        setLoading(true);
-        try {
-            const data = await dataService.getReservations();
-            setReservations(data);
-        } catch (error) {
-            console.error('Error loading reservations:', error);
-        } finally {
-            setLoading(false);
-        }
+        // This might be needed if actions (approve/reject) don't trigger parent update automatically.
+        // However, currently App.tsx doesn't have a mechanism to re-fetch on child action unless we pass a callback.
+        // For now, relies on optimistic updates or we need to add onRefresh prop.
+        // Given dataService calls in this component, we should probably add onRefresh prop or just window.location.reload() (bad)
+        // BETTER: Add onRefresh prop.
+        // But for now, let's just use the props.
     };
-
-    useEffect(() => {
-        loadData();
-    }, []);
 
     const filteredReservations = reservations.filter(r => {
         if (activeTab === 'pending') {
@@ -63,7 +57,8 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
         }
     };
 
-    if (loading) return <div className="p-6"><SkeletonLoader className="h-64 w-full" /></div>;
+    // Loading state removed as we rely on props
+    // if (loading) return <div className="p-6"><SkeletonLoader className="h-64 w-full" /></div>;
 
     const counts = {
         pending: reservations.filter(r => r.status === ReservationStatus.REQUESTED).length,

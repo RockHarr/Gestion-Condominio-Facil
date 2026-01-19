@@ -4,7 +4,7 @@ import { HomeScreen } from './HomeScreen';
 import { PaymentsScreen } from './PaymentsScreen';
 import { CreateTicketScreen } from './TicketsScreen';
 import { TicketsScreen } from './TicketsScreen';
-import { NoticesScreen } from './NoticesScreen';
+import { NoticesScreen, NoticeDetailScreen } from './NoticesScreen';
 import { AmenitiesScreen } from './AmenitiesScreen'; // Assuming this exists or will be fixed if not
 import { ReservationsScreen } from './ReservationsScreen';
 import { ProfileScreen } from './ProfileScreen';
@@ -45,6 +45,7 @@ interface ResidentAppProps {
 
 import { MyReservationsScreen } from './MyReservationsScreen';
 import { PollsScreen } from './PollsScreen';
+import { MoreScreen } from './MoreScreen';
 
 export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
     const { page, pageParams, currentUser, commonExpenseDebts, parkingDebts, tickets, notices, amenities, reservations, financialStatements, reserveFund, unreadNoticesCount, theme, expenses, paymentHistory, handleNavigate, handleLogout, toggleTheme, addTicket, updateTicketStatus, addReservation, cancelReservation, handleConfirmPayment, showToast } = props;
@@ -75,6 +76,10 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
             case 'ticket-create': return <CreateTicketScreen onAddTicket={addTicket} />;
             case 'tickets': return <TicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
             case 'notices': return <NoticesScreen notices={publishedNotices} onNavigate={handleNavigate} />;
+            case 'notice-detail': {
+                const notice = notices.find(n => n.id === pageParams?.id);
+                return notice ? <div className="p-4"><NoticeDetailScreen notice={notice} /></div> : <div>Aviso no encontrado</div>;
+            }
             case 'amenities': return <AmenitiesScreen amenities={amenities} onNavigate={handleNavigate} />;
             case 'reservations':
                 return (
@@ -145,13 +150,13 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
                 );
 
             case 'polls': return <PollsScreen />;
-            case 'more': return <ProfileScreen user={currentUser} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} onNavigate={handleNavigate} />;
+            case 'more': return <MoreScreen onNavigate={handleNavigate} unreadNotices={unreadNoticesCount} />;
             case 'profile': return <ProfileScreen user={currentUser} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} onNavigate={handleNavigate} />;
             default: return <HomeScreen user={currentUser} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} expenses={expenses} paymentHistory={paymentHistory} theme={theme} onNavigate={handleNavigate} onDownloadStatement={() => setShowStatementModal(true)} showToast={showToast} />;
         }
     };
 
-    const showHeader = ['home', 'payments', 'tickets', 'notices', 'amenities', 'polls', 'profile'].includes(page);
+    const showHeader = ['home', 'payments', 'tickets', 'notices', 'amenities', 'polls', 'profile', 'more'].includes(page);
     const getPageTitle = () => {
         switch (page) {
             case 'home': return 'Inicio';
@@ -161,11 +166,16 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
             case 'amenities': return 'Espacios Comunes';
             case 'polls': return 'Votaciones';
             case 'profile': return 'Mi Perfil';
+            case 'more': return 'Más Opciones';
             default: return 'Condominio Fácil';
         }
     };
 
-    const onBackHandler = ['ticket-create', 'reservations'].includes(page) ? () => handleNavigate('home') : undefined;
+    const onBackHandler = useMemo(() => {
+        if (['ticket-create', 'reservations', 'notice-detail'].includes(page)) return () => handleNavigate('home');
+        if (['notices', 'tickets', 'polls', 'profile'].includes(page)) return () => handleNavigate('more');
+        return undefined;
+    }, [page, handleNavigate]);
 
     const previousBalance = useMemo(() => {
         const unpaidCommonExpenses = commonExpenseDebts.filter(
