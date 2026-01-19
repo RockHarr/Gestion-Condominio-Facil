@@ -160,10 +160,25 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
     const [description, setDescription] = useState('');
     const [photo, setPhoto] = useState<string | undefined>(undefined);
     const [photoName, setPhotoName] = useState('');
+    const [error, setError] = useState<string | null>(null);
 
     const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setError(null);
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
+
+            // Security: Validate file type
+            if (!file.type.startsWith('image/')) {
+                setError('Solo se permiten archivos de imagen (JPG, PNG, etc).');
+                return;
+            }
+
+            // Security: Validate file size (Max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                setError('La imagen no debe superar los 5MB.');
+                return;
+            }
+
             setPhotoName(file.name);
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -193,9 +208,11 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                                 value={title}
                                 onChange={e => setTitle(e.target.value)}
                                 required
+                                maxLength={100}
                                 placeholder="Ej: Filtración en el baño"
                                 className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
                             />
+                            <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/100</p>
                         </div>
                         <div>
                             <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descripción detallada</label>
@@ -205,20 +222,22 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                                 onChange={e => setDescription(e.target.value)}
                                 rows={5}
                                 required
+                                maxLength={2000}
                                 placeholder="Describe el problema con el mayor detalle posible..."
                                 className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
                             />
+                             <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/2000</p>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Adjuntar foto (opcional)</label>
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer relative">
+                            <div className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer relative ${error ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50'}`}>
                                 <div className="space-y-1 text-center">
                                     {photo ? (
                                         <div className="relative">
                                             <img src={photo} alt="Preview" className="mx-auto h-32 object-cover rounded-lg" />
                                             <button
                                                 type="button"
-                                                onClick={(e) => { e.preventDefault(); setPhoto(undefined); setPhotoName(''); }}
+                                                onClick={(e) => { e.preventDefault(); setPhoto(undefined); setPhotoName(''); setError(null); }}
                                                 className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600"
                                             >
                                                 <Icons name="xmark" className="w-4 h-4" />
@@ -233,12 +252,13 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                                                     <input id="file-upload" name="file-upload" type="file" accept="image/*" className="sr-only" onChange={handlePhotoChange} />
                                                 </label>
                                             </div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-500">PNG, JPG hasta 10MB</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-500">PNG, JPG hasta 5MB</p>
                                         </>
                                     )}
                                 </div>
                             </div>
-                            {photoName && !photo && <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">Archivo seleccionado: {photoName}</p>}
+                            {error && <p className="text-sm mt-2 text-red-600 dark:text-red-400 font-medium">{error}</p>}
+                            {photoName && !photo && !error && <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">Archivo seleccionado: {photoName}</p>}
                         </div>
                     </div>
                 </Card>
