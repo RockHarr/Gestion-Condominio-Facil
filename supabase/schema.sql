@@ -10,6 +10,7 @@ create table public.profiles (
   unidad text,
   role text check (role in ('admin', 'resident')) default 'resident',
   has_parking boolean default false,
+  alicuota numeric(5,2) DEFAULT 0,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
