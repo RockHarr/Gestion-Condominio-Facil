@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Ticket, TicketStatus, Page } from '../types';
-import { Card, Button } from './Shared';
+import { Card, Button, EmptyState } from './Shared';
 import Icons from './Icons';
 
 // Helper
@@ -77,13 +77,11 @@ export const TicketsScreen: React.FC<TicketsScreenProps> = ({ tickets, onNavigat
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
-                    <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
-                        <Icons name="chat-bubble-left-right" className="w-8 h-8" />
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">No tienes tickets</h3>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1">¿Necesitas ayuda con algo?</p>
-                </div>
+                <EmptyState
+                    icon="chat-bubble-left-right"
+                    title="No tienes tickets"
+                    description="¿Necesitas ayuda con algo?"
+                />
             )}
 
             <div className="fixed bottom-24 right-4 z-10">

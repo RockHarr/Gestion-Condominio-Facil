@@ -35,6 +35,28 @@ export const Button: React.FC<{ onClick?: (e: React.MouseEvent<HTMLButtonElement
     );
 };
 
+export const EmptyState: React.FC<{
+    icon: string;
+    title: string;
+    description: string;
+    actionLabel?: string;
+    onAction?: () => void;
+    className?: string;
+}> = ({ icon, title, description, actionLabel, onAction, className = '' }) => (
+    <div className={`text-center py-12 px-4 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 ${className}`}>
+        <div className="w-16 h-16 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-gray-400 dark:text-gray-300">
+            <Icons name={icon} className="w-8 h-8" />
+        </div>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{title}</h3>
+        <p className="text-gray-500 dark:text-gray-400 max-w-xs mx-auto mb-6">{description}</p>
+        {actionLabel && onAction && (
+            <Button onClick={onAction} variant="secondary" className="!w-auto !px-6">
+                {actionLabel}
+            </Button>
+        )}
+    </div>
+);
+
 export const Header: React.FC<{ title: string; onBack?: () => void; onLogout?: () => void; children?: React.ReactNode }> = ({ title, onBack, onLogout, children }) => (
     <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
         <div className="flex items-center min-w-0">
