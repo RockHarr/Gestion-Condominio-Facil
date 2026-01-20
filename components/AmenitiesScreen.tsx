@@ -1,6 +1,6 @@
 import React from 'react';
 import { Amenity, Page } from '../types';
-import { Card, Button } from './Shared';
+import { Card, Button, EmptyState } from './Shared';
 import Icons from './Icons';
 
 interface AmenitiesScreenProps {
@@ -50,10 +50,12 @@ export const AmenitiesScreen: React.FC<AmenitiesScreenProps> = ({ amenities, onN
                         </Card>
                     ))
                 ) : (
-                    <div className="col-span-full text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700">
-                        <Icons name="exclamation-circle" className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-white">No hay espacios comunes disponibles</h3>
-                        <p className="text-gray-500 dark:text-gray-400 mt-1">Contacte a la administración para más información.</p>
+                    <div className="col-span-full">
+                        <EmptyState
+                            icon="exclamation-circle"
+                            title="No hay espacios comunes disponibles"
+                            description="Contacte a la administración para más información."
+                        />
                     </div>
                 )}
             </div>
