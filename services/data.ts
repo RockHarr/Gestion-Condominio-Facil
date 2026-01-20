@@ -13,7 +13,7 @@ export const dataService = {
     // --- Tickets ---
     async getTickets(userId?: string | number) {
         let query = supabase.from('tickets').select('*, user:profiles(nombre, unidad)');
-        // if (userId) query = query.eq('user_id', userId);
+        if (userId) query = query.eq('user_id', userId);
 
         const { data, error } = await withTimeout(query.order('created_at', { ascending: false }));
         if (error) throw error;
