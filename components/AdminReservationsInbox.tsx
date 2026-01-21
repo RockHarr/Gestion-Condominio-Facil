@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Reservation, ReservationStatus, Page } from '../types';
-import { Card, Button, SkeletonLoader } from './Shared';
+import { Card, Button, SkeletonLoader, EmptyState } from './Shared';
 import { IncidentModal } from './IncidentModal';
 import Icons from './Icons';
 import { DepositDecisionModal } from './DepositDecisionModal';
@@ -166,7 +166,11 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
 
             <div className="space-y-4">
                 {filteredReservations.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">No hay reservas en esta categoría.</div>
+                    <EmptyState
+                        icon="calendar"
+                        title="No hay reservas"
+                        description="No hay reservas en esta categoría."
+                    />
                 ) : (
                     filteredReservations.map(reservation => (
                         <Card key={reservation.id} className={`p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${reservation.isSystem ? 'border-l-4 border-orange-500' : ''}`}>

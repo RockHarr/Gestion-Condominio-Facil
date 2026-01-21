@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Ticket, TicketStatus, Page } from '../types';
-import { Card, Button } from './Shared';
+import { Card, Button, EmptyState } from './Shared';
 import Icons from './Icons';
 
 // Helper
@@ -86,13 +86,11 @@ export const AdminTicketsScreen: React.FC<AdminTicketsScreenProps> = ({ tickets,
                         </button>
                     ))
                 ) : (
-                    <div className="text-center py-16 bg-gray-50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
-                        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
-                            <Icons name="ticket" className="w-8 h-8" />
-                        </div>
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-white">No hay tickets</h3>
-                        <p className="text-gray-500 dark:text-gray-400 mt-1">No se encontraron tickets con el filtro seleccionado.</p>
-                    </div>
+                    <EmptyState
+                        icon="ticket"
+                        title="No hay tickets"
+                        description="No se encontraron tickets con el filtro seleccionado."
+                    />
                 )}
             </div>
         </div>
