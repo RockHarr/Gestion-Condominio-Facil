@@ -49,6 +49,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, on
 const PasswordChangeSection: React.FC = () => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [password, setPassword] = React.useState('');
+    const [showPassword, setShowPassword] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
     const [message, setMessage] = React.useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
@@ -105,20 +106,36 @@ const PasswordChangeSection: React.FC = () => {
             <div className="p-2 space-y-4">
                 <div className="flex justify-between items-center">
                     <h3 className="font-bold text-gray-900 dark:text-white">Nueva Contraseña</h3>
-                    <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
-                        <Icons name="close" className="w-5 h-5" />
+                    <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label="Cerrar cambio de contraseña">
+                        <Icons name="xmark" className="w-5 h-5" />
                     </button>
                 </div>
 
                 <form onSubmit={handleUpdatePassword} className="space-y-3">
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Ingresa nueva contraseña"
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                        required
-                    />
+                    <div>
+                        <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Nueva contraseña
+                        </label>
+                        <div className="relative">
+                            <input
+                                id="new-password"
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Ingresa nueva contraseña"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white pr-10"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+                                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                            >
+                                <Icons name={showPassword ? "eye-slash" : "eye"} className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
 
                     {message && (
                         <div className={`p-2 rounded text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
