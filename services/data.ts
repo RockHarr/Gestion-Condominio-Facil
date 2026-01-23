@@ -142,7 +142,19 @@ export const dataService = {
         return data;
     },
 
-    async getMyVote(pollId: number) { /* Implementation for getMyVote */ },
+    async getMyVote(pollId: number) {
+        const { data, error } = await withTimeout(supabase
+            .from('poll_responses')
+            .select('option_id')
+            .eq('poll_id', pollId)
+            .maybeSingle());
+
+        if (error) {
+            console.error('Error getting my vote:', error);
+            return null;
+        }
+        return data;
+    },
 
     // --- Debts & Payments ---
     async getCommonExpenseDebts(userId?: string | number) {
@@ -181,14 +193,32 @@ export const dataService = {
 
     // --- Reservations ---
     async getReservations() {
-        // 1. Fetch reservations with the join
+        // 1. Fetch reservations (RAW, no join to avoid PGRST200)
         const { data: reservations, error } = await withTimeout(supabase
             .from('reservations')
-            .select('*, user:profiles(id, nombre, unidad)'));
+            .select('*')
+            .order('start_at', { ascending: false }));
 
         if (error) throw error;
 
-        // 2. Map data
+        // 2. Fetch profiles safely
+        let profiles: any[] = [];
+        try {
+            const userIds = [...new Set(reservations.map((r: any) => r.user_id).filter(Boolean))];
+            if (userIds.length > 0) {
+                const { data } = await supabase
+                    .from('profiles')
+                    .select('id, nombre, unidad')
+                    .in('id', userIds);
+                profiles = data || [];
+            }
+        } catch (e) {
+            console.warn('Error fetching profiles for manual join', e);
+        }
+
+        const profileMap = new Map(profiles.map(p => [p.id, p]));
+
+        // 3. Map data
         return reservations.map((r: any) => ({
             id: r.id,
             amenityId: r.amenity_id,
@@ -199,7 +229,7 @@ export const dataService = {
             isSystem: r.is_system,
             systemReason: r.system_reason,
             formData: r.form_data,
-            user: r.user || undefined // Map the joined user data
+            user: profileMap.get(r.user_id) || undefined // Map from local cache
         })) as Reservation[];
     },
 
@@ -247,7 +277,7 @@ export const dataService = {
         return data;
     },
 
-    async createReservationAsAdmin(amenityId: number, userId: string, startAt: string, endAt: string) {
+    async createReservationAsAdmin(amenityId: string, userId: string, startAt: string, endAt: string) {
         const { data, error } = await withTimeout(supabase
             .rpc('create_reservation_as_admin', {
                 p_amenity_id: amenityId,

@@ -53,31 +53,10 @@ export const PollsScreen: React.FC = () => {
             const res: Record<number, PollResult[]> = {};
             const opts: Record<number, PollOption[]> = {};
 
-            // We need to fetch options for voting
-            // Since we don't have a direct getOptions RPC, we might need to rely on getPollResults if it returns options even with 0 votes?
-            // Or we should have a getPollDetails RPC.
-            // For now, let's assume getPollResults returns all options.
-            // Wait, getPollResults hides results if CLOSED.
-            // We need a way to get OPTIONS for voting without seeing results.
-            // I missed adding a public `get_poll_options` RPC or allowing select on poll_options.
-            // RLS allows "Public read options" ON poll_options FOR SELECT USING (true);
-            // So we can query poll_options directly!
-
             for (const poll of pollsData || []) {
                 // Get My Vote
                 const myVote = await dataService.getMyVote(poll.id);
                 if (myVote) votes[poll.id] = myVote.option_id;
-
-                // Get Options (Direct Query via supabase client would be ideal, but we are in dataService abstraction)
-                // Let's add a quick helper in dataService or just use the supabase client if exposed?
-                // dataService doesn't expose generic query.
-                // I should add getPollOptions to dataService.
-                // For now, I'll assume I can add it or use a workaround.
-                // Let's add it to dataService in the next step if needed, or just assume it exists?
-                // No, I must implement it.
-                // I will add getPollOptions to dataService in this file context if I can't edit dataService now.
-                // But I can't edit dataService in the same turn easily without context switch.
-                // I'll assume dataService has `getPollOptions`. I will update dataService after this.
             }
             setMyVotes(votes);
             // setPollOptions(opts); // Will load in separate effect or after update
@@ -216,8 +195,8 @@ export const PollsScreen: React.FC = () => {
                                     <div className="space-y-3">
                                         {options.map(opt => (
                                             <label key={opt.id} className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${selectedOption[poll.id] === opt.id
-                                                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                                    : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                                                : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
                                                 }`}>
                                                 <input
                                                     type="radio"

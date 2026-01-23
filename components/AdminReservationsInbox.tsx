@@ -11,9 +11,10 @@ import { dataService } from '../services/data';
 interface AdminReservationsInboxProps {
     reservations: Reservation[];
     onNavigate: (page: Page) => void;
+    onRefreshData: () => void;
 }
 
-export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ reservations, onNavigate }) => {
+export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ reservations, onNavigate, onRefreshData }) => {
     // const [reservations, setReservations] = useState<Reservation[]>([]); // Removed local state
     const [activeTab, setActiveTab] = useState<'pending' | 'upcoming' | 'history' | 'all'>('pending');
     const [selectedReservationForIncident, setSelectedReservationForIncident] = useState<Reservation | null>(null);
@@ -21,14 +22,9 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
     const [selectedReservationForPayment, setSelectedReservationForPayment] = useState<Reservation | null>(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
 
-    // Initial load removed as it relies on parent props
-    const loadData = async () => {
-        // This might be needed if actions (approve/reject) don't trigger parent update automatically.
-        // However, currently App.tsx doesn't have a mechanism to re-fetch on child action unless we pass a callback.
-        // For now, relies on optimistic updates or we need to add onRefresh prop.
-        // Given dataService calls in this component, we should probably add onRefresh prop or just window.location.reload() (bad)
-        // BETTER: Add onRefresh prop.
-        // But for now, let's just use the props.
+    // Use parent refresh
+    const loadData = () => {
+        onRefreshData();
     };
 
     const filteredReservations = reservations.filter(r => {
@@ -141,6 +137,7 @@ export const AdminReservationsInbox: React.FC<AdminReservationsInboxProps> = ({ 
                     onClose={() => setShowCreateModal(false)}
                     onSuccess={() => {
                         setShowCreateModal(false);
+                        setActiveTab('upcoming'); // Switch to upcoming so user sees the new confirmed reservation
                         loadData();
                     }}
                 />

@@ -5,7 +5,7 @@ import { Card, Button } from './Shared';
 import Icons from './Icons';
 
 interface AvailabilityCalendarProps {
-    amenityId: number;
+    amenityId: string;
     onSelectDate: (date: Date) => void;
     refreshTrigger?: number;
 }

@@ -44,14 +44,15 @@ interface AdminAppProps {
     updateSettings: (settings: CommunitySettings) => void;
     theme: 'light' | 'dark';
     toggleTheme: () => void;
+    onRefreshData: () => void;
 }
 
 export const AdminApp: React.FC<AdminAppProps> = (props) => {
-    const { page, pageParams, users, tickets, notices, expenses, settings, paymentHistory, commonExpenseDebts, parkingDebts, reservations, handleNavigate, handleLogout, updateTicketStatus, addNotice, approveNotice, addUser, updateUser, deleteUser, addExpense, approveExpense, rejectExpense, closeMonth, registerPayment, updateSettings, theme, toggleTheme } = props;
+    const { page, pageParams, users, tickets, notices, expenses, settings, paymentHistory, commonExpenseDebts, parkingDebts, reservations, handleNavigate, handleLogout, updateTicketStatus, addNotice, approveNotice, addUser, updateUser, deleteUser, addExpense, approveExpense, rejectExpense, closeMonth, registerPayment, updateSettings, theme, toggleTheme, onRefreshData } = props;
 
     const renderPage = () => {
         switch (page) {
-            case 'admin-dashboard': return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} theme={theme} />;
+            case 'admin-dashboard': return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} theme={theme} reservations={reservations} />;
             case 'admin-tickets': return <AdminTicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
             case 'admin-ticket-detail': {
                 const ticket = tickets.find(t => t.id === pageParams?.id);
@@ -78,10 +79,10 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
             case 'admin-amenities': return <AmenitiesManager onNavigate={handleNavigate} />;
 
             case 'admin-reservation-types': return <ReservationTypesManager onNavigate={handleNavigate} amenityId={pageParams?.amenityId} />;
-            case 'admin-reservations': return <AdminReservationsInbox reservations={reservations} onNavigate={handleNavigate} />;
+            case 'admin-reservations': return <AdminReservationsInbox reservations={reservations} onNavigate={handleNavigate} onRefreshData={onRefreshData} />;
             case 'admin-config': return <AdminSettingsScreen settings={settings} onUpdateSettings={updateSettings} />;
             case 'profile': return <ProfileScreen user={props.currentUser} onLogout={handleLogout} onToggleTheme={toggleTheme} theme={theme} onNavigate={handleNavigate} />;
-            default: return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} theme={theme} />;
+            default: return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} theme={theme} reservations={reservations} />;
         }
     };
 
@@ -116,6 +117,14 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
             'admin-unit-edit': 'admin-units',
             'admin-unit-detail': 'admin-units',
             'admin-reservation-types': 'admin-amenities',
+            // New mobile structure mappings
+            'admin-tickets': 'admin-requests',
+            'admin-reservations': 'admin-requests',
+            'admin-units': 'admin-menu',
+            'admin-notices': 'admin-menu',
+            'admin-config': 'admin-menu',
+            'profile': 'admin-menu',
+            'admin-amenities': 'admin-menu',
         };
         const backTarget = backMap[page];
         if (backTarget) return () => handleNavigate(backTarget);

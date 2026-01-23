@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useMemo } from 'react';
-import { Expense, ExpenseStatus, ExpenseCategory, Page, PaymentRecord, User } from '../types';
+import { Expense, ExpenseStatus, ExpenseCategory, Page, PaymentRecord, User, Reservation } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
 import { FinancialCharts } from './FinancialCharts';
@@ -18,6 +18,7 @@ interface AdminDashboardProps {
     onRejectExpense: (id: number, motivo: string) => void;
     onCloseMonth: () => void;
     theme: 'light' | 'dark';
+    reservations: Reservation[];
 }
 
 export const AdminCreateExpenseModal: React.FC<{
@@ -270,7 +271,7 @@ import { FinancialKpis } from '../types';
 
 // ... (imports remain the same)
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymentHistory, users, onNavigate, onAddExpense, onApproveExpense, onRejectExpense, onCloseMonth, theme }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymentHistory, users, onNavigate, onAddExpense, onApproveExpense, onRejectExpense, onCloseMonth, theme, reservations }) => {
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const [isRejectModalOpen, setRejectModalOpen] = useState<Expense | null>(null);
     const [financialKpis, setFinancialKpis] = useState<FinancialKpis | null>(null);
@@ -443,6 +444,55 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ expenses, paymen
                                 </div>
                             ) : (
                                 <div className="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">No hay pagos recientes.</div>
+                            )}
+                        </Card>
+
+                        {/* Upcoming Reservations */}
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <Icons name="calendar" className="w-5 h-5 text-blue-500" />
+                                Próximas Reservas
+                            </h2>
+                            <button onClick={() => onNavigate('admin-reservations')} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">Ver todas</button>
+                        </div>
+                        <Card className="!p-0 overflow-hidden border-0 shadow-md">
+                            {reservations && reservations.filter(r => new Date(r.startAt) >= new Date()).length > 0 ? (
+                                <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                                    {reservations
+                                        .filter(r => new Date(r.startAt) >= new Date())
+                                        .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
+                                        .slice(0, 5)
+                                        .map(reservation => {
+                                            const startDate = new Date(reservation.startAt);
+                                            return (
+                                                <div key={reservation.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex items-center justify-between">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-bold text-xs flex flex-col items-center justify-center w-10 h-10">
+                                                            <span>{startDate.getDate()}</span>
+                                                            <span className="text-[9px] uppercase">{startDate.toLocaleString('es-CL', { month: 'short' }).slice(0, 3)}</span>
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-medium text-gray-900 dark:text-white text-sm">
+                                                                {reservation.user?.unidad || 'Admin'} - {reservation.user?.nombre || 'Uso Interno'}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                                {startDate.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })} - {new Date(reservation.endAt).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <span className={`px-2 py-1 text-xs rounded-full ${reservation.status === 'CONFIRMED' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
+                                                        reservation.status === 'REQUESTED' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                                                            'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                                                        }`}>
+                                                        {reservation.status === 'CONFIRMED' ? 'Confirmada' :
+                                                            reservation.status === 'REQUESTED' ? 'Pendiente' : reservation.status}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })}
+                                </div>
+                            ) : (
+                                <div className="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">No hay reservas próximas.</div>
                             )}
                         </Card>
 

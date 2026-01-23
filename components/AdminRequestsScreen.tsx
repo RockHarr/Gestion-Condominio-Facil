@@ -31,13 +31,11 @@ export const AdminRequestsScreen: React.FC<AdminRequestsScreenProps> = ({ onNavi
                             <p className="text-sm text-gray-500 dark:text-gray-400">Solicitudes de quinchos y salas</p>
                         </div>
 
-                        {pendingReservationsCount > 0 && (
+                        {pendingReservationsCount > 0 ? (
                             <div className="absolute -top-2 -right-2 w-8 h-8 flex items-center justify-center bg-red-500 text-white text-sm font-bold rounded-full shadow-lg border-2 border-white dark:border-gray-900 animate-bounce">
                                 {pendingReservationsCount}
                             </div>
-                        )}
-
-                        {pendingReservationsCount === 0 && (
+                        ) : (
                             <div className="text-gray-300 dark:text-gray-600">
                                 <Icons name="chevronRight" className="w-6 h-6" />
                             </div>
@@ -60,13 +58,11 @@ export const AdminRequestsScreen: React.FC<AdminRequestsScreenProps> = ({ onNavi
                             <p className="text-sm text-gray-500 dark:text-gray-400">Reportes de incidentes</p>
                         </div>
 
-                        {pendingTicketsCount > 0 && (
+                        {pendingTicketsCount > 0 ? (
                             <div className="absolute -top-2 -right-2 w-8 h-8 flex items-center justify-center bg-red-500 text-white text-sm font-bold rounded-full shadow-lg border-2 border-white dark:border-gray-900 animate-bounce">
                                 {pendingTicketsCount}
                             </div>
-                        )}
-
-                        {pendingTicketsCount === 0 && (
+                        ) : (
                             <div className="text-gray-300 dark:text-gray-600">
                                 <Icons name="chevronRight" className="w-6 h-6" />
                             </div>

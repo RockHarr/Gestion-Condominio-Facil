@@ -56,7 +56,7 @@ export interface Notice {
 }
 
 export interface Amenity {
-  id: number;
+  id: string; // Changed from number to string to match DB (text PK)
   name: string;
   description?: string;
   capacity?: number;
@@ -75,7 +75,7 @@ export enum ReservationStatus {
 
 export interface ReservationType {
   id: number;
-  amenity_id: number;
+  amenity_id: string; // Changed to string
   name: string;
   fee_amount: number;
   deposit_amount: number;
@@ -88,7 +88,8 @@ export interface ReservationType {
 
 export interface Reservation {
   id: number;
-  amenityId: number;
+  amenityId: string; // Changed to string
+
   typeId?: number;
   unitId?: number;
   userId?: string;

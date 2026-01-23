@@ -16,7 +16,7 @@ export const AdminCreateReservationModal: React.FC<AdminCreateReservationModalPr
     const [loading, setLoading] = useState(false);
 
     // Form State
-    const [selectedAmenity, setSelectedAmenity] = useState<number | ''>('');
+    const [selectedAmenity, setSelectedAmenity] = useState<string>(''); // Changed to string
     const [selectedUser, setSelectedUser] = useState<string>('');
     const [date, setDate] = useState('');
     const [startTime, setStartTime] = useState('');
@@ -55,7 +55,7 @@ export const AdminCreateReservationModal: React.FC<AdminCreateReservationModalPr
             const endAt = `${date}T${endTime}:00`;
 
             await dataService.createReservationAsAdmin(
-                Number(selectedAmenity),
+                selectedAmenity, // Passed as string
                 selectedUser,
                 startAt,
                 endAt
@@ -89,7 +89,7 @@ export const AdminCreateReservationModal: React.FC<AdminCreateReservationModalPr
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Espacio Común</label>
                         <select
                             value={selectedAmenity}
-                            onChange={e => setSelectedAmenity(Number(e.target.value))}
+                            onChange={e => setSelectedAmenity(e.target.value)} // Data is already string from value
                             className="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-2.5 px-3"
                             required
                         >

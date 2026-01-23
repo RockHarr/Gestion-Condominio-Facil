@@ -12,7 +12,7 @@ interface ReservationsScreenProps {
 }
 
 export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenities, reservations, user, onAddReservation, onCancelReservation }) => {
-    const [selectedAmenity, setSelectedAmenity] = useState(amenities.length > 0 ? amenities[0].id : 0);
+    const [selectedAmenity, setSelectedAmenity] = useState(amenities.length > 0 ? amenities[0].id : '');
     const [currentDate, setCurrentDate] = useState(new Date('2025-11-10'));
 
     const timeslots = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
@@ -32,7 +32,7 @@ export const ReservationsScreen: React.FC<ReservationsScreenProps> = ({ amenitie
             <Card>
                 <label htmlFor="amenity-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Seleccionar Espacio Común</label>
                 {amenities.length > 0 ? (
-                    <select id="amenity-select" value={selectedAmenity} onChange={e => setSelectedAmenity(Number(e.target.value))} className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                    <select id="amenity-select" value={selectedAmenity} onChange={e => setSelectedAmenity(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                         {amenities.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                     </select>
                 ) : (

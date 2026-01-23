@@ -41,7 +41,9 @@ function App() {
         setTimeout(() => setToast(current => (current?.id === id ? null : current)), 3000);
     };
 
-    const loadData = useCallback(async (user?: User) => {
+    const loadData = useCallback(async (userArg?: User) => {
+        const targetUser = userArg || currentUser;
+
         const safeFetch = async <T extends unknown>(promise: Promise<T>, fallback: T, name: string): Promise<T> => {
             try {
                 return await promise;
@@ -52,7 +54,8 @@ function App() {
         };
 
         try {
-            // Load public/common data
+            // Load public/common data - FORCE FETCH
+            console.log("App: Fetching updated data...");
             const [fetchedNotices, fetchedAmenities, fetchedReservations, fetchedExpenses, fetchedSettings] = await Promise.all([
                 safeFetch(dataService.getNotices(), [], 'Notices'),
                 safeFetch(dataService.getAmenities(), [], 'Amenities'),
@@ -71,19 +74,19 @@ function App() {
             setFinancialStatements(db.getFinancialStatements());
             setReserveFund(db.getReserveFund());
 
-            if (user?.role === 'resident') {
+            if (targetUser?.role === 'resident') {
                 const [debts, parking, userTickets, payments] = await Promise.all([
-                    safeFetch(dataService.getCommonExpenseDebts(user.id), [], 'CommonExpenseDebts'),
-                    safeFetch(dataService.getParkingDebts(user.id), [], 'ParkingDebts'),
-                    safeFetch(dataService.getTickets(user.id), [], 'UserTickets'),
-                    safeFetch(dataService.getPaymentHistory(user.id), [], 'UserPayments')
+                    safeFetch(dataService.getCommonExpenseDebts(targetUser.id), [], 'CommonExpenseDebts'),
+                    safeFetch(dataService.getParkingDebts(targetUser.id), [], 'ParkingDebts'),
+                    safeFetch(dataService.getTickets(targetUser.id), [], 'UserTickets'),
+                    safeFetch(dataService.getPaymentHistory(targetUser.id), [], 'UserPayments')
                 ]);
 
                 setCommonExpenseDebts(debts);
                 setParkingDebts(parking);
                 setTickets(userTickets);
                 setPaymentHistory(payments);
-            } else if (user?.role === 'admin') {
+            } else if (targetUser?.role === 'admin') {
                 // Admin fetching
                 const [allTickets, allPayments, allCommonDebts, allParkingDebts, allUsers] = await Promise.all([
                     safeFetch(dataService.getTickets(), [], 'AllTickets'),
@@ -105,7 +108,7 @@ function App() {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [currentUser]);
 
     useEffect(() => {
         const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
@@ -143,10 +146,19 @@ function App() {
                     hasParking: user.has_parking || false,
                     email: user.email
                 };
-                setCurrentUser(appUser);
+
+                setCurrentUser(prevUser => {
+                    // Only navigate if this is a fresh login (no previous user)
+                    // or if the user ID changed (different user logged in)
+                    if (!prevUser || prevUser.id !== appUser.id) {
+                        const startPage = appUser.role === 'admin' ? 'admin-dashboard' : 'home';
+                        setPage(startPage);
+                    }
+                    return appUser;
+                });
+
+                // We load data in background to keep it fresh, but don't reset navigation
                 loadData(appUser);
-                const startPage = appUser.role === 'admin' ? 'admin-dashboard' : 'home';
-                setPage(startPage);
             } else {
                 setCurrentUser(null);
                 setPage('login');
@@ -169,8 +181,11 @@ function App() {
                 };
                 setCurrentUser(appUser);
                 loadData(appUser);
-                const startPage = appUser.role === 'admin' ? 'admin-dashboard' : 'home';
-                setPage(startPage);
+                // Only reset page if we don't have a user yet to prevent overwriting navigation
+                if (!currentUser) {
+                    const startPage = appUser.role === 'admin' ? 'admin-dashboard' : 'home';
+                    setPage(startPage);
+                }
                 setIsLoading(false);
             } else {
                 setIsLoading(false);
@@ -182,10 +197,9 @@ function App() {
         });
 
         return () => {
-            clearTimeout(safetyTimeout);
             authListener.subscription.unsubscribe();
         };
-    }, [loadData]);
+    }, []); // Removed loadData dependency to prevent re-runs on user update
 
     const handleNavigate = (newPage: Page, params: any = null) => {
         window.scrollTo(0, 0);
@@ -241,8 +255,9 @@ function App() {
     const addReservation = async (resData: Omit<Reservation, 'id'>): Promise<boolean> => {
         try {
             await dataService.createReservation(resData);
-            const reservations = await dataService.getReservations();
-            setReservations(reservations);
+            // Refresh with full join data
+            const updatedReservations = await dataService.getReservations();
+            setReservations(updatedReservations);
             showToast('Reserva creada exitosamente');
             return true;
         } catch (error) {
@@ -480,6 +495,7 @@ function App() {
                     updateSettings={handleUpdateSettings}
                     theme={theme}
                     toggleTheme={toggleTheme}
+                    onRefreshData={() => loadData(currentUser)}
                 />
             ) : (
                 <ResidentApp

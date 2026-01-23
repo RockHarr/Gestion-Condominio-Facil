@@ -13,31 +13,66 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
+    const [connectionError, setConnectionError] = useState<string | null>(null);
+
+    React.useEffect(() => {
+        checkConnection();
+    }, []);
+
+    const checkConnection = async () => {
+        try {
+            // Simple ping to check if Supabase is reachable
+            // We use a public table or just session check
+            const result = await Promise.race([
+                authService.getCurrentUser(),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout de conexión')), 5000))
+            ]) as any;
+
+            // If we get here without error, we assume basic connectivity might be okay.
+            // But if result is null, it just means no session which is expected.
+        } catch (err: any) {
+            console.error("Login check failed", err);
+            setConnectionError(`No se puede conectar con el servidor: ${err.message || 'Error desconocido'}. Verifique su conexión y la configuración en .env.local`);
+        }
+    };
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setMessage(null);
+        setConnectionError(null);
 
-        let result;
-        if (usePassword) {
-            result = await authService.signInWithPassword(email, password);
-        } else {
-            result = await authService.signIn(email);
-        }
-
-        const { error } = result;
-
-        if (error) {
-            setMessage({ text: 'Error al iniciar sesión: ' + error.message, type: 'error' });
-        } else {
+        try {
+            let result;
             if (usePassword) {
-                // Password login successful, auth state change will handle redirect
-                setMessage({ text: 'Inicio de sesión exitoso.', type: 'success' });
+                result = await authService.signInWithPassword(email, password);
             } else {
-                setMessage({ text: '¡Enlace mágico enviado! Revisa tu correo.', type: 'success' });
+                result = await authService.signIn(email);
             }
+
+            const { error } = result;
+
+            if (error) {
+                console.error("Login error:", error);
+                const errorMessage = error.message || 'Error desconocido';
+                setMessage({ text: 'Error al iniciar sesión: ' + errorMessage, type: 'error' });
+
+                if (errorMessage.includes('fetch') || errorMessage.includes('connection') || errorMessage.includes('Timeout')) {
+                    setConnectionError('No se pudo conectar con el servidor. Verifique su internet y credenciales.');
+                }
+            } else {
+                if (usePassword) {
+                    setMessage({ text: 'Inicio de sesión exitoso.', type: 'success' });
+                } else {
+                    setMessage({ text: '¡Enlace mágico enviado! Revisa tu correo.', type: 'success' });
+                }
+            }
+        } catch (err: any) {
+            console.error("Critical login exception:", err);
+            setMessage({ text: 'Error crítico: ' + (err.message || err), type: 'error' });
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
@@ -93,6 +128,19 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
                     {message && (
                         <div className={`p-3 rounded text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                             {message.text}
+                        </div>
+                    )}
+
+                    {connectionError && (
+                        <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 rounded text-sm border border-yellow-200 dark:border-yellow-700">
+                            <div className="flex items-center gap-2 mb-1">
+                                <Icons name="exclamation-triangle" className="w-5 h-5" />
+                                <span className="font-bold">Problema de Conexión</span>
+                            </div>
+                            <p>{connectionError}</p>
+                            <div className="mt-2 text-xs">
+                                Sugerencia: Revise que las variables VITE_SUPABASE_URL y ANNON_KEY sean correctas en .env.local
+                            </div>
                         </div>
                     )}
 

@@ -54,7 +54,7 @@ export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigat
                         >
                             <div className="relative">
                                 <Icons name={item.icon} className={`w-6 h-6 ${isActive ? 'stroke-2' : 'stroke-1.5'}`} />
-                                {item.badge && item.badge > 0 && (
+                                {item.badge !== undefined && item.badge > 0 && (
                                     <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full border border-white dark:border-gray-900">
                                         {item.badge}
                                     </span>
@@ -123,7 +123,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
                                     }`}
                             />
                             {item.label}
-                            {item.badge && item.badge > 0 && (
+                            {item.badge !== undefined && item.badge > 0 && (
                                 <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">
                                     {item.badge}
                                 </span>

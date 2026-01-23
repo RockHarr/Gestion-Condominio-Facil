@@ -7,7 +7,7 @@ import Icons from './Icons';
 
 interface ReservationTypesManagerProps {
     onNavigate: (page: Page, params?: any) => void;
-    amenityId?: number; // Optional filter
+    amenityId?: string; // Optional filter
 }
 
 export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = ({ onNavigate, amenityId }) => {
@@ -19,7 +19,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
 
     // Form State
     const [name, setName] = useState('');
-    const [selectedAmenityId, setSelectedAmenityId] = useState<number | ''>('');
+    const [selectedAmenityId, setSelectedAmenityId] = useState<string>('');
     const [fee, setFee] = useState<string>('');
     const [deposit, setDeposit] = useState<string>('');
     const [maxDuration, setMaxDuration] = useState<string>(''); // in minutes
@@ -43,8 +43,13 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
 
             let fetchedTypes = typesRes.data || [];
             if (amenityId) {
-                fetchedTypes = fetchedTypes.filter(t => t.amenity_id === amenityId);
-                setSelectedAmenityId(amenityId);
+                // amenityId is passed as prop, assume correct type handling or filter carefully
+                // If prop is number, we might need to cast fetchedTypes.amenity_id (string) to compare?
+                // OR update Props to string. Ideally Props filter matching.
+                // Assuming amenityId prop will also change to string or is used as filter.
+                // But let's check Props definition.
+                fetchedTypes = fetchedTypes.filter(t => t.amenity_id === String(amenityId));
+                setSelectedAmenityId(String(amenityId));
             }
 
             setTypes(fetchedTypes);
@@ -56,6 +61,8 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
             setLoading(false);
         }
     };
+
+    // ... skipping modal handleOpen ...
 
     const handleOpenModal = (type?: ReservationType) => {
         if (type) {
@@ -71,7 +78,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
             setEditingType(null);
             setName('');
             // If we are in a specific amenity view, pre-select it
-            setSelectedAmenityId(amenityId || '');
+            setSelectedAmenityId(amenityId ? String(amenityId) : '');
             setFee('0');
             setDeposit('0');
             setMaxDuration('240'); // 4 hours default
@@ -88,7 +95,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
         try {
             const typeData = {
                 name,
-                amenity_id: Number(selectedAmenityId),
+                amenity_id: selectedAmenityId,
                 fee_amount: Number(fee),
                 deposit_amount: Number(deposit),
                 max_duration_minutes: Number(maxDuration),
@@ -134,7 +141,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
         }
     };
 
-    const getAmenityName = (id: number) => amenities.find(a => a.id === id)?.name || 'Desconocido';
+    const getAmenityName = (id: string) => amenities.find(a => a.id === id)?.name || 'Desconocido';
 
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-8 animate-page pb-24">
@@ -249,7 +256,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Espacio Común</label>
                                 <select
                                     value={selectedAmenityId}
-                                    onChange={e => setSelectedAmenityId(Number(e.target.value))}
+                                    onChange={e => setSelectedAmenityId(e.target.value)}
                                     required
                                     disabled={!!amenityId} // Lock if filtered
                                     className="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-2.5 px-3"
