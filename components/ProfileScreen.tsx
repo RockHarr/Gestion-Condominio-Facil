@@ -26,7 +26,13 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, on
             </Card>
 
             <Card>
-                <button onClick={onToggleTheme} className="flex justify-between items-center w-full p-2">
+                <button
+                    onClick={onToggleTheme}
+                    className="flex justify-between items-center w-full p-2"
+                    role="switch"
+                    aria-checked={theme === 'dark'}
+                    aria-label="Alternar modo oscuro"
+                >
                     <span className="font-medium text-gray-800 dark:text-gray-200">Modo Oscuro</span>
                     <div className="relative">
                         <div className={`w-14 h-8 rounded-full transition-colors ${theme === 'dark' ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
@@ -92,7 +98,11 @@ const PasswordChangeSection: React.FC = () => {
     if (!isOpen) {
         return (
             <Card>
-                <button onClick={() => setIsOpen(true)} className="flex justify-between items-center w-full p-2 text-blue-600 dark:text-blue-400 font-medium">
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="flex justify-between items-center w-full p-2 text-blue-600 dark:text-blue-400 font-medium"
+                    aria-expanded={false}
+                >
                     <span>Cambiar Contraseña</span>
                     <Icons name="chevronRight" className="w-5 h-5" />
                 </button>
@@ -105,20 +115,26 @@ const PasswordChangeSection: React.FC = () => {
             <div className="p-2 space-y-4">
                 <div className="flex justify-between items-center">
                     <h3 className="font-bold text-gray-900 dark:text-white">Nueva Contraseña</h3>
-                    <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
-                        <Icons name="close" className="w-5 h-5" />
+                    <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700" aria-label="Cancelar cambio de contraseña">
+                        <Icons name="xmark" className="w-5 h-5" />
                     </button>
                 </div>
 
                 <form onSubmit={handleUpdatePassword} className="space-y-3">
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Ingresa nueva contraseña"
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                        required
-                    />
+                    <div className="space-y-1">
+                        <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Nueva Contraseña
+                        </label>
+                        <input
+                            id="new-password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Ingresa nueva contraseña"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            required
+                        />
+                    </div>
 
                     {message && (
                         <div className={`p-2 rounded text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
