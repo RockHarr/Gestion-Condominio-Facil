@@ -28,7 +28,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
         const { error } = result;
 
         if (error) {
-            setMessage({ text: 'Error al iniciar sesión: ' + error.message, type: 'error' });
+            // Security: Prevent user enumeration by hiding specific error details
+            console.error("Login Error:", error.message);
+            setMessage({ text: 'Credenciales inválidas o error de conexión. Por favor intente nuevamente.', type: 'error' });
         } else {
             if (usePassword) {
                 // Password login successful, auth state change will handle redirect
