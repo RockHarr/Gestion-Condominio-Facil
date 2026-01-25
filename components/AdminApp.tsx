@@ -1,10 +1,32 @@
 import React, { useMemo } from 'react';
-import { Page, User, Ticket, Notice, Expense, CommunitySettings, PaymentRecord, CommonExpenseDebt, ParkingDebt, TicketStatus, Reservation } from '../types';
+import type {
+  Page,
+  User,
+  Ticket,
+  Notice,
+  Expense,
+  CommunitySettings,
+  PaymentRecord,
+  CommonExpenseDebt,
+  ParkingDebt,
+  Reservation,
+  PageParams,
+} from '../types';
+import { TicketStatus } from '../types';
 import { Header } from './Shared';
 import { AdminDashboard } from './AdminDashboard';
 import { AdminTicketsScreen, AdminTicketDetailScreen } from './AdminTickets';
-import { AdminNoticesScreen, AdminNoticeDetailScreen, AdminCreateNoticeScreen } from './AdminNotices';
-import { AdminUnitsScreen, AdminCreateUnitScreen, AdminEditUnitScreen, AdminUnitDetailScreen } from './AdminUnits';
+import {
+  AdminNoticesScreen,
+  AdminNoticeDetailScreen,
+  AdminCreateNoticeScreen,
+} from './AdminNotices';
+import {
+  AdminUnitsScreen,
+  AdminCreateUnitScreen,
+  AdminEditUnitScreen,
+  AdminUnitDetailScreen,
+} from './AdminUnits';
 import { AdminPaymentEntry } from './AdminPaymentEntry';
 import { AdminSettingsScreen } from './AdminSettings';
 import { AdminSidebar, AdminTabBar } from './AdminNavigation';
@@ -16,137 +38,274 @@ import { AdminRequestsScreen } from './AdminRequestsScreen';
 import { AdminMenuScreen } from './AdminMenuScreen';
 
 interface AdminAppProps {
-    page: Page;
-    pageParams: any;
-    currentUser: User;
-    users: User[];
-    tickets: Ticket[];
-    notices: Notice[];
-    expenses: Expense[];
-    settings: CommunitySettings;
-    paymentHistory: PaymentRecord[];
-    commonExpenseDebts: CommonExpenseDebt[];
-    parkingDebts: ParkingDebt[];
-    reservations: Reservation[];
-    handleNavigate: (page: Page, params?: any) => void;
-    handleLogout: () => void;
-    updateTicketStatus: (id: number, status: TicketStatus) => void;
-    addNotice: (data: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) => void;
-    approveNotice: (id: number) => void;
-    addUser: (data: Omit<User, 'id' | 'role'>) => void;
-    updateUser: (id: string | number, data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email' | 'unidad' | 'alicuota'>>) => void;
-    deleteUser: (id: string | number) => void;
-    addExpense: (data: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => void;
-    approveExpense: (id: number) => void;
-    rejectExpense: (id: number, motivo: string) => void;
-    closeMonth: () => void;
-    registerPayment: (payment: Omit<PaymentRecord, 'id'>) => void;
-    updateSettings: (settings: CommunitySettings) => void;
-    theme: 'light' | 'dark';
-    toggleTheme: () => void;
-    onRefreshData: () => void;
+  page: Page;
+  pageParams: PageParams | null;
+  currentUser: User;
+  users: User[];
+  tickets: Ticket[];
+  notices: Notice[];
+  expenses: Expense[];
+  settings: CommunitySettings;
+  paymentHistory: PaymentRecord[];
+  commonExpenseDebts: CommonExpenseDebt[];
+  parkingDebts: ParkingDebt[];
+  reservations: Reservation[];
+  handleNavigate: (page: Page, params?: PageParams | null) => void;
+  handleLogout: () => void;
+  updateTicketStatus: (id: number, status: TicketStatus) => void;
+  addNotice: (data: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) => void;
+  approveNotice: (id: number) => void;
+  addUser: (data: Omit<User, 'id' | 'role'>) => void;
+  updateUser: (
+    id: string | number,
+    data: Partial<Pick<User, 'nombre' | 'hasParking' | 'email' | 'unidad' | 'alicuota'>>,
+  ) => void;
+  deleteUser: (id: string | number) => void;
+  addExpense: (data: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) => void;
+  approveExpense: (id: number) => void;
+  rejectExpense: (id: number, motivo: string) => void;
+  closeMonth: () => void;
+  registerPayment: (payment: Omit<PaymentRecord, 'id'>) => void;
+  updateSettings: (settings: CommunitySettings) => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+  onRefreshData: () => void;
 }
 
 export const AdminApp: React.FC<AdminAppProps> = (props) => {
-    const { page, pageParams, users, tickets, notices, expenses, settings, paymentHistory, commonExpenseDebts, parkingDebts, reservations, handleNavigate, handleLogout, updateTicketStatus, addNotice, approveNotice, addUser, updateUser, deleteUser, addExpense, approveExpense, rejectExpense, closeMonth, registerPayment, updateSettings, theme, toggleTheme, onRefreshData } = props;
+  const {
+    page,
+    pageParams,
+    users,
+    tickets,
+    notices,
+    expenses,
+    settings,
+    paymentHistory,
+    commonExpenseDebts,
+    parkingDebts,
+    reservations,
+    handleNavigate,
+    handleLogout,
+    updateTicketStatus,
+    addNotice,
+    approveNotice,
+    addUser,
+    updateUser,
+    deleteUser,
+    addExpense,
+    approveExpense,
+    rejectExpense,
+    closeMonth,
+    registerPayment,
+    updateSettings,
+    theme,
+    toggleTheme,
+    onRefreshData,
+  } = props;
 
-    const renderPage = () => {
-        switch (page) {
-            case 'admin-dashboard': return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} theme={theme} reservations={reservations} />;
-            case 'admin-tickets': return <AdminTicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
-            case 'admin-ticket-detail': {
-                const ticket = tickets.find(t => t.id === pageParams?.id);
-                return ticket ? <AdminTicketDetailScreen ticket={ticket} onUpdateStatus={updateTicketStatus} /> : <div>Ticket no encontrado</div>;
-            }
-            case 'admin-notices': return <AdminNoticesScreen notices={notices} onNavigate={handleNavigate} />;
-            case 'admin-notice-create': return <AdminCreateNoticeScreen onAddNotice={addNotice} />;
-            case 'admin-notice-detail': {
-                const notice = notices.find(n => n.id === pageParams?.id);
-                return notice ? <AdminNoticeDetailScreen notice={notice} onApprove={approveNotice} /> : <div>Aviso no encontrado</div>;
-            }
-            case 'admin-units': return <AdminUnitsScreen users={users} paymentHistory={paymentHistory} onNavigate={handleNavigate} onDeleteUser={deleteUser} />;
-            case 'admin-unit-create': return <AdminCreateUnitScreen onAddUser={addUser} />;
-            case 'admin-unit-edit': {
-                const userToEdit = users.find(u => u.id === pageParams?.id);
-                return userToEdit ? <AdminEditUnitScreen user={userToEdit} onUpdateUser={updateUser} /> : <div>Usuario no encontrado</div>;
-            }
-            case 'admin-unit-detail': {
-                const user = users.find(u => u.id === pageParams?.id);
-                const userPaymentHistory = paymentHistory.filter(p => p.userId === pageParams?.id);
-                return user ? <AdminUnitDetailScreen user={user} paymentHistory={userPaymentHistory} commonExpenseDebts={commonExpenseDebts} parkingDebts={parkingDebts} /> : <div>Usuario no encontrado</div>;
-            }
-            case 'admin-payment-entry': return <AdminPaymentEntry users={users} onRegisterPayment={registerPayment} />;
-            case 'admin-amenities': return <AmenitiesManager onNavigate={handleNavigate} />;
+  const renderPage = () => {
+    switch (page) {
+      case 'admin-dashboard':
+        return (
+          <AdminDashboard
+            expenses={expenses}
+            paymentHistory={paymentHistory}
+            users={users}
+            onNavigate={handleNavigate}
+            onAddExpense={addExpense}
+            onApproveExpense={approveExpense}
+            onRejectExpense={rejectExpense}
+            onCloseMonth={closeMonth}
+            theme={theme}
+            reservations={reservations}
+          />
+        );
+      case 'admin-tickets':
+        return <AdminTicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
+      case 'admin-ticket-detail': {
+        const ticket = tickets.find((t) => t.id === pageParams?.id);
+        return ticket ? (
+          <AdminTicketDetailScreen ticket={ticket} onUpdateStatus={updateTicketStatus} />
+        ) : (
+          <div>Ticket no encontrado</div>
+        );
+      }
+      case 'admin-notices':
+        return <AdminNoticesScreen notices={notices} onNavigate={handleNavigate} />;
+      case 'admin-notice-create':
+        return <AdminCreateNoticeScreen onAddNotice={addNotice} />;
+      case 'admin-notice-detail': {
+        const notice = notices.find((n) => n.id === pageParams?.id);
+        return notice ? (
+          <AdminNoticeDetailScreen notice={notice} onApprove={approveNotice} />
+        ) : (
+          <div>Aviso no encontrado</div>
+        );
+      }
+      case 'admin-units':
+        return (
+          <AdminUnitsScreen
+            users={users}
+            paymentHistory={paymentHistory}
+            onNavigate={handleNavigate}
+            onDeleteUser={deleteUser}
+          />
+        );
+      case 'admin-unit-create':
+        return <AdminCreateUnitScreen onAddUser={addUser} />;
+      case 'admin-unit-edit': {
+        const userToEdit = users.find((u) => u.id === pageParams?.id);
+        return userToEdit ? (
+          <AdminEditUnitScreen user={userToEdit} onUpdateUser={updateUser} />
+        ) : (
+          <div>Usuario no encontrado</div>
+        );
+      }
+      case 'admin-unit-detail': {
+        const user = users.find((u) => u.id === pageParams?.id);
+        const userPaymentHistory = paymentHistory.filter((p) => p.userId === pageParams?.id);
+        return user ? (
+          <AdminUnitDetailScreen
+            user={user}
+            paymentHistory={userPaymentHistory}
+            commonExpenseDebts={commonExpenseDebts}
+            parkingDebts={parkingDebts}
+          />
+        ) : (
+          <div>Usuario no encontrado</div>
+        );
+      }
+      case 'admin-payment-entry':
+        return <AdminPaymentEntry users={users} onRegisterPayment={registerPayment} />;
+      case 'admin-amenities':
+        return <AmenitiesManager onNavigate={handleNavigate} />;
 
-            case 'admin-reservation-types': return <ReservationTypesManager onNavigate={handleNavigate} amenityId={pageParams?.amenityId} />;
-            case 'admin-reservations': return <AdminReservationsInbox reservations={reservations} onNavigate={handleNavigate} onRefreshData={onRefreshData} />;
-            case 'admin-config': return <AdminSettingsScreen settings={settings} onUpdateSettings={updateSettings} />;
-            case 'profile': return <ProfileScreen user={props.currentUser} onLogout={handleLogout} onToggleTheme={toggleTheme} theme={theme} onNavigate={handleNavigate} />;
-            default: return <AdminDashboard expenses={expenses} paymentHistory={paymentHistory} users={users} onNavigate={handleNavigate} onAddExpense={addExpense} onApproveExpense={approveExpense} onRejectExpense={rejectExpense} onCloseMonth={closeMonth} theme={theme} reservations={reservations} />;
-        }
+      case 'admin-reservation-types':
+        return (
+          <ReservationTypesManager onNavigate={handleNavigate} amenityId={pageParams?.amenityId} />
+        );
+      case 'admin-reservations':
+        return (
+          <AdminReservationsInbox
+            reservations={reservations}
+            onNavigate={handleNavigate}
+            onRefreshData={onRefreshData}
+          />
+        );
+      case 'admin-config':
+        return <AdminSettingsScreen settings={settings} onUpdateSettings={updateSettings} />;
+      case 'profile':
+        return (
+          <ProfileScreen
+            user={props.currentUser}
+            onLogout={handleLogout}
+            onToggleTheme={toggleTheme}
+            theme={theme}
+            onNavigate={handleNavigate}
+          />
+        );
+      default:
+        return (
+          <AdminDashboard
+            expenses={expenses}
+            paymentHistory={paymentHistory}
+            users={users}
+            onNavigate={handleNavigate}
+            onAddExpense={addExpense}
+            onApproveExpense={approveExpense}
+            onRejectExpense={rejectExpense}
+            onCloseMonth={closeMonth}
+            theme={theme}
+            reservations={reservations}
+          />
+        );
+    }
+  };
+
+  const getPageTitle = () => {
+    switch (page) {
+      case 'admin-dashboard':
+        return 'Dashboard';
+      case 'admin-tickets':
+        return 'Gestionar Tickets';
+      case 'admin-ticket-detail':
+        return 'Detalle del Ticket';
+      case 'admin-notices':
+        return 'Gestionar Avisos';
+      case 'admin-notice-create':
+        return 'Crear Aviso';
+      case 'admin-notice-detail':
+        return 'Detalle de Aviso';
+      case 'admin-units':
+        return 'Gestionar Unidades';
+      case 'admin-unit-create':
+        return 'Añadir Nueva Unidad';
+      case 'admin-unit-edit':
+        return 'Editar Unidad';
+      case 'admin-unit-detail':
+        return 'Detalle de Unidad';
+      case 'admin-payment-entry':
+        return 'Registrar Pago';
+      case 'admin-amenities':
+        return 'Gestión de Espacios';
+
+      case 'admin-reservation-types':
+        return 'Tipos de Reserva';
+      case 'admin-reservations':
+        return 'Bandeja de Reservas';
+      case 'admin-config':
+        return 'Configuración';
+      default:
+        return 'Admin Panel';
+    }
+  };
+
+  const onBackHandler = useMemo(() => {
+    const backMap: { [key in Page]?: Page } = {
+      'admin-ticket-detail': 'admin-tickets',
+      'admin-notice-create': 'admin-notices',
+      'admin-notice-detail': 'admin-notices',
+      'admin-unit-create': 'admin-units',
+      'admin-unit-edit': 'admin-units',
+      'admin-unit-detail': 'admin-units',
+      'admin-reservation-types': 'admin-amenities',
+      // New mobile structure mappings
+      'admin-tickets': 'admin-requests',
+      'admin-reservations': 'admin-requests',
+      'admin-units': 'admin-menu',
+      'admin-notices': 'admin-menu',
+      'admin-config': 'admin-menu',
+      profile: 'admin-menu',
+      'admin-amenities': 'admin-menu',
     };
+    const backTarget = backMap[page];
+    if (backTarget) return () => handleNavigate(backTarget);
+    return undefined;
+  }, [page, handleNavigate]);
 
-    const getPageTitle = () => {
-        switch (page) {
-            case 'admin-dashboard': return 'Dashboard';
-            case 'admin-tickets': return 'Gestionar Tickets';
-            case 'admin-ticket-detail': return 'Detalle del Ticket';
-            case 'admin-notices': return 'Gestionar Avisos';
-            case 'admin-notice-create': return 'Crear Aviso';
-            case 'admin-notice-detail': return 'Detalle de Aviso';
-            case 'admin-units': return 'Gestionar Unidades';
-            case 'admin-unit-create': return 'Añadir Nueva Unidad';
-            case 'admin-unit-edit': return 'Editar Unidad';
-            case 'admin-unit-detail': return 'Detalle de Unidad';
-            case 'admin-payment-entry': return 'Registrar Pago';
-            case 'admin-amenities': return 'Gestión de Espacios';
+  // Counts for badges
+  const pendingTicketsCount = tickets.filter((t) => t.estado === TicketStatus.NUEVO).length;
+  const pendingReservationsCount = reservations.filter((r) => r.status === 'REQUESTED').length;
 
-            case 'admin-reservation-types': return 'Tipos de Reserva';
-            case 'admin-reservations': return 'Bandeja de Reservas';
-            case 'admin-config': return 'Configuración';
-            default: return 'Admin Panel';
-        }
-    };
-
-    const onBackHandler = useMemo(() => {
-        const backMap: { [key in Page]?: Page } = {
-            'admin-ticket-detail': 'admin-tickets',
-            'admin-notice-create': 'admin-notices',
-            'admin-notice-detail': 'admin-notices',
-            'admin-unit-create': 'admin-units',
-            'admin-unit-edit': 'admin-units',
-            'admin-unit-detail': 'admin-units',
-            'admin-reservation-types': 'admin-amenities',
-            // New mobile structure mappings
-            'admin-tickets': 'admin-requests',
-            'admin-reservations': 'admin-requests',
-            'admin-units': 'admin-menu',
-            'admin-notices': 'admin-menu',
-            'admin-config': 'admin-menu',
-            'profile': 'admin-menu',
-            'admin-amenities': 'admin-menu',
-        };
-        const backTarget = backMap[page];
-        if (backTarget) return () => handleNavigate(backTarget);
-        return undefined;
-    }, [page, handleNavigate]);
-
-    // Counts for badges
-    const pendingTicketsCount = tickets.filter(t => t.estado === TicketStatus.NUEVO).length;
-    const pendingReservationsCount = reservations.filter(r => r.status === 'REQUESTED').length;
-
-    return (
-        <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-            <AdminSidebar currentPage={page} onNavigate={handleNavigate} onLogout={handleLogout} pendingTicketsCount={pendingTicketsCount} pendingReservationsCount={pendingReservationsCount} />
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="md:hidden">
-                    <Header title={getPageTitle()} onBack={onBackHandler} onLogout={handleLogout} />
-                </div>
-                <main className="flex-1 overflow-x-hidden overflow-y-auto pb-24 md:pb-0">
-                    {renderPage()}
-                </main>
-                <AdminTabBar currentPage={page} onNavigate={handleNavigate} />
-            </div>
+  return (
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+      <AdminSidebar
+        currentPage={page}
+        onNavigate={handleNavigate}
+        onLogout={handleLogout}
+        pendingTicketsCount={pendingTicketsCount}
+        pendingReservationsCount={pendingReservationsCount}
+      />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="md:hidden">
+          <Header title={getPageTitle()} onBack={onBackHandler} onLogout={handleLogout} />
         </div>
-    );
+        <main className="flex-1 overflow-x-hidden overflow-y-auto pb-24 md:pb-0">
+          {renderPage()}
+        </main>
+        <AdminTabBar currentPage={page} onNavigate={handleNavigate} />
+      </div>
+    </div>
+  );
 };

@@ -1,4 +1,3 @@
-
 export interface User {
   id: number | string;
   nombre: string;
@@ -81,7 +80,7 @@ export interface ReservationType {
   deposit_amount: number;
   max_duration_minutes: number;
   min_advance_hours?: number;
-  form_schema?: any;
+  form_schema?: FormSchema;
   rules?: string;
   requires_approval: boolean;
 }
@@ -98,7 +97,7 @@ export interface Reservation {
   status: ReservationStatus;
   isSystem: boolean;
   systemReason?: string;
-  formData?: any;
+  formData?: FormData;
   feeSnapshot?: number;
   depositSnapshot?: number;
   user?: {
@@ -157,7 +156,7 @@ export interface Poll {
   endAt: string;
   weightingStrategy: WeightingStrategy;
   showResultsWhen: PollResultsVisibility;
-  weightSnapshotJson?: any;
+  weightSnapshotJson?: WeightSnapshot[];
   createdBy?: string;
 }
 
@@ -357,4 +356,153 @@ export interface FinancialKpis {
   deposits_custody: number;
   pending_review_count: number;
   total_expenses_approved: number;
+}
+
+// Navigation params for different pages
+export interface PageParams {
+  // Generic id for detail pages
+  id?: number | string;
+  // Ticket detail
+  ticket?: Ticket;
+  ticketId?: number;
+  // Notice detail
+  notice?: Notice;
+  noticeId?: number;
+  // Payment flow
+  totalAmount?: number;
+  itemsToPay?: PayableItem[];
+  // Unit management
+  user?: User;
+  userId?: string | number;
+  // Reservation
+  reservation?: Reservation;
+  amenityId?: string;
+}
+
+export interface PayableItem {
+  id: number | string;
+  type: 'gasto_comun' | 'estacionamiento' | 'reserva';
+  description: string;
+  amount: number;
+  periodo?: string;
+}
+
+// Form schema types for reservation types
+export interface FormField {
+  name: string;
+  type: 'text' | 'number' | 'select' | 'checkbox' | 'textarea';
+  label: string;
+  required?: boolean;
+  options?: string[];
+  placeholder?: string;
+}
+
+export type FormSchema = FormField[];
+
+// Form data is a record of field name to value
+export type FormData = Record<string, string | number | boolean>;
+
+// Weight snapshot for polls
+export interface WeightSnapshot {
+  unitId: number;
+  weight: number;
+  alicuota?: number;
+}
+
+// Vite environment variables
+export interface ImportMetaEnv {
+  readonly VITE_SUPABASE_URL: string;
+  readonly VITE_SUPABASE_ANON_KEY: string;
+  readonly MODE: string;
+  readonly DEV: boolean;
+  readonly PROD: boolean;
+}
+
+export interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+// Database row types for mapping from Supabase
+export interface TicketRow {
+  id: number;
+  titulo: string;
+  descripcion: string;
+  fecha: string;
+  estado: string;
+  foto?: string;
+  user_id?: string;
+  user?: { nombre: string; unidad: string } | null;
+}
+
+export interface PaymentRow {
+  id: number;
+  user_id: string | number;
+  type: string;
+  periodo: string;
+  monto: number;
+  fecha_pago: string;
+  metodo_pago?: string;
+  observacion?: string;
+}
+
+export interface ReservationRow {
+  id: number;
+  amenity_id: string;
+  type_id?: number;
+  unit_id?: number;
+  user_id?: string;
+  start_at: string;
+  end_at: string;
+  status: string;
+  is_system: boolean;
+  system_reason?: string;
+  form_data?: FormData;
+  fee_snapshot?: number;
+  deposit_snapshot?: number;
+}
+
+export interface AmenityRow {
+  id: string;
+  name: string;
+  description?: string;
+  capacity?: number;
+  photo_url?: string;
+}
+
+export interface ProfileRow {
+  id: string;
+  nombre: string;
+  unidad: string;
+  role: 'resident' | 'admin';
+  has_parking: boolean;
+  email?: string;
+  alicuota?: number;
+}
+
+// Pending charge for payment entry
+export interface PendingCharge {
+  id: string;
+  unitId: number | string;
+  type: ChargeType;
+  amount: number;
+  description: string;
+  referenceId?: number | string;
+  createdAt: string;
+}
+
+// Helper type for error handling
+export interface AppError {
+  message: string;
+  code?: string;
+  details?: string;
+}
+
+// Extract error message helper
+export function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'object' && error !== null) {
+    const err = error as { message?: string; details?: string };
+    return err.message || err.details || 'Error desconocido';
+  }
+  return String(error);
 }
