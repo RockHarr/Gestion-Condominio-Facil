@@ -9,3 +9,7 @@
 ## 2025-05-23 - Actionable Empty States and Icon Safety
 **Learning:** Hardcoded empty states were inconsistent and lacked actions. Created a reusable `EmptyState` component with CTA support. Also discovered that `Icons` component fails silently (returns null) for missing keys, which hid a bug in `TicketsScreen`.
 **Action:** Use `EmptyState` for all list components. Verify icon names in `Icons.tsx` before usage, as TypeScript doesn't catch invalid strings passed as props.
+
+## 2025-05-24 - Authenticated Screen Verification & Icon Safety
+**Learning:** Verified that `Icons` component fails silently for missing keys (e.g. 'close'), causing invisible buttons. Also, verifying authenticated screens (Profile) requires mocking `currentUser` and disabling auth listeners in `App.tsx` to avoid state overwrites.
+**Action:** Always verify icon names against `Icons.tsx`. When testing authenticated UI, temporarily mock `App.tsx` state and disable auth subscriptions.
