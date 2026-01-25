@@ -26,9 +26,15 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, on
             </Card>
 
             <Card>
-                <button onClick={onToggleTheme} className="flex justify-between items-center w-full p-2">
+                <button
+                    onClick={onToggleTheme}
+                    className="flex justify-between items-center w-full p-2"
+                    role="switch"
+                    aria-checked={theme === 'dark'}
+                    aria-label="Modo Oscuro"
+                >
                     <span className="font-medium text-gray-800 dark:text-gray-200">Modo Oscuro</span>
-                    <div className="relative">
+                    <div className="relative" aria-hidden="true">
                         <div className={`w-14 h-8 rounded-full transition-colors ${theme === 'dark' ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
                         <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform ${theme === 'dark' ? 'translate-x-6' : ''}`}></div>
                     </div>
@@ -105,13 +111,15 @@ const PasswordChangeSection: React.FC = () => {
             <div className="p-2 space-y-4">
                 <div className="flex justify-between items-center">
                     <h3 className="font-bold text-gray-900 dark:text-white">Nueva Contraseña</h3>
-                    <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
-                        <Icons name="close" className="w-5 h-5" />
+                    <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700" aria-label="Cerrar">
+                        <Icons name="xmark" className="w-5 h-5" />
                     </button>
                 </div>
 
                 <form onSubmit={handleUpdatePassword} className="space-y-3">
+                    <label htmlFor="new-password" className="sr-only">Nueva contraseña</label>
                     <input
+                        id="new-password"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
