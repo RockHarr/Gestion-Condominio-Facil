@@ -16,7 +16,7 @@ import type {
 import { NoticeStatus, TicketStatus } from '../types';
 import { HomeScreen } from './HomeScreen';
 import { PaymentsScreen } from './PaymentsScreen';
-import { CreateTicketScreen } from './TicketsScreen';
+import { CreateTicketScreen, TicketDetailScreen } from './TicketsScreen';
 import { TicketsScreen } from './TicketsScreen';
 import { NoticesScreen, NoticeDetailScreen } from './NoticesScreen';
 import { AmenitiesScreen } from './AmenitiesScreen'; // Assuming this exists or will be fixed if not
@@ -141,9 +141,27 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
           />
         );
       case 'ticket-create':
-        return <CreateTicketScreen onAddTicket={addTicket} />;
+        return (
+          <CreateTicketScreen onAddTicket={addTicket} onBack={() => handleNavigate('tickets')} />
+        );
       case 'tickets':
         return <TicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
+      case 'ticket-detail': {
+        const ticket = tickets.find((t) => t.id === pageParams?.ticketId);
+        return ticket ? (
+          <TicketDetailScreen
+            ticket={ticket}
+            onUpdateStatus={updateTicketStatus}
+            onBack={() => handleNavigate('tickets')}
+          />
+        ) : (
+          <div className="p-4">
+            <Card>
+              <p className="text-center text-gray-500">Ticket no encontrado</p>
+            </Card>
+          </div>
+        );
+      }
       case 'notices':
         return <NoticesScreen notices={publishedNotices} onNavigate={handleNavigate} />;
       case 'notice-detail': {

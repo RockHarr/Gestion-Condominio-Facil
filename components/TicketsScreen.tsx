@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import type { Ticket, Page, PageParams } from '../types';
 import { TicketStatus } from '../types';
-import { Card, Button } from './Shared';
+import { Card, Button, Header } from './Shared';
 import Icons from './Icons';
 
 // Helper
@@ -101,7 +101,7 @@ export const TicketsScreen: React.FC<TicketsScreenProps> = ({ tickets, onNavigat
         </div>
       )}
 
-      <div className="fixed bottom-24 right-4 z-10">
+      <div className="fixed bottom-24 right-4 z-50">
         <button
           onClick={() => onNavigate('ticket-create')}
           className="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-transform hover:scale-105 active:scale-95"
@@ -117,71 +117,83 @@ export const TicketsScreen: React.FC<TicketsScreenProps> = ({ tickets, onNavigat
 interface TicketDetailScreenProps {
   ticket: Ticket;
   onUpdateStatus: (id: number, status: TicketStatus) => void;
+  onBack: () => void;
 }
 
 export const TicketDetailScreen: React.FC<TicketDetailScreenProps> = ({
   ticket,
   onUpdateStatus,
+  onBack,
 }) => {
   const isClosed =
     ticket.estado === TicketStatus.CERRADO || ticket.estado === TicketStatus.RESUELTO;
 
   return (
-    <div className="p-4 space-y-4 animate-page">
-      <Card>
-        <div className="flex justify-between items-start mb-4">
-          <span
-            className={`text-xs font-bold px-3 py-1 rounded-full border ${getStatusColors(ticket.estado)}`}
-          >
-            {ticket.estado}
-          </span>
-          <span className="text-sm text-gray-500 dark:text-gray-400">#{ticket.id}</span>
-        </div>
-
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{ticket.titulo}</h2>
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
-          <Icons name="calendar" className="w-4 h-4" />
-          {new Date(ticket.fecha).toLocaleDateString('es-CL', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </div>
-
-        <div className="prose dark:prose-invert max-w-none">
-          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
-            {ticket.descripcion}
-          </p>
-        </div>
-
-        {ticket.foto && (
-          <div className="mt-6">
-            <p className="font-semibold text-sm text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <Icons name="camera" className="w-4 h-4" />
-              Evidencia adjunta
-            </p>
-            <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-              <img
-                src={ticket.foto}
-                alt="Adjunto del ticket"
-                className="w-full h-auto object-cover max-h-96"
-              />
-            </div>
+    <div className="animate-page">
+      <Header title="Detalle del Ticket" onBack={onBack} />
+      <div className="p-4 space-y-4">
+        <Card>
+          <div className="flex justify-between items-start mb-4">
+            <span
+              className={`text-xs font-bold px-3 py-1 rounded-full border ${getStatusColors(ticket.estado)}`}
+            >
+              {ticket.estado}
+            </span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">#{ticket.id}</span>
           </div>
-        )}
-      </Card>
 
-      <div className="space-y-3 pt-4">
-        {isClosed ? (
-          <Button onClick={() => onUpdateStatus(ticket.id, TicketStatus.NUEVO)} variant="secondary">
-            Reabrir Ticket
-          </Button>
-        ) : (
-          <Button onClick={() => onUpdateStatus(ticket.id, TicketStatus.CERRADO)} variant="primary">
-            Marcar como Resuelto y Cerrar
-          </Button>
-        )}
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{ticket.titulo}</h2>
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
+            <Icons name="calendar" className="w-4 h-4" />
+            {new Date(ticket.fecha).toLocaleDateString('es-CL', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </div>
+
+          <div className="prose dark:prose-invert max-w-none">
+            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+              {ticket.descripcion}
+            </p>
+          </div>
+
+          {ticket.foto && (
+            <div className="mt-6">
+              <p className="font-semibold text-sm text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                <Icons name="camera" className="w-4 h-4" />
+                Evidencia adjunta
+              </p>
+              <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                <img
+                  src={ticket.foto}
+                  alt="Adjunto del ticket"
+                  className="w-full h-auto object-cover max-h-96"
+                />
+              </div>
+            </div>
+          )}
+        </Card>
+
+        <div className="space-y-3 pt-4">
+          {isClosed ? (
+            <Button
+              onClick={() => onUpdateStatus(ticket.id, TicketStatus.NUEVO)}
+              variant="secondary"
+            >
+              Reabrir Ticket
+            </Button>
+          ) : (
+            <Button
+              onClick={() => onUpdateStatus(ticket.id, TicketStatus.CERRADO)}
+              variant="primary"
+            >
+              Marcar como Resuelto y Cerrar
+            </Button>
+          )}
+          \n{' '}
+        </div>
       </div>
     </div>
   );
@@ -189,9 +201,10 @@ export const TicketDetailScreen: React.FC<TicketDetailScreenProps> = ({
 
 interface CreateTicketScreenProps {
   onAddTicket: (ticket: { titulo: string; descripcion: string; foto?: string }) => void;
+  onBack: () => void;
 }
 
-export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTicket }) => {
+export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTicket, onBack }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [photo, setPhoto] = useState<string | undefined>(undefined);
@@ -232,115 +245,120 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
   };
 
   return (
-    <div className="p-4 animate-page">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <Card>
-          <div className="space-y-5">
-            <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Asunto
-              </label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-                maxLength={100}
-                placeholder="Ej: Filtración en el baño"
-                className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
-              />
-              <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/100</p>
-            </div>
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Descripción detallada
-              </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={5}
-                required
-                maxLength={2000}
-                placeholder="Describe el problema con el mayor detalle posible..."
-                className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
-              />
-              <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/2000</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Adjuntar foto (opcional)
-              </label>
-              <div
-                className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer relative ${error ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50'}`}
-              >
-                <div className="space-y-1 text-center">
-                  {photo ? (
-                    <div className="relative">
-                      <img
-                        src={photo}
-                        alt="Preview"
-                        className="mx-auto h-32 object-cover rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPhoto(undefined);
-                          setPhotoName('');
-                          setError(null);
-                        }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600"
-                      >
-                        <Icons name="xmark" className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <Icons name="camera" className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
-                        <label
-                          htmlFor="file-upload"
-                          className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                        >
-                          <span>Subir un archivo</span>
-                          <input
-                            id="file-upload"
-                            name="file-upload"
-                            type="file"
-                            accept="image/*"
-                            className="sr-only"
-                            onChange={handlePhotoChange}
-                          />
-                        </label>
-                      </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-500">PNG, JPG hasta 5MB</p>
-                    </>
-                  )}
-                </div>
+    <div className="animate-page">
+      <Header title="Crear Ticket" onBack={onBack} />
+      <div className="p-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <Card>
+            <div className="space-y-5">
+              <div>
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Asunto
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                  maxLength={100}
+                  placeholder="Ej: Filtración en el baño"
+                  className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
+                />
+                <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/100</p>
               </div>
-              {error && (
-                <p className="text-sm mt-2 text-red-600 dark:text-red-400 font-medium">{error}</p>
-              )}
-              {photoName && !photo && !error && (
-                <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">
-                  Archivo seleccionado: {photoName}
-                </p>
-              )}
+              <div>
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Descripción detallada
+                </label>
+                <textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={5}
+                  required
+                  maxLength={2000}
+                  placeholder="Describe el problema con el mayor detalle posible..."
+                  className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
+                />
+                <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/2000</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Adjuntar foto (opcional)
+                </label>
+                <div
+                  className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer relative ${error ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50'}`}
+                >
+                  <div className="space-y-1 text-center">
+                    {photo ? (
+                      <div className="relative">
+                        <img
+                          src={photo}
+                          alt="Preview"
+                          className="mx-auto h-32 object-cover rounded-lg"
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPhoto(undefined);
+                            setPhotoName('');
+                            setError(null);
+                          }}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600"
+                        >
+                          <Icons name="xmark" className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <Icons name="camera" className="mx-auto h-12 w-12 text-gray-400" />
+                        <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
+                          <label
+                            htmlFor="file-upload"
+                            className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+                          >
+                            <span>Subir un archivo</span>
+                            <input
+                              id="file-upload"
+                              name="file-upload"
+                              type="file"
+                              accept="image/*"
+                              className="sr-only"
+                              onChange={handlePhotoChange}
+                            />
+                          </label>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-500">
+                          PNG, JPG hasta 5MB
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+                {error && (
+                  <p className="text-sm mt-2 text-red-600 dark:text-red-400 font-medium">{error}</p>
+                )}
+                {photoName && !photo && !error && (
+                  <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">
+                    Archivo seleccionado: {photoName}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        </Card>
-        <Button type="submit" className="shadow-lg shadow-blue-500/30">
-          Enviar Ticket
-        </Button>
-      </form>
+          </Card>
+          <Button type="submit" className="shadow-lg shadow-blue-500/30">
+            Enviar Ticket
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };

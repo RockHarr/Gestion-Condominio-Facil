@@ -126,7 +126,11 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
       case 'admin-ticket-detail': {
         const ticket = tickets.find((t) => t.id === pageParams?.id);
         return ticket ? (
-          <AdminTicketDetailScreen ticket={ticket} onUpdateStatus={updateTicketStatus} />
+          <AdminTicketDetailScreen
+            ticket={ticket}
+            onUpdateStatus={updateTicketStatus}
+            onBack={() => handleNavigate('admin-tickets')}
+          />
         ) : (
           <div>Ticket no encontrado</div>
         );

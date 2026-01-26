@@ -43,6 +43,13 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({
   const unpaidParking = parkingDebts.filter((d) => !d.pagado);
 
   const [selectedPayment, setSelectedPayment] = useState<PaymentRecord | null>(null);
+  const [showAllPayments, setShowAllPayments] = useState(false);
+
+  // Pagination: Show only last 10 payments by default
+  const PAYMENTS_PER_PAGE = 10;
+  const displayedPayments = showAllPayments
+    ? paymentHistory
+    : paymentHistory.slice(0, PAYMENTS_PER_PAGE);
 
   const itemsToPay: PayableItem[] = [
     ...unpaidCommonExpenses.map((d) => ({
@@ -145,36 +152,60 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({
         </h2>
         <div className="space-y-3">
           {paymentHistory.length > 0 ? (
-            paymentHistory.map((payment) => (
-              <div
-                key={payment.id}
-                className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center"
-              >
-                <div>
-                  <p className="font-bold text-gray-900 dark:text-white">
-                    {formatCurrency(payment.monto)}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {formatDate(payment.fechaPago)} • {payment.metodoPago}
-                  </p>
-                  {payment.observacion && (
-                    <p className="text-xs text-gray-400 italic mt-1">{payment.observacion}</p>
-                  )}
+            <>
+              {displayedPayments.map((payment) => (
+                <div
+                  key={payment.id}
+                  className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center"
+                >
+                  <div>
+                    <p className="font-bold text-gray-900 dark:text-white">
+                      {formatCurrency(payment.monto)}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {formatDate(payment.fechaPago)} • {payment.metodoPago}
+                    </p>
+                    {payment.observacion && (
+                      <p className="text-xs text-gray-400 italic mt-1">{payment.observacion}</p>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+                      Confirmado
+                    </span>
+                    <button
+                      onClick={() => setSelectedPayment(payment)}
+                      className="text-blue-600 dark:text-blue-400 text-sm font-medium flex items-center gap-1 hover:underline"
+                    >
+                      <Icons name="document-text" className="w-4 h-4" />
+                      Recibo
+                    </button>
+                  </div>
                 </div>
-                <div className="flex flex-col items-end gap-2">
-                  <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">
-                    Confirmado
-                  </span>
-                  <button
-                    onClick={() => setSelectedPayment(payment)}
-                    className="text-blue-600 dark:text-blue-400 text-sm font-medium flex items-center gap-1 hover:underline"
-                  >
-                    <Icons name="document-text" className="w-4 h-4" />
-                    Recibo
-                  </button>
-                </div>
-              </div>
-            ))
+              ))}
+
+              {/* Show "Ver más" button if there are more payments */}
+              {!showAllPayments && paymentHistory.length > PAYMENTS_PER_PAGE && (
+                <button
+                  onClick={() => setShowAllPayments(true)}
+                  className="w-full py-3 px-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl border border-gray-200 dark:border-gray-700 font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <Icons name="chevron-down" className="w-4 h-4" />
+                  Ver más ({paymentHistory.length - PAYMENTS_PER_PAGE} pagos anteriores)
+                </button>
+              )}
+
+              {/* Show "Ver menos" button if showing all */}
+              {showAllPayments && paymentHistory.length > PAYMENTS_PER_PAGE && (
+                <button
+                  onClick={() => setShowAllPayments(false)}
+                  className="w-full py-3 px-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl border border-gray-200 dark:border-gray-700 font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <Icons name="chevron-up" className="w-4 h-4" />
+                  Ver menos
+                </button>
+              )}
+            </>
           ) : (
             <div className="text-center py-6 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
               No hay pagos registrados.

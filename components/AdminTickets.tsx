@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import type { Ticket, Page, PageParams } from '../types';
 import { TicketStatus } from '../types';
-import { Card, Button } from './Shared';
+import { Card, Button, Header } from './Shared';
 import Icons from './Icons';
 
 // Helper
@@ -122,108 +122,119 @@ export const AdminTicketsScreen: React.FC<AdminTicketsScreenProps> = ({ tickets,
 interface AdminTicketDetailScreenProps {
   ticket: Ticket;
   onUpdateStatus: (id: number, status: TicketStatus) => void;
+  onBack: () => void;
 }
 
 export const AdminTicketDetailScreen: React.FC<AdminTicketDetailScreenProps> = ({
   ticket,
   onUpdateStatus,
+  onBack,
 }) => {
   const [newStatus, setNewStatus] = useState(ticket.estado);
 
   return (
-    <div className="p-4 md:p-8 max-w-3xl mx-auto space-y-6 animate-page">
-      <Card className="overflow-hidden">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 border-b border-gray-100 dark:border-gray-700 pb-6">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span
-                className={`text-xs font-bold px-3 py-1 rounded-full border ${getStatusColors(ticket.estado)}`}
-              >
-                {ticket.estado}
-              </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">Ticket #{ticket.id}</span>
+    <div className="animate-page">
+      <Header title="Detalle del Ticket" onBack={onBack} />
+      <div className="p-4 md:p-8 max-w-3xl mx-auto space-y-6">
+        <Card className="overflow-hidden">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 border-b border-gray-100 dark:border-gray-700 pb-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span
+                  className={`text-xs font-bold px-3 py-1 rounded-full border ${getStatusColors(ticket.estado)}`}
+                >
+                  {ticket.estado}
+                </span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Ticket #{ticket.id}
+                </span>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{ticket.titulo}</h2>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{ticket.titulo}</h2>
+            <div className="text-right">
+              <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center justify-end gap-1">
+                <Icons name="calendar" className="w-4 h-4" />
+                {new Date(ticket.fecha).toLocaleDateString('es-CL', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center justify-end gap-1">
-              <Icons name="calendar" className="w-4 h-4" />
-              {new Date(ticket.fecha).toLocaleDateString('es-CL', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
+
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-6 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-lg">
+              {ticket.user?.nombre.charAt(0)}
+            </div>
+            <div>
+              <p className="font-bold text-gray-900 dark:text-white">{ticket.user?.nombre}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Unidad {ticket.user?.unidad}
+              </p>
+            </div>
+          </div>
+
+          <div className="prose dark:prose-invert max-w-none mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Descripción
+            </h3>
+            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-100 dark:border-gray-700">
+              {ticket.descripcion}
             </p>
           </div>
-        </div>
 
-        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-6 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-lg">
-            {ticket.user?.nombre.charAt(0)}
-          </div>
-          <div>
-            <p className="font-bold text-gray-900 dark:text-white">{ticket.user?.nombre}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Unidad {ticket.user?.unidad}</p>
-          </div>
-        </div>
-
-        <div className="prose dark:prose-invert max-w-none mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Descripción</h3>
-          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-100 dark:border-gray-700">
-            {ticket.descripcion}
-          </p>
-        </div>
-
-        {ticket.foto && (
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <Icons name="camera" className="w-5 h-5 text-gray-400" />
-              Evidencia Adjunta
-            </h3>
-            <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-              <img
-                src={ticket.foto}
-                alt="Adjunto del ticket"
-                className="w-full h-auto object-cover max-h-96"
-              />
+          {ticket.foto && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                <Icons name="camera" className="w-5 h-5 text-gray-400" />
+                Evidencia Adjunta
+              </h3>
+              <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                <img
+                  src={ticket.foto}
+                  alt="Adjunto del ticket"
+                  className="w-full h-auto object-cover max-h-96"
+                />
+              </div>
             </div>
-          </div>
-        )}
-      </Card>
+          )}
+        </Card>
 
-      <Card className="bg-blue-50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-900/30">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Gestionar Estado</h3>
-        <div className="flex flex-col sm:flex-row gap-4 items-end">
-          <div className="w-full">
-            <label
-              htmlFor="status-select"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+        <Card className="bg-blue-50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-900/30">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Gestionar Estado</h3>
+          <div className="flex flex-col sm:flex-row gap-4 items-end">
+            <div className="w-full">
+              <label
+                htmlFor="status-select"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Nuevo Estado
+              </label>
+              <select
+                id="status-select"
+                value={newStatus}
+                onChange={(e) => setNewStatus(e.target.value as TicketStatus)}
+                className="block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-2.5 px-3"
+              >
+                {Object.values(TicketStatus).map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Button
+              onClick={() => onUpdateStatus(ticket.id, newStatus)}
+              disabled={newStatus === ticket.estado}
+              className="w-full sm:w-auto shadow-md"
             >
-              Nuevo Estado
-            </label>
-            <select
-              id="status-select"
-              value={newStatus}
-              onChange={(e) => setNewStatus(e.target.value as TicketStatus)}
-              className="block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-2.5 px-3"
-            >
-              {Object.values(TicketStatus).map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
+              Actualizar Estado
+            </Button>
           </div>
-          <Button
-            onClick={() => onUpdateStatus(ticket.id, newStatus)}
-            disabled={newStatus === ticket.estado}
-            className="w-full sm:w-auto shadow-md"
-          >
-            Actualizar Estado
-          </Button>
-        </div>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };

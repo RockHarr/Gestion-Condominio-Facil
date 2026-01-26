@@ -263,10 +263,15 @@ function App() {
   const addTicket = async (ticketData: { titulo: string; descripcion: string; foto?: string }) => {
     if (currentUser) {
       try {
-        await dataService.createTicket(ticketData, currentUser.id.toString());
+        const newTicket = await dataService.createTicket(ticketData, currentUser.id.toString());
         const tickets = await dataService.getTickets(currentUser.id);
         setTickets(tickets);
-        handleNavigate('tickets');
+        // Navigate to the newly created ticket detail
+        if (newTicket && newTicket.id) {
+          handleNavigate('ticket-detail', { ticketId: newTicket.id });
+        } else {
+          handleNavigate('tickets');
+        }
         showToast('Ticket creado exitosamente.');
       } catch (error) {
         showToast('Error al crear ticket', 'error');
