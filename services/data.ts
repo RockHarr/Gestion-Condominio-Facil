@@ -28,8 +28,8 @@ const withTimeout = async <T>(promise: PromiseLike<T>, ms = 10000): Promise<T> =
 export const dataService = {
   // --- Tickets ---
   async getTickets(userId?: string | number) {
-    const query = supabase.from('tickets').select('*, user:profiles(nombre, unidad)');
-    // if (userId) query = query.eq('user_id', userId);
+    let query = supabase.from('tickets').select('*, user:profiles(nombre, unidad)');
+    if (userId !== undefined && userId !== null) query = query.eq('user_id', userId);
 
     const { data, error } = await withTimeout(query.order('created_at', { ascending: false }));
     if (error) throw error;

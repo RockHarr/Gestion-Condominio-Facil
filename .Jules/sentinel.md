@@ -7,3 +7,8 @@
 **Vulnerability:** Row Level Security (RLS) policies on the `profiles` table allowed users to update their own row (`USING (auth.uid() = id)`). However, there were no column-level restrictions, allowing any user to update their `role` field from 'resident' to 'admin' via a crafted API request.
 **Learning:** RLS policies governing `UPDATE` operations must be paired with column-level restrictions or triggers if the table contains sensitive fields (like `role`) that the record owner should not control.
 **Prevention:** Use a `BEFORE UPDATE` trigger to inspect `NEW` vs `OLD` values and forbid changes to sensitive columns unless the user has elevated privileges (e.g., check `public.is_admin()`).
+
+## 2026-05-18 - [Fixed Insecure Data Access in getTickets]
+**Vulnerability:** The `getTickets` function in `services/data.ts` had a commented-out line that was intended to filter tickets by `user_id`. This potentially allowed data leakage of all tickets to any user if RLS was not strict.
+**Fix:** Uncommented the filter line and added a strict check (`userId !== undefined && userId !== null`) to ensure proper filtering and handle edge cases like ID 0.
+**Learning:** Comments can hide critical security logic. Always verify that security controls are active and not commented out.
