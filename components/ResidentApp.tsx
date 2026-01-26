@@ -48,7 +48,7 @@ interface ResidentAppProps {
   handleNavigate: (page: Page, params?: PageParams | null) => void;
   handleLogout: () => void;
   toggleTheme: () => void;
-  addTicket: (ticket: Pick<Ticket, 'titulo' | 'descripcion' | 'foto'>) => void;
+  addTicket: (ticket: Pick<Ticket, 'titulo' | 'descripcion' | 'foto'>) => Promise<void> | void;
   updateTicketStatus: (id: number, status: TicketStatus) => void;
   addReservation: (res: Omit<Reservation, 'id'>) => void;
   cancelReservation: (id: number) => void;

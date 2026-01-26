@@ -188,7 +188,11 @@ export const TicketDetailScreen: React.FC<TicketDetailScreenProps> = ({
 };
 
 interface CreateTicketScreenProps {
-  onAddTicket: (ticket: { titulo: string; descripcion: string; foto?: string }) => void;
+  onAddTicket: (ticket: {
+    titulo: string;
+    descripcion: string;
+    foto?: string;
+  }) => Promise<void> | void;
 }
 
 export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTicket }) => {
@@ -197,6 +201,7 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
   const [photo, setPhoto] = useState<string | undefined>(undefined);
   const [photoName, setPhotoName] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
@@ -224,10 +229,15 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (title.trim() && description.trim()) {
-      onAddTicket({ titulo: title, descripcion: description, foto: photo });
+      setIsSubmitting(true);
+      try {
+        await onAddTicket({ titulo: title, descripcion: description, foto: photo });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -337,7 +347,12 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
             </div>
           </div>
         </Card>
-        <Button type="submit" className="shadow-lg shadow-blue-500/30">
+        <Button
+          type="submit"
+          isLoading={isSubmitting}
+          className="shadow-lg shadow-blue-500/30"
+          disabled={isSubmitting}
+        >
           Enviar Ticket
         </Button>
       </form>
