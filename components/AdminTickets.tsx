@@ -29,6 +29,12 @@ export const AdminTicketsScreen: React.FC<AdminTicketsScreenProps> = ({ tickets,
   const [filter, setFilter] = useState<TicketStatus | 'TODOS'>('TODOS');
   const filteredTickets = tickets.filter((t) => filter === 'TODOS' || t.estado === filter);
 
+  // Count tickets by status
+  const countByStatus = (status: TicketStatus | 'TODOS') => {
+    if (status === 'TODOS') return tickets.length;
+    return tickets.filter((t) => t.estado === status).length;
+  };
+
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-page pb-24">
       <div className="flex justify-between items-center">
@@ -44,19 +50,31 @@ export const AdminTicketsScreen: React.FC<AdminTicketsScreenProps> = ({ tickets,
       </div>
 
       <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl overflow-x-auto">
-        {(['TODOS', ...Object.values(TicketStatus)] as const).map((status) => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 flex-1 ${
-              filter === status
-                ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200/50 dark:hover:bg-gray-700/50'
-            }`}
-          >
-            {status === 'TODOS' ? 'Todos' : status}
-          </button>
-        ))}
+        {(['TODOS', ...Object.values(TicketStatus)] as const).map((status) => {
+          const count = countByStatus(status);
+          return (
+            <button
+              key={status}
+              onClick={() => setFilter(status)}
+              className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 flex-1 relative ${
+                filter === status
+                  ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200/50 dark:hover:bg-gray-700/50'
+              }`}
+            >
+              <span>{status === 'TODOS' ? 'Todos' : status}</span>
+              <span
+                className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${
+                  filter === status
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                }`}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="space-y-4">

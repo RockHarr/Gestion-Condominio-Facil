@@ -54,6 +54,7 @@ export const dataService = {
           descripcion: ticket.descripcion,
           user_id: userId,
           estado: 'Nuevo',
+          foto: ticket.foto || null,
         })
         .select()
         .single(),
