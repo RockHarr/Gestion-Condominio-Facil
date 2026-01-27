@@ -294,7 +294,6 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
   const showHeader = [
     'home',
     'payments',
-    'tickets',
     'notices',
     'amenities',
     'polls',
