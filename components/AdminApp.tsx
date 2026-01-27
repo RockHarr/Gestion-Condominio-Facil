@@ -138,11 +138,20 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
       case 'admin-notices':
         return <AdminNoticesScreen notices={notices} onNavigate={handleNavigate} />;
       case 'admin-notice-create':
-        return <AdminCreateNoticeScreen onAddNotice={addNotice} />;
+        return (
+          <AdminCreateNoticeScreen
+            onAddNotice={addNotice}
+            onBack={() => handleNavigate('admin-notices')}
+          />
+        );
       case 'admin-notice-detail': {
         const notice = notices.find((n) => n.id === pageParams?.id);
         return notice ? (
-          <AdminNoticeDetailScreen notice={notice} onApprove={approveNotice} />
+          <AdminNoticeDetailScreen
+            notice={notice}
+            onApprove={approveNotice}
+            onBack={() => handleNavigate('admin-notices')}
+          />
         ) : (
           <div>Aviso no encontrado</div>
         );
