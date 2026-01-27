@@ -268,7 +268,7 @@ function App() {
         setTickets(tickets);
         // Navigate to the newly created ticket detail
         if (newTicket && newTicket.id) {
-          handleNavigate('ticket-detail', { ticketId: newTicket.id });
+          handleNavigate('ticket-detail', { id: newTicket.id });
         } else {
           handleNavigate('tickets');
         }

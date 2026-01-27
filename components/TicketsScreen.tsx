@@ -75,40 +75,42 @@ interface TicketsScreenProps {
 
 export const TicketsScreen: React.FC<TicketsScreenProps> = ({ tickets, onNavigate }) => {
   return (
-    <div className="p-4 space-y-4 animate-page pb-24">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Mis Tickets</h2>
-        <span className="text-sm text-gray-500 dark:text-gray-400">{tickets.length} total</span>
-      </div>
-
-      {tickets.length > 0 ? (
-        <div className="space-y-3">
-          {tickets.map((ticket) => (
-            <TicketItem
-              key={ticket.id}
-              ticket={ticket}
-              onClick={() => onNavigate('ticket-detail', { id: ticket.id })}
-            />
-          ))}
+    <div className="animate-page pb-24">
+      <Header title="Mis Tickets" onBack={() => onNavigate('home')} />
+      <div className="p-4 space-y-4">
+        <div className="flex justify-end items-center mb-2">
+          <span className="text-sm text-gray-500 dark:text-gray-400">{tickets.length} total</span>
         </div>
-      ) : (
-        <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
-          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
-            <Icons name="chat-bubble-left-right" className="w-8 h-8" />
+
+        {tickets.length > 0 ? (
+          <div className="space-y-3">
+            {tickets.map((ticket) => (
+              <TicketItem
+                key={ticket.id}
+                ticket={ticket}
+                onClick={() => onNavigate('ticket-detail', { id: ticket.id })}
+              />
+            ))}
           </div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">No tienes tickets</h3>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">¿Necesitas ayuda con algo?</p>
-        </div>
-      )}
+        ) : (
+          <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
+            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+              <Icons name="chat-bubble-left-right" className="w-8 h-8" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">No tienes tickets</h3>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">¿Necesitas ayuda con algo?</p>
+          </div>
+        )}
 
-      <div className="fixed bottom-24 right-4 z-50">
-        <button
-          onClick={() => onNavigate('ticket-create')}
-          className="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-transform hover:scale-105 active:scale-95"
-          aria-label="Crear nuevo ticket"
-        >
-          <Icons name="plus" className="w-7 h-7" />
-        </button>
+        <div className="fixed bottom-24 right-4 z-50">
+          <button
+            onClick={() => onNavigate('ticket-create')}
+            className="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-transform hover:scale-105 active:scale-95"
+            aria-label="Crear nuevo ticket"
+          >
+            <Icons name="plus" className="w-7 h-7" />
+          </button>
+        </div>
       </div>
     </div>
   );

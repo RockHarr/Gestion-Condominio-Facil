@@ -147,7 +147,7 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
       case 'tickets':
         return <TicketsScreen tickets={tickets} onNavigate={handleNavigate} />;
       case 'ticket-detail': {
-        const ticket = tickets.find((t) => t.id === pageParams?.ticketId);
+        const ticket = tickets.find((t) => t.id === pageParams?.id);
         return ticket ? (
           <TicketDetailScreen
             ticket={ticket}
