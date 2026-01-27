@@ -49,7 +49,6 @@ interface ResidentAppProps {
   handleLogout: () => void;
   toggleTheme: () => void;
   addTicket: (ticket: Pick<Ticket, 'titulo' | 'descripcion' | 'foto'>) => void;
-  updateTicketStatus: (id: number, status: TicketStatus) => void;
   addReservation: (res: Omit<Reservation, 'id'>) => void;
   cancelReservation: (id: number) => void;
   handleConfirmPayment: (debtId: number, type: 'common' | 'parking', method: string) => void;
@@ -82,7 +81,6 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
     handleLogout,
     toggleTheme,
     addTicket,
-    updateTicketStatus,
     addReservation,
     cancelReservation,
     handleConfirmPayment,
@@ -149,11 +147,7 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
       case 'ticket-detail': {
         const ticket = tickets.find((t) => t.id === pageParams?.id);
         return ticket ? (
-          <TicketDetailScreen
-            ticket={ticket}
-            onUpdateStatus={updateTicketStatus}
-            onBack={() => handleNavigate('tickets')}
-          />
+          <TicketDetailScreen ticket={ticket} onBack={() => handleNavigate('tickets')} />
         ) : (
           <div className="p-4">
             <Card>

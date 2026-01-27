@@ -118,18 +118,10 @@ export const TicketsScreen: React.FC<TicketsScreenProps> = ({ tickets, onNavigat
 
 interface TicketDetailScreenProps {
   ticket: Ticket;
-  onUpdateStatus: (id: number, status: TicketStatus) => void;
   onBack: () => void;
 }
 
-export const TicketDetailScreen: React.FC<TicketDetailScreenProps> = ({
-  ticket,
-  onUpdateStatus,
-  onBack,
-}) => {
-  const isClosed =
-    ticket.estado === TicketStatus.CERRADO || ticket.estado === TicketStatus.RESUELTO;
-
+export const TicketDetailScreen: React.FC<TicketDetailScreenProps> = ({ ticket, onBack }) => {
   return (
     <div className="animate-page">
       <Header title="Detalle del Ticket" onBack={onBack} />
@@ -177,25 +169,6 @@ export const TicketDetailScreen: React.FC<TicketDetailScreenProps> = ({
             </div>
           )}
         </Card>
-
-        <div className="space-y-3 pt-4">
-          {isClosed ? (
-            <Button
-              onClick={() => onUpdateStatus(ticket.id, TicketStatus.NUEVO)}
-              variant="secondary"
-            >
-              Reabrir Ticket
-            </Button>
-          ) : (
-            <Button
-              onClick={() => onUpdateStatus(ticket.id, TicketStatus.CERRADO)}
-              variant="primary"
-            >
-              Marcar como Resuelto y Cerrar
-            </Button>
-          )}
-          \n{' '}
-        </div>
       </div>
     </div>
   );

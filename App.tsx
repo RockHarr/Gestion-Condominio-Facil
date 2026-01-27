@@ -581,7 +581,6 @@ function App() {
           handleLogout={handleLogout}
           toggleTheme={toggleTheme}
           addTicket={addTicket}
-          updateTicketStatus={updateTicketStatus}
           addReservation={addReservation}
           cancelReservation={cancelReservation}
           handleConfirmPayment={handleConfirmPayment}
