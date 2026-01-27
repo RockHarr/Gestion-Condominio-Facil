@@ -28,6 +28,7 @@ import Icons from './Icons';
 import { ExpenseStatementModal } from './ExpenseStatementModal';
 import { AvailabilityCalendar } from './AvailabilityCalendar';
 import { ReservationRequestModal } from './ReservationRequestModal';
+import { ResidentExpensesScreen } from './ResidentExpensesScreen';
 
 interface ResidentAppProps {
   page: Page;
@@ -253,6 +254,14 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
 
       case 'polls':
         return <PollsScreen />;
+      case 'resident-expenses':
+        return (
+          <ResidentExpensesScreen
+            expenses={expenses}
+            showToast={showToast}
+            onNavigate={handleNavigate}
+          />
+        );
       case 'more':
         return <MoreScreen onNavigate={handleNavigate} unreadNotices={unreadNoticesCount} />;
       case 'profile':
