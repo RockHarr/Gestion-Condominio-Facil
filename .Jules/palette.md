@@ -9,3 +9,7 @@
 ## 2025-05-23 - Actionable Empty States and Icon Safety
 **Learning:** Hardcoded empty states were inconsistent and lacked actions. Created a reusable `EmptyState` component with CTA support. Also discovered that `Icons` component fails silently (returns null) for missing keys, which hid a bug in `TicketsScreen`.
 **Action:** Use `EmptyState` for all list components. Verify icon names in `Icons.tsx` before usage, as TypeScript doesn't catch invalid strings passed as props.
+
+## 2025-05-24 - Accessibility Patterns in Profile Forms
+**Learning:** The `ProfileScreen` password change form lacked accessibility (no labels) and usability (no visibility toggle). Using `Icons` with invalid key 'close' rendered the modal close button invisible.
+**Action:** Always wrap inputs with `<label>`. Reuse the password visibility toggle pattern from `LoginScreen`. Validate icon names against `Icons.tsx`.
