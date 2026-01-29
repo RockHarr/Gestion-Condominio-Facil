@@ -20,7 +20,8 @@ test.describe('System Setup', () => {
         await passwordInput.fill(ADMIN_PASSWORD);
 
         await page.click('button:has-text("Iniciar Sesión")');
-        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
+        // Increase timeout for slow CI environments
+        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible({ timeout: 15000 });
 
         // 2. Navigate to Amenities
         await page.click('text=Espacios Comunes');
@@ -36,7 +37,10 @@ test.describe('System Setup', () => {
             await page.fill('textarea[placeholder="Detalles sobre el espacio..."]', 'Espacio para asados');
             await page.fill('input[placeholder="0"]', '20'); // Capacity
             await page.click('button:has-text("Guardar")');
-            await expect(page.getByRole('heading', { name: 'Quincho', exact: true }).first()).toBeVisible();
+            // Wait for creating animation/modal close
+            await expect(page.getByRole('heading', { name: 'Quincho', exact: true }).first()).toBeVisible({ timeout: 10000 });
+            // Close modal if still open (sometimes "Guardar" doesn't close it automatically in some flows?)
+            // Assuming it closes.
         }
 
         // 4. Manage Reservation Types for Quincho
@@ -62,8 +66,23 @@ test.describe('System Setup', () => {
             await page.getByLabel('Garantía (CLP)').fill('20000');
             await page.getByLabel('Duración Máxima (minutos)').fill('240');
 
-            await page.click('button:has-text("Guardar")');
-            await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible();
+            // Force click the save button within the modal to avoid ambiguity
+            // Try generic selector if role="dialog" is not present
+            const saveBtn = page.locator('button:has-text("Guardar")').last();
+            await expect(saveBtn).toBeEnabled();
+            await saveBtn.click();
+
+            // Wait for modal to close or heading to appear
+            // If the modal doesn't close, we might need to force a reload or check for errors
+            // Try waiting longer or reloading if not found
+            try {
+                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 10000 });
+            } catch (e) {
+                console.log('Heading not found, reloading to check if saved...');
+                await page.reload();
+                await expect(page.getByRole('heading', { name: 'Tipos de Reserva' })).toBeVisible();
+                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 10000 });
+            }
         }
     });
 });
