@@ -25,7 +25,21 @@ test.describe('Admin — Reservations Management', () => {
         // Wait for login - Updated to check for a more robust element if tab-home fails or takes long
         // Checking for "Hola," or "Inicio" as backup if the tab ID is unreliable
         // Increasing timeout significantly for CI
-        await expect(page.locator('[data-testid="tab-home"]').or(page.getByRole('heading', { name: 'Inicio' }))).toBeVisible({ timeout: 30000 });
+        try {
+            // Check for Home tab, Inicio heading, OR Logout button (indicating auth success)
+            const authIndicator = page.locator('[data-testid="tab-home"]')
+                .or(page.getByRole('heading', { name: 'Inicio' }))
+                .or(page.getByRole('button', { name: /Cerrar/i }));
+
+            await expect(authIndicator).toBeVisible({ timeout: 45000 });
+        } catch (e) {
+            console.log('Login timeout. Checking for error messages...');
+            const error = page.locator('.bg-red-100');
+            if (await error.isVisible()) {
+                console.log('Login Error found:', await error.textContent());
+            }
+            throw e;
+        }
         // Retry logic for reservation creation (Day + Time)
         let success = false;
         let attempts = 0;

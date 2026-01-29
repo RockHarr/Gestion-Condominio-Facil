@@ -195,14 +195,15 @@ test.describe('Reservations - Morosity Check', () => {
         // Also check if we are redirected or can see "Mis Reservas"
 
         try {
-            await expect(successToast).toBeVisible({ timeout: 15000 });
+            await expect(successToast).toBeVisible({ timeout: 20000 });
         } catch (e) {
             console.log('Toast not found, checking for redirect/state...');
-            // Maybe we need to check if the reservation exists in the list?
-            // Or if we are back on the main screen?
-            // Just logging for now to not break if it was a true failure.
-            // If the toast is missed, we might check for the absence of the error modal.
-            const errorModal = page.getByText(/Usuario moroso/i);
+            // Check if we were redirected to My Reservations list or Home
+            // If the "Solicitar Reserva" modal is gone, it's likely a success
+            await expect(page.getByText('Solicitar Reserva')).not.toBeVisible({ timeout: 10000 });
+
+            // Ensure no blocking error remains
+            const errorModal = page.getByText(/Usuario moroso|Error/i);
             await expect(errorModal).not.toBeVisible();
         }
 

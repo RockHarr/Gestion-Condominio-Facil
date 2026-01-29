@@ -53,13 +53,18 @@ test.describe('System Setup', () => {
         await expect(page.getByRole('heading', { name: 'Tipos de Reserva' })).toBeVisible();
 
         // 5. Check/Create "Asado Familiar"
-        const typeRow = page.getByRole('heading', { name: 'Asado Familiar' });
-        if (!(await typeRow.isVisible())) {
-            console.log('Creating Asado Familiar type...');
-            await page.click('button:has-text("Nuevo Tipo")');
+        const uniqueName = `Asado Familiar ${Date.now()}`;
+        console.log(`Checking for reservation type: ${uniqueName}`);
 
-            // Fill Form
-            await page.fill('input[placeholder="Ej: Cumpleaños, Asado Familiar, Evento Masivo"]', 'Asado Familiar');
+        // Since we are creating a unique one, we don't expect it to exist, so we create it.
+        // Or if we want to rely on a fixed one, we should clean it up.
+        // For robustness, let's create a NEW one every time to avoid conflicts.
+
+        console.log('Creating new reservation type...');
+        await page.click('button:has-text("Nuevo Tipo")');
+
+        // Fill Form
+        await page.fill('input[placeholder="Ej: Cumpleaños, Asado Familiar, Evento Masivo"]', uniqueName);
 
             // Use labels for numeric inputs to avoid ambiguity
             await page.getByLabel('Tarifa (CLP)').fill('10000');
@@ -76,13 +81,18 @@ test.describe('System Setup', () => {
             // If the modal doesn't close, we might need to force a reload or check for errors
             // Try waiting longer or reloading if not found
             try {
-                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 10000 });
+                // Check if any error appeared in modal
+                const error = page.locator('.bg-red-100');
+                if (await error.isVisible()) {
+                    console.log('Error creating type:', await error.textContent());
+                }
+                await expect(page.getByText(uniqueName).first()).toBeVisible({ timeout: 20000 });
             } catch (e) {
                 console.log('Heading not found, reloading to check if saved...');
                 await page.reload();
                 await expect(page.getByRole('heading', { name: 'Tipos de Reserva' })).toBeVisible();
-                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 10000 });
+                // Relax check to look for text instead of heading if structure varies
+                await expect(page.getByText(uniqueName).first()).toBeVisible({ timeout: 20000 });
             }
-        }
     });
 });

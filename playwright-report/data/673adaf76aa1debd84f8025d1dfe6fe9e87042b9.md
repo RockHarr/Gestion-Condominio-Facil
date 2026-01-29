@@ -1,0 +1,261 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - main [ref=e4]:
+      - generic [ref=e5]:
+        - heading "Reservas" [level=2] [ref=e7]
+        - generic [ref=e8]:
+          - button "Quincho Espacio para asados y eventos al aire libre" [ref=e9] [cursor=pointer]:
+            - heading "Quincho" [level=3] [ref=e10]
+            - paragraph [ref=e11]: Espacio para asados y eventos al aire libre
+          - button "Sala de Eventos Salón multiuso para celebraciones" [ref=e12] [cursor=pointer]:
+            - heading "Sala de Eventos" [level=3] [ref=e13]
+            - paragraph [ref=e14]: Salón multiuso para celebraciones
+          - button "Piscina Piscina temperada" [ref=e15] [cursor=pointer]:
+            - heading "Piscina" [level=3] [ref=e16]
+            - paragraph [ref=e17]: Piscina temperada
+          - button "Quincho Central Espacio para asados con parrilla y mesas." [ref=e18] [cursor=pointer]:
+            - heading "Quincho Central" [level=3] [ref=e19]
+            - paragraph [ref=e20]: Espacio para asados con parrilla y mesas.
+          - button "Sala de Eventos Salón multiuso para celebraciones y reuniones." [ref=e21] [cursor=pointer]:
+            - heading "Sala de Eventos" [level=3] [ref=e22]
+            - paragraph [ref=e23]: Salón multiuso para celebraciones y reuniones.
+          - button "Sala TV QA 19012026 11:35 Texto de prueba QA" [ref=e24] [cursor=pointer]:
+            - heading "Sala TV QA 19012026 11:35" [level=3] [ref=e25]
+            - paragraph [ref=e26]: Texto de prueba QA
+          - button "Prueba QA 260126 0804 Descripcion de prueba" [ref=e27] [cursor=pointer]:
+            - heading "Prueba QA 260126 0804" [level=3] [ref=e28]
+            - paragraph [ref=e29]: Descripcion de prueba
+          - button "Quincho Espacio para asados" [ref=e30] [cursor=pointer]:
+            - heading "Quincho" [level=3] [ref=e31]
+            - paragraph [ref=e32]: Espacio para asados
+          - button "Quincho Espacio para asados" [ref=e33] [cursor=pointer]:
+            - heading "Quincho" [level=3] [ref=e34]
+            - paragraph [ref=e35]: Espacio para asados
+          - button "Quincho Espacio para asados" [ref=e36] [cursor=pointer]:
+            - heading "Quincho" [level=3] [ref=e37]
+            - paragraph [ref=e38]: Espacio para asados
+          - button "Quincho Espacio para asados" [ref=e39] [cursor=pointer]:
+            - heading "Quincho" [level=3] [ref=e40]
+            - paragraph [ref=e41]: Espacio para asados
+          - button "Quincho Espacio para asados" [ref=e42] [cursor=pointer]:
+            - heading "Quincho" [level=3] [ref=e43]
+            - paragraph [ref=e44]: Espacio para asados
+          - button "Quincho Espacio para asados" [ref=e45] [cursor=pointer]:
+            - heading "Quincho" [level=3] [ref=e46]
+            - paragraph [ref=e47]: Espacio para asados
+          - button "Quincho Espacio para asados" [ref=e48] [cursor=pointer]:
+            - heading "Quincho" [level=3] [ref=e49]
+            - paragraph [ref=e50]: Espacio para asados
+          - button "Quincho Espacio para asados" [ref=e51] [cursor=pointer]:
+            - heading "Quincho" [level=3] [ref=e52]
+            - paragraph [ref=e53]: Espacio para asados
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - heading "Enero 2026" [level=3] [ref=e57]
+            - generic [ref=e58]:
+              - button "Mes anterior" [ref=e59] [cursor=pointer]:
+                - img [ref=e60]
+              - button "Mes siguiente" [ref=e62] [cursor=pointer]:
+                - img [ref=e63]
+          - generic [ref=e65]:
+            - generic [ref=e66]: Dom
+            - generic [ref=e67]: Lun
+            - generic [ref=e68]: Mar
+            - generic [ref=e69]: Mié
+            - generic [ref=e70]: Jue
+            - generic [ref=e71]: Vie
+            - generic [ref=e72]: Sáb
+          - generic [ref=e73]:
+            - button "1" [disabled] [ref=e78]
+            - button "2" [disabled] [ref=e79]
+            - button "3" [disabled] [ref=e80]
+            - button "4" [disabled] [ref=e81]
+            - button "5" [disabled] [ref=e82]
+            - button "6" [disabled] [ref=e83]
+            - button "7" [disabled] [ref=e84]
+            - button "8" [disabled] [ref=e85]
+            - button "9" [disabled] [ref=e86]
+            - button "10" [disabled] [ref=e87]
+            - button "11" [disabled] [ref=e88]
+            - button "12" [disabled] [ref=e89]
+            - button "13" [disabled] [ref=e90]
+            - button "14" [disabled] [ref=e91]
+            - button "15" [disabled] [ref=e92]
+            - button "16" [disabled] [ref=e93]
+            - button "17" [disabled] [ref=e94]
+            - button "18" [disabled] [ref=e95]
+            - button "19" [disabled] [ref=e96]
+            - button "20" [disabled] [ref=e97]: "20"
+            - button "21" [disabled] [ref=e99]
+            - button "22" [disabled] [ref=e100]
+            - button "23" [disabled] [ref=e101]
+            - button "24" [disabled] [ref=e102]
+            - button "25" [disabled] [ref=e103]
+            - button "26" [disabled] [ref=e104]
+            - button "27" [disabled] [ref=e105]
+            - button "28" [disabled] [ref=e106]
+            - button "29" [ref=e107] [cursor=pointer]
+            - button "30" [ref=e108] [cursor=pointer]
+            - button "31" [ref=e109] [cursor=pointer]
+          - generic [ref=e110]:
+            - generic [ref=e113]: Ocupado
+            - generic [ref=e116]: Disponible
+        - generic [ref=e118]:
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - heading "Solicitar Reserva" [level=2] [ref=e121]
+              - paragraph [ref=e122]: Quincho - 1/29/2026
+            - button [ref=e123] [cursor=pointer]:
+              - img [ref=e124]
+          - generic [ref=e126]:
+            - generic [ref=e127]:
+              - generic [ref=e128]: Tipo de Evento
+              - combobox [active] [ref=e129]:
+                - option "Seleccionar..." [selected]
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+                - option "Asado Familiar"
+            - generic [ref=e130]:
+              - generic [ref=e131]:
+                - generic [ref=e132]: Inicio
+                - textbox [ref=e133]: 10:00
+              - generic [ref=e134]:
+                - generic [ref=e135]: Término
+                - textbox [ref=e136]: 14:00
+            - generic [ref=e137]:
+              - button "Cancelar" [ref=e138] [cursor=pointer]
+              - button "Confirmar Reserva" [ref=e139] [cursor=pointer]
+        - generic [ref=e141]:
+          - heading "Mis Reservas" [level=3] [ref=e142]
+          - generic [ref=e143]:
+            - generic [ref=e145]:
+              - generic [ref=e146]:
+                - heading "Quincho Central" [level=4] [ref=e147]
+                - paragraph [ref=e148]: 1/30/2026 • 09:00 PM - 11:00 PM
+                - generic [ref=e150]:
+                  - img [ref=e151]
+                  - text: Confirmada
+              - button "Cancelar" [ref=e154] [cursor=pointer]
+            - generic [ref=e156]:
+              - generic [ref=e157]:
+                - heading "Sala de Eventos" [level=4] [ref=e158]
+                - paragraph [ref=e159]: 1/30/2026 • 07:00 PM - 09:00 PM
+                - generic [ref=e161]:
+                  - img [ref=e162]
+                  - text: Confirmada
+              - button "Cancelar" [ref=e165] [cursor=pointer]
+            - generic [ref=e167]:
+              - generic [ref=e168]:
+                - heading "Sala TV QA 19012026 11:35" [level=4] [ref=e169]
+                - paragraph [ref=e170]: 1/29/2026 • 07:00 PM - 09:00 PM
+                - generic [ref=e172]:
+                  - img [ref=e173]
+                  - text: Confirmada
+              - button "Cancelar" [ref=e176] [cursor=pointer]
+            - generic [ref=e178]:
+              - generic [ref=e179]:
+                - heading "Quincho Central" [level=4] [ref=e180]
+                - paragraph [ref=e181]: 1/29/2026 • 01:00 PM - 05:00 PM
+                - generic [ref=e183]:
+                  - img [ref=e184]
+                  - text: Pendiente
+              - button "Cancelar" [ref=e187] [cursor=pointer]
+            - generic [ref=e189]:
+              - generic [ref=e190]:
+                - heading "Sala de Eventos" [level=4] [ref=e191]
+                - paragraph [ref=e192]: 1/29/2026 • 12:00 PM - 02:00 PM
+                - generic [ref=e194]:
+                  - img [ref=e195]
+                  - text: Confirmada
+              - button "Cancelar" [ref=e198] [cursor=pointer]
+            - generic [ref=e201]:
+              - heading "Prueba QA 260126 0804" [level=4] [ref=e202]
+              - paragraph [ref=e203]: 1/28/2026 • 01:00 PM - 05:00 PM
+              - generic [ref=e205]: REJECTED
+            - generic [ref=e208]:
+              - heading "Piscina" [level=4] [ref=e209]
+              - paragraph [ref=e210]: 1/24/2026 • 12:30 PM - 05:30 PM
+              - generic [ref=e212]:
+                - img [ref=e213]
+                - text: Confirmada
+            - generic [ref=e217]:
+              - heading "Quincho Central" [level=4] [ref=e218]
+              - paragraph [ref=e219]: 1/23/2026 • 01:00 PM - 05:00 PM
+              - generic [ref=e221]:
+                - img [ref=e222]
+                - text: Pendiente
+            - generic [ref=e226]:
+              - heading "Sala TV QA 19012026 11:35" [level=4] [ref=e227]
+              - paragraph [ref=e228]: 1/22/2026 • 11:30 AM - 12:30 PM
+              - generic [ref=e230]:
+                - img [ref=e231]
+                - text: Confirmada
+            - generic [ref=e235]:
+              - heading "Sala de Eventos" [level=4] [ref=e236]
+              - paragraph [ref=e237]: 1/19/2026 • 01:00 PM - 05:00 PM
+              - generic [ref=e239]:
+                - img [ref=e240]
+                - text: Confirmada
+            - generic [ref=e244]:
+              - heading "Quincho Central" [level=4] [ref=e245]
+              - paragraph [ref=e246]: 1/17/2026 • 01:00 PM - 05:00 PM
+              - generic [ref=e248]:
+                - img [ref=e249]
+                - text: Confirmada
+            - generic [ref=e253]:
+              - heading "Sala de Eventos" [level=4] [ref=e254]
+              - paragraph [ref=e255]: 1/16/2026 • 01:00 PM - 05:00 PM
+              - generic [ref=e257]: REJECTED
+            - generic [ref=e260]:
+              - heading "Piscina" [level=4] [ref=e261]
+              - paragraph [ref=e262]: 1/15/2026 • 01:00 PM - 02:00 PM
+              - generic [ref=e264]:
+                - img [ref=e265]
+                - text: Confirmada
+            - generic [ref=e269]:
+              - heading "Sala de Eventos" [level=4] [ref=e270]
+              - paragraph [ref=e271]: 1/15/2026 • 01:00 PM - 05:00 PM
+              - generic [ref=e273]:
+                - img [ref=e274]
+                - text: Confirmada
+    - navigation [ref=e276]:
+      - generic [ref=e277]:
+        - button "Inicio" [ref=e278] [cursor=pointer]:
+          - img [ref=e280]
+          - generic [ref=e282]: Inicio
+        - button "Pagos" [ref=e283] [cursor=pointer]:
+          - img [ref=e285]
+          - generic [ref=e287]: Pagos
+        - button "Tickets" [ref=e288] [cursor=pointer]:
+          - img [ref=e290]
+          - generic [ref=e292]: Tickets
+        - button "Espacios" [ref=e293] [cursor=pointer]:
+          - img [ref=e295]
+          - generic [ref=e297]: Espacios
+        - button "Avisos" [ref=e298] [cursor=pointer]:
+          - img [ref=e300]
+          - generic [ref=e302]: Avisos
+        - button "Votar" [ref=e303] [cursor=pointer]:
+          - img [ref=e305]
+          - generic [ref=e307]: Votar
+        - button "Más" [ref=e308] [cursor=pointer]:
+          - img [ref=e310]
+          - generic [ref=e313]: Más
+  - generic [ref=e314]: $0k
+```
