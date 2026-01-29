@@ -1,6 +1,28 @@
 -- Enable necessary extensions
 create extension if not exists "uuid-ossp";
 
+-- 1) Helper function: is_admin()
+-- SECURITY DEFINER: Ejecuta con permisos del creador (para evitar recursión infinita en RLS)
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+STABLE
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.profiles p
+    WHERE p.id = auth.uid()
+      AND p.role = 'admin'
+  );
+$$;
+
+-- Revocar ejecución pública (Mejora de seguridad)
+REVOKE EXECUTE ON FUNCTION public.is_admin() FROM anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.is_admin() TO service_role;
+
+
 -- 1. Profiles (Users)
 -- Links to Supabase Auth via references auth.users
 create table public.profiles (
@@ -155,3 +177,30 @@ create policy "Users can create tickets" on public.tickets for insert with check
 
 -- For now, we will allow authenticated users to read most tables to simplify development
 -- In production, you would tighten these policies significantly.
+-- Prevent Privilege Escalation via Profile Updates
+-- This trigger ensures that users cannot change their own role (e.g. from 'resident' to 'admin')
+-- even if RLS policies allow them to update their own profile row.
+
+CREATE OR REPLACE FUNCTION public.prevent_role_escalation()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Check if the role is being changed
+    IF NEW.role IS DISTINCT FROM OLD.role THEN
+        -- Allow change only if the user is an admin
+        -- We use public.is_admin() which checks the current user's role
+        IF NOT public.is_admin() THEN
+            RAISE EXCEPTION 'Unauthorized: You are not allowed to change the user role.';
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Drop trigger if exists to avoid errors on re-run
+DROP TRIGGER IF EXISTS on_profile_role_update ON public.profiles;
+
+-- Create the trigger
+CREATE TRIGGER on_profile_role_update
+BEFORE UPDATE ON public.profiles
+FOR EACH ROW
+EXECUTE FUNCTION public.prevent_role_escalation();

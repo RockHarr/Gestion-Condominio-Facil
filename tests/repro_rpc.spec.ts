@@ -40,6 +40,9 @@ test('repro rpc hang with debt', async () => {
 
     // 3. Insert Debt
     console.log('3. Inserting Debt...');
+    // Clean up first to avoid duplicates
+    await supabase.from('common_expense_debts').delete().eq('user_id', userId).eq('mes', '2025-01');
+
     const { error: debtError } = await supabase.from('common_expense_debts').insert({
         user_id: userId,
         mes: '2025-01',

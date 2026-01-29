@@ -2,13 +2,15 @@
 import { createClient } from '@supabase/supabase-js';
 
 const getEnv = (key: string) => {
-    // Check for import.meta.env (Vite)
-    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
-        return import.meta.env[key];
-    }
-    // Check for process.env (Node)
+    // Priority 1: process.env (Node/Test environment)
+    // We check this first because in some test setups, import.meta.env might be present but empty,
+    // while process.env has the injected values.
     if (typeof process !== 'undefined' && process.env && process.env[key]) {
         return process.env[key];
+    }
+    // Priority 2: import.meta.env (Vite client environment)
+    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
+        return import.meta.env[key];
     }
     return '';
 }
