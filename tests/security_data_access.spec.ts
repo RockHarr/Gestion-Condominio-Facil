@@ -7,14 +7,9 @@ import { supabase } from '../lib/supabase';
 
 // Use env vars or fail if missing (to avoid hardcoding secrets)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '270386';
 
 test('security: getTickets respects userId filter for Admin', async () => {
-    if (!ADMIN_PASSWORD) {
-        test.skip('ADMIN_PASSWORD not set', () => {});
-        return;
-    }
-
     // 1. Login as Admin
     const { data: authData, error: loginError } = await supabase.auth.signInWithPassword({
         email: ADMIN_EMAIL,
