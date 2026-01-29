@@ -9,3 +9,7 @@
 ## 2025-05-23 - Actionable Empty States and Icon Safety
 **Learning:** Hardcoded empty states were inconsistent and lacked actions. Created a reusable `EmptyState` component with CTA support. Also discovered that `Icons` component fails silently (returns null) for missing keys, which hid a bug in `TicketsScreen`.
 **Action:** Use `EmptyState` for all list components. Verify icon names in `Icons.tsx` before usage, as TypeScript doesn't catch invalid strings passed as props.
+
+## 2025-05-24 - Form Accessibility Patterns
+**Learning:** Form inputs with character limits (like in `TicketsScreen`) lacked programmatic association between the input and the visual counter. Standardizing on `aria-describedby` provides immediate context to screen reader users.
+**Action:** When adding character limits or helper text, always assign an ID to the helper element and link it via `aria-describedby` on the input.

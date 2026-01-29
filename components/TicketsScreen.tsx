@@ -231,7 +231,7 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                   htmlFor="title"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
-                  Asunto
+                  Asunto <span className="text-red-500" aria-hidden="true">*</span>
                 </label>
                 <input
                   type="text"
@@ -240,17 +240,18 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                   onChange={(e) => setTitle(e.target.value)}
                   required
                   maxLength={100}
+                  aria-describedby="title-count"
                   placeholder="Ej: Filtración en el baño"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
                 />
-                <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/100</p>
+                <p id="title-count" className="text-xs text-gray-400 mt-1 text-right">{title.length}/100</p>
               </div>
               <div>
                 <label
                   htmlFor="description"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
-                  Descripción detallada
+                  Descripción detallada <span className="text-red-500" aria-hidden="true">*</span>
                 </label>
                 <textarea
                   id="description"
@@ -259,10 +260,11 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                   rows={5}
                   required
                   maxLength={2000}
+                  aria-describedby="desc-count"
                   placeholder="Describe el problema con el mayor detalle posible..."
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
                 />
-                <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/2000</p>
+                <p id="desc-count" className="text-xs text-gray-400 mt-1 text-right">{description.length}/2000</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -308,6 +310,8 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                               accept="image/*"
                               className="sr-only"
                               onChange={handlePhotoChange}
+                              aria-invalid={!!error}
+                              aria-errormessage="file-error"
                             />
                           </label>
                         </div>
@@ -319,7 +323,7 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                   </div>
                 </div>
                 {error && (
-                  <p className="text-sm mt-2 text-red-600 dark:text-red-400 font-medium">{error}</p>
+                  <p id="file-error" role="alert" className="text-sm mt-2 text-red-600 dark:text-red-400 font-medium">{error}</p>
                 )}
                 {photoName && !photo && !error && (
                   <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">

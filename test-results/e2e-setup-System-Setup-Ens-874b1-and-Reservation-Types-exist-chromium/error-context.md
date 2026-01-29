@@ -1,0 +1,67 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - generic [ref=e10]:
+          - heading "Admin Panel" [level=1] [ref=e11]
+          - paragraph [ref=e12]: Gestión Condominio
+      - navigation [ref=e13]:
+        - paragraph [ref=e14]: Menu Principal
+        - button "Dashboard" [ref=e15] [cursor=pointer]:
+          - img [ref=e16]
+          - text: Dashboard
+        - button "Directorio de Unidades" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+          - text: Directorio de Unidades
+        - button "Registrar Pago" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+          - text: Registrar Pago
+        - button "Espacios Comunes" [ref=e24] [cursor=pointer]:
+          - img [ref=e25]
+          - text: Espacios Comunes
+        - button "Gestión de Reservas 2" [ref=e27] [cursor=pointer]:
+          - img [ref=e28]
+          - text: Gestión de Reservas
+          - generic [ref=e30]: "2"
+        - button "Gestión de Tickets 2" [ref=e31] [cursor=pointer]:
+          - img [ref=e32]
+          - text: Gestión de Tickets
+          - generic [ref=e34]: "2"
+        - button "Mural de Avisos" [ref=e35] [cursor=pointer]:
+          - img [ref=e36]
+          - text: Mural de Avisos
+        - button "Configuración" [ref=e38] [cursor=pointer]:
+          - img [ref=e39]
+          - text: Configuración
+        - button "Mi Perfil" [ref=e41] [cursor=pointer]:
+          - img [ref=e42]
+          - text: Mi Perfil
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - generic [ref=e46]: AD
+          - paragraph [ref=e48]: Administrador
+        - button "Cerrar Sesión" [ref=e49] [cursor=pointer]:
+          - img [ref=e50]
+          - text: Cerrar Sesión
+    - main [ref=e52]:
+      - generic [ref=e53]:
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]:
+              - button [ref=e57] [cursor=pointer]:
+                - img [ref=e58]
+              - heading "Tipos de Reserva" [level=1] [ref=e60]
+            - paragraph [ref=e61]: "Configurando reservas para: Quincho"
+          - button "Nuevo Tipo" [ref=e62] [cursor=pointer]:
+            - img [ref=e63]
+            - text: Nuevo Tipo
+        - generic [ref=e66]:
+          - img [ref=e67]
+          - heading "No hay tipos de reserva" [level=3] [ref=e69]
+          - paragraph [ref=e70]: Crea reglas de uso para tus espacios comunes.
+  - generic [ref=e71]: $0k
+```
