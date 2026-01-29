@@ -4,9 +4,15 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file if available
 dotenv.config();
 
-// Define fallback credentials for CI/Testing if not provided in environment
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+// FORCE INJECTION of fallback credentials into process.env
+// This ensures that both the Playwright runner and the test workers (which import this config)
+// have access to these variables, preventing the 'placeholder.supabase.co' error.
+if (!process.env.VITE_SUPABASE_URL) {
+  process.env.VITE_SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
+}
+if (!process.env.VITE_SUPABASE_ANON_KEY) {
+  process.env.VITE_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+}
 
 export default defineConfig({
   // Carpeta donde viven los tests
@@ -21,6 +27,9 @@ export default defineConfig({
     ['html', { open: 'never' }],
     ['list']
   ],
+
+  // Serial execution to avoid DB deadlocks in CI
+  workers: 1,
 
   // Defaults para todos los tests
   use: {
@@ -47,9 +56,8 @@ export default defineConfig({
     port: 3000,
     reuseExistingServer: !process.env.CI,
     env: {
-      ...process.env,
-      VITE_SUPABASE_URL: SUPABASE_URL,
-      VITE_SUPABASE_ANON_KEY: SUPABASE_KEY,
+      VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL,
+      VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY,
     }
   },
 });
