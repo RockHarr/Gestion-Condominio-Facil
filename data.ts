@@ -27,11 +27,11 @@ const SEED_DATA: AppData = {
     { id: 4, titulo: "Recordatorio: Cuotas de Estacionamiento", contenido: "Se recuerda a los residentes que la cuota de estacionamiento debe ser pagada antes del día 10.", fecha: "2025-11-07", tipo: NoticeType.COMUNIDAD, leido: false, status: NoticeStatus.BORRADOR },
   ],
   amenities: [
-    { id: 'quincho', nombre: 'Quincho' },
-    { id: 'sala_eventos', nombre: 'Salón de Eventos' }
+    { id: 'quincho', name: 'Quincho' },
+    { id: 'sala_eventos', name: 'Salón de Eventos' }
   ],
   reservations: [
-    { id: 1, amenityId: 'quincho', fecha: '2025-11-12', hora: '19:00', userId: 2 },
+    { id: 1, amenityId: 'quincho', startAt: '2025-11-12T19:00:00', endAt: '2025-11-12T23:00:00', userId: '2', status: 'CONFIRMED' as any, isSystem: false },
   ],
   parkingDebts: [
     { id: 1, userId: 1, patente: 'BC-DE-56', monto: 12000, mes: '2025-11', pagado: false },
@@ -63,7 +63,8 @@ const SEED_DATA: AppData = {
   communitySettings: {
     commonExpense: 65000,
     parkingCost: 12000,
-  }
+  },
+  polls: []
 };
 
 const DB_KEY = 'condoAppData';
@@ -95,7 +96,7 @@ class DataManager {
     const data = this.getData();
     const newUser: User = {
       ...userData,
-      id: Math.max(0, ...data.users.map(u => u.id)) + 1,
+      id: Math.max(0, ...data.users.map(u => Number(u.id))) + 1,
       role: 'resident',
     };
     data.users.push(newUser);
@@ -129,125 +130,12 @@ class DataManager {
     return newUser;
   }
 
-  public updateUser(id: number, updatedData: Partial<Pick<User, 'nombre' | 'hasParking' | 'email'>>): User | null {
-    const data = this.getData();
-    const userIndex = data.users.findIndex(u => u.id === id);
-    if (userIndex > -1) {
-      data.users[userIndex] = { ...data.users[userIndex], ...updatedData };
-      this.saveData(data);
-      return data.users[userIndex];
-    }
-    return null;
-  }
-
-  public deleteUser(id: number): void {
-    let data = this.getData();
-    data.users = data.users.filter(u => u.id !== id);
-    this.saveData(data);
-  }
-
-  public getCommonExpenseDebts(userId?: number): CommonExpenseDebt[] {
-    const debts = this.getData().commonExpenseDebts;
-    if (userId) {
-      return debts.filter(d => d.userId === userId);
-    }
-    return debts;
-  }
-
-  public getParkingDebts(userId?: number): ParkingDebt[] {
-    const debts = this.getData().parkingDebts;
-    if (userId) {
-      return debts.filter(d => d.userId === userId);
-    }
-    return debts;
-  }
-
-  public getTickets(userId?: number): AppData['tickets'] {
-    const tickets = this.getData().tickets.sort((a, b) => b.id - a.id);
-    if (userId) {
-      return tickets.filter(t => t.user?.id === userId);
-    }
-    return tickets;
-  }
-
-  public getTicket(id: number) {
-    return this.getTickets().find(t => t.id === id);
-  }
-
-  public addTicket(ticketData: Omit<Ticket, 'id' | 'fecha'>, user: User): Ticket {
-    const data = this.getData();
-    const newTicket: Ticket = {
-      ...ticketData,
-      id: Math.max(0, ...data.tickets.map(t => t.id)) + 1,
-      fecha: new Date().toISOString().split('T')[0],
-      estado: TicketStatus.NUEVO,
-      user: { id: user.id, nombre: user.nombre, unidad: user.unidad }
-    };
-    data.tickets.push(newTicket);
-    this.saveData(data);
-    return newTicket;
-  }
-
-  public updateTicketStatus(id: number, estado: TicketStatus): void {
-    const data = this.getData();
-    const ticket = data.tickets.find(t => t.id === id);
-    if (ticket) {
-      ticket.estado = estado;
-      this.saveData(data);
-    }
-  }
-
-  public getNotices(): AppData['notices'] {
-    return this.getData().notices.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-  }
-
-  public getNotice(id: number) {
-    return this.getNotices().find(n => n.id === id);
-  }
-
-  public createNotice(noticeData: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>): Notice {
-    const data = this.getData();
-    const newNotice: Notice = {
-      ...noticeData,
-      id: Math.max(0, ...data.notices.map(n => n.id)) + 1,
-      fecha: new Date().toISOString().split('T')[0],
-      leido: false,
-      status: NoticeStatus.BORRADOR,
-    };
-    data.notices.unshift(newNotice); // Añadir al principio
-    this.saveData(data);
-    return newNotice;
-  }
-
-  public updateNoticeStatus(id: number, status: NoticeStatus): void {
-    const data = this.getData();
-    const notice = data.notices.find(n => n.id === id);
-    if (notice) {
-      notice.status = status;
-      this.saveData(data);
-    }
-  }
-
-  public markNoticeAsRead(id: number): void {
-    const data = this.getData();
-    const notice = data.notices.find(n => n.id === id);
-    if (notice) {
-      notice.leido = true;
-      this.saveData(data);
-    }
-  }
-
-  public getAmenities(): AppData['amenities'] {
-    return this.getData().amenities;
-  }
-
-  public getReservations(): AppData['reservations'] {
-    return this.getData().reservations;
-  }
+  // ... lines 132-248 ...
 
   public addReservation(res: Omit<Reservation, 'id'>): Reservation | null {
     const data = this.getData();
-    const existing = data.reservations.find(r => r.fecha === res.fecha && r.hora === res.hora && r.amenityId === res.amenityId);
+    // Fix: use startAt for conflict check instead of deprecated fecha/hora
+    const existing = data.reservations.find(r => r.startAt === res.startAt && r.amenityId === res.amenityId);
     if (existing) {
       return null; // Conflicto
     }
@@ -261,7 +149,7 @@ class DataManager {
   }
 
   public cancelReservation(id: number): void {
-    let data = this.getData();
+    const data = this.getData();
     data.reservations = data.reservations.filter(r => r.id !== id);
     this.saveData(data);
   }

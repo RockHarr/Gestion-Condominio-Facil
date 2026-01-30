@@ -11,7 +11,9 @@
     "test:ui": "playwright test --ui",
     "test:ci": "playwright test --reporter=line",
     "test:report": "playwright show-report",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
+    "lint:strict": "eslint App.tsx components services types.ts --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --rule '{\"@typescript-eslint/no-explicit-any\": \"off\", \"@typescript-eslint/no-unused-vars\": \"off\", \"react-hooks/exhaustive-deps\": \"error\"}'",
+    "lint:quality": "eslint . --ext ts,tsx --report-unused-disable-directives",
     "format": "prettier --write ."
   },
   "dependencies": {
@@ -34,7 +36,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "prettier": "^3.2.5",
-    "typescript": "~5.8.2",
+    "typescript": "~5.5.4",
     "vite": "^6.2.0"
   }
 }

@@ -26,7 +26,12 @@ const SIMULATED_LATENCY_MS = 50;
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-class MockSupabaseQuery {
+interface SupabaseResult {
+    data: any;
+    error: any;
+}
+
+class MockSupabaseQuery implements PromiseLike<SupabaseResult> {
     private table: string;
     private selectStr: string = '*';
     private filters: any[] = [];
@@ -54,8 +59,8 @@ class MockSupabaseQuery {
         return this; // Ignore order for benchmark
     }
 
-    // This makes the object awaitable (Thenable)
-    async then(resolve: any, reject: any) {
+    // Execute the query logic
+    private async execute(): Promise<SupabaseResult> {
         await sleep(SIMULATED_LATENCY_MS);
 
         try {
@@ -66,13 +71,13 @@ class MockSupabaseQuery {
 
                 // Handle Join
                 if (this.selectStr.includes('user:profiles')) {
-                     result = result.map(r => {
+                    result = result.map(r => {
                         const user = USERS.find(u => u.id === r.user_id);
                         return {
                             ...r,
                             user: user ? { id: user.id, nombre: user.nombre, unidad: user.unidad } : null
                         };
-                     });
+                    });
                 }
             } else if (this.table === 'profiles') {
                 result = JSON.parse(JSON.stringify(USERS)); // Deep copy
@@ -83,10 +88,18 @@ class MockSupabaseQuery {
                 }
             }
 
-            resolve({ data: result, error: null });
+            return { data: result, error: null };
         } catch (e) {
-            resolve({ data: null, error: e });
+            return { data: null, error: e };
         }
+    }
+
+    // Implement PromiseLike interface
+    then<TResult1 = SupabaseResult, TResult2 = never>(
+        onfulfilled?: ((value: SupabaseResult) => TResult1 | PromiseLike<TResult1>) | null,
+        onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
+    ): PromiseLike<TResult1 | TResult2> {
+        return this.execute().then(onfulfilled, onrejected);
     }
 }
 
@@ -116,7 +129,7 @@ async function getReservationsOriginal() {
     const userIds = Array.from(new Set(reservations.map((r: any) => r.user_id).filter(Boolean)));
 
     // 3. Fetch profiles for these users
-    let profilesMap: Record<string, any> = {};
+    const profilesMap = new Map<string, any>();
     if (userIds.length > 0) {
         const { data: profiles, error: profilesError } = await withTimeout(mockSupabase
             .from('profiles')
@@ -127,7 +140,7 @@ async function getReservationsOriginal() {
             console.error('DataService: Error fetching profiles for reservations:', profilesError);
         } else {
             profiles?.forEach((p: any) => {
-                profilesMap[p.id] = p;
+                profilesMap.set(p.id, p);
             });
         }
     }
@@ -143,7 +156,7 @@ async function getReservationsOriginal() {
         isSystem: r.is_system,
         systemReason: r.system_reason,
         formData: r.form_data,
-        user: profilesMap[r.user_id] || undefined
+        user: profilesMap.get(r.user_id) || undefined
     }));
 }
 
@@ -198,17 +211,17 @@ async function runBenchmark() {
         console.log('⚠️ Results differ!');
         // Simple check
         if (resultOriginal.length !== resultOptimized.length) {
-             console.log('Length mismatch');
+            console.log('Length mismatch');
         } else {
-             // Inspect first difference
-             for(let i=0; i<resultOriginal.length; i++) {
-                 if (JSON.stringify(resultOriginal[i]) !== JSON.stringify(resultOptimized[i])) {
-                     console.log(`Mismatch at index ${i}`);
-                     console.log('Original:', JSON.stringify(resultOriginal[i], null, 2));
-                     console.log('Optimized:', JSON.stringify(resultOptimized[i], null, 2));
-                     break;
-                 }
-             }
+            // Inspect first difference
+            for (let i = 0; i < resultOriginal.length; i++) {
+                if (JSON.stringify(resultOriginal[i]) !== JSON.stringify(resultOptimized[i])) {
+                    console.log(`Mismatch at index ${i}`);
+                    console.log('Original:', JSON.stringify(resultOriginal[i], null, 2));
+                    console.log('Optimized:', JSON.stringify(resultOptimized[i], null, 2));
+                    break;
+                }
+            }
         }
     }
 }
