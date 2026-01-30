@@ -1,0 +1,84 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - generic [ref=e10]:
+          - heading "Admin Panel" [level=1] [ref=e11]
+          - paragraph [ref=e12]: Gestión Condominio
+      - navigation [ref=e13]:
+        - paragraph [ref=e14]: Menu Principal
+        - button "Dashboard" [ref=e15] [cursor=pointer]:
+          - img [ref=e16]
+          - text: Dashboard
+        - button "Directorio de Unidades" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+          - text: Directorio de Unidades
+        - button "Registrar Pago" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+          - text: Registrar Pago
+        - button "Espacios Comunes" [ref=e24] [cursor=pointer]:
+          - img [ref=e25]
+          - text: Espacios Comunes
+        - button "Gestión de Reservas 2" [active] [ref=e27] [cursor=pointer]:
+          - img [ref=e28]
+          - text: Gestión de Reservas
+          - generic [ref=e30]: "2"
+        - button "Gestión de Tickets 2" [ref=e31] [cursor=pointer]:
+          - img [ref=e32]
+          - text: Gestión de Tickets
+          - generic [ref=e34]: "2"
+        - button "Mural de Avisos" [ref=e35] [cursor=pointer]:
+          - img [ref=e36]
+          - text: Mural de Avisos
+        - button "Configuración" [ref=e38] [cursor=pointer]:
+          - img [ref=e39]
+          - text: Configuración
+        - button "Mi Perfil" [ref=e41] [cursor=pointer]:
+          - img [ref=e42]
+          - text: Mi Perfil
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - generic [ref=e46]: AD
+          - paragraph [ref=e48]: Administrador
+        - button "Cerrar Sesión" [ref=e49] [cursor=pointer]:
+          - img [ref=e50]
+          - text: Cerrar Sesión
+    - main [ref=e52]:
+      - generic [ref=e53]:
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - heading "Gestión de Reservas" [level=2] [ref=e56]
+            - paragraph [ref=e57]: Administra las solicitudes y uso de espacios comunes
+          - button "Nueva Reserva" [ref=e58] [cursor=pointer]:
+            - img [ref=e59]
+            - text: Nueva Reserva
+        - generic [ref=e61]:
+          - button "Pendientes2" [ref=e62] [cursor=pointer]
+          - button "Próximas2" [ref=e63] [cursor=pointer]
+          - button "Historial11" [ref=e64] [cursor=pointer]
+          - button "Todas15" [ref=e65] [cursor=pointer]
+        - generic [ref=e66]:
+          - generic [ref=e67]:
+            - generic [ref=e68]:
+              - generic [ref=e70]: REQUESTED
+              - 'heading "Reserva #216 - 1/29/2026" [level=3] [ref=e71]'
+              - paragraph [ref=e72]: 01:00 PM -05:00 PM
+              - paragraph [ref=e73]: Residente 01 • Unidad A-101
+            - generic [ref=e74]:
+              - button "Aprobar" [ref=e75] [cursor=pointer]
+              - button "Rechazar" [ref=e76] [cursor=pointer]
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - generic [ref=e80]: REQUESTED
+              - 'heading "Reserva #122 - 1/23/2026" [level=3] [ref=e81]'
+              - paragraph [ref=e82]: 01:00 PM -05:00 PM
+              - paragraph [ref=e83]: Residente 01 • Unidad A-101
+            - generic [ref=e84]:
+              - button "Aprobar" [ref=e85] [cursor=pointer]
+              - button "Rechazar" [ref=e86] [cursor=pointer]
+  - generic [ref=e87]: $0k
+```

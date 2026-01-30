@@ -15,13 +15,28 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
     // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
-    if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+    // Wait for app to load (either login screen or dashboard)
+    const loginHeader = page.getByText('Bienvenido');
+    const usePasswordBtn = page.getByText('Usar contraseña');
+    const dashboardBtn = page.getByRole('button', { name: /Gestión de Reservas/i });
+
+    await expect(loginHeader.or(usePasswordBtn).or(dashboardBtn).first()).toBeVisible({ timeout: 15000 });
+
+    if (await loginHeader.first().isVisible() || await usePasswordBtn.first().isVisible()) {
+        const emailInput = page.locator('input[type="email"]');
+        if (await emailInput.isVisible()) {
+             await emailInput.fill('rockwell.harrison@gmail.com');
+        }
+
+        if (await usePasswordBtn.first().isVisible()) {
+            await usePasswordBtn.first().click();
+        }
+
+        await page.fill('input[type="password"]', '270386');
+        await page.click('button:has-text("Iniciar Sesión")');
     }
 
     // 3. Verify Sidebar
@@ -31,7 +46,7 @@ test('reservations_menu_smoke', async ({ page }) => {
     await page.click('button:has-text("Gestión de Reservas")');
 
     // 5. Verify Page Content
-    await expect(page.getByText('Gestión de Reservas')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Gestión de Reservas' })).toBeVisible();
 
     // 6. Verify List or Empty State (Fallback UI)
     // Either we see cards OR the empty state message
