@@ -9,8 +9,16 @@ const getSupabaseConfig = () => {
 
     // Try Vite import.meta.env (Static replacement works best with direct property access)
     // We use logical OR to fallback if empty string or undefined
-    const url = import.meta.env.VITE_SUPABASE_URL || CI_URL;
-    const key = import.meta.env.VITE_SUPABASE_ANON_KEY || CI_KEY;
+    let url = import.meta.env.VITE_SUPABASE_URL || CI_URL;
+    let key = import.meta.env.VITE_SUPABASE_ANON_KEY || CI_KEY;
+
+    // Fix: If .env file with dummy values ("example.supabase.co") is present during build,
+    // it overrides the undefined check but breaks the app. We must reject known dummy domains.
+    if (url.includes('example.supabase.co') || url.includes('placeholder.supabase.co')) {
+        console.warn('Detected dummy Supabase URL from .env, using CI fallback.');
+        url = CI_URL;
+        key = CI_KEY;
+    }
 
     return { url, key };
 };
