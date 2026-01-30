@@ -999,11 +999,11 @@ git commit -m "fix [skip ci]"  # Skip CI
 
 ## Appendix B: Environment Variables Reference
 
-| Variable                 | Required | Description             | Example                      |
-| ------------------------ | -------- | ----------------------- | ---------------------------- |
-| `VITE_SUPABASE_URL`      | Yes      | Supabase project URL    | `https://abc123.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | Yes      | Supabase anonymous key  | `eyJhbGciOiJIUzI1NiI...`     |
-| `VITE_GEMINI_API_KEY`    | No       | Gemini API key (future) | `AIzaSy...`                  |
+| Variable                 | Required | Description             | Example                                    |
+| ------------------------ | -------- | ----------------------- | ------------------------------------------ |
+| `VITE_SUPABASE_URL`      | Yes      | Supabase project URL    | `https://tqshoddiisfgfjqlkntv.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | Yes      | Supabase anonymous key  | `eyJhbGciOiJIUzI1NiI...`                   |
+| `VITE_GEMINI_API_KEY`    | No       | Gemini API key (future) | `AIzaSy...`                                |
 
 ---
 
