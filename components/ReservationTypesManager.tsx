@@ -149,6 +149,8 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
             <button
               onClick={() => onNavigate('admin-amenities')}
               className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              aria-label="Volver"
+              title="Volver"
             >
               <Icons name="arrow-left" className="w-5 h-5" />
             </button>
@@ -180,12 +182,16 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
                 <button
                   onClick={() => handleOpenModal(type)}
                   className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-blue-600 hover:bg-blue-50"
+                  aria-label="Editar tipo de reserva"
+                  title="Editar"
                 >
                   <Icons name="pencil" className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(type.id)}
                   className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-red-600 hover:bg-red-50"
+                  aria-label="Eliminar tipo de reserva"
+                  title="Eliminar"
                 >
                   <Icons name="trash" className="w-4 h-4" />
                 </button>
@@ -265,6 +271,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
               <button
                 onClick={() => setModalOpen(false)}
                 className="text-gray-400 hover:text-gray-500"
+                aria-label="Cerrar modal"
               >
                 <Icons name="xmark" className="w-6 h-6" />
               </button>
