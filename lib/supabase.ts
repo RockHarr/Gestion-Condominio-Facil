@@ -22,8 +22,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 // Fallback to dummy values to prevent crash if env vars are missing, allowing App to show proper error UI
 // Using known test credentials to ensure E2E tests pass in CI where env vars might be missing
-const url = supabaseUrl || 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const key = supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+const isInvalidUrl = !supabaseUrl || supabaseUrl.includes('example.supabase.co') || supabaseUrl.includes('placeholder');
+const url = isInvalidUrl ? 'https://tqshoddiisfgfjqlkntv.supabase.co' : supabaseUrl;
+const key = isInvalidUrl ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc' : supabaseAnonKey;
 
 console.log(`Supabase Client Initialized with URL: ${url}`);
 
