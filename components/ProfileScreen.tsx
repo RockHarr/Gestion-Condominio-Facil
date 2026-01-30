@@ -33,7 +33,13 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
       </Card>
 
       <Card>
-        <button onClick={onToggleTheme} className="flex justify-between items-center w-full p-2">
+      <button
+        onClick={onToggleTheme}
+        className="flex justify-between items-center w-full p-2"
+        role="switch"
+        aria-checked={theme === 'dark'}
+        aria-label="Alternar modo oscuro"
+      >
           <span className="font-medium text-gray-800 dark:text-gray-200">Modo Oscuro</span>
           <div className="relative">
             <div
@@ -123,20 +129,33 @@ const PasswordChangeSection: React.FC = () => {
       <div className="p-2 space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="font-bold text-gray-900 dark:text-white">Nueva Contraseña</h3>
-          <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
+          <button
+            onClick={() => setIsOpen(false)}
+            className="text-gray-500 hover:text-gray-700"
+            aria-label="Cerrar"
+          >
             <Icons name="close" className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleUpdatePassword} className="space-y-3">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Ingresa nueva contraseña"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            required
-          />
+          <div>
+            <label
+              htmlFor="new-password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Nueva Contraseña
+            </label>
+            <input
+              id="new-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Ingresa nueva contraseña"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              required
+            />
+          </div>
 
           {message && (
             <div
@@ -146,7 +165,7 @@ const PasswordChangeSection: React.FC = () => {
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full">
+          <Button type="submit" isLoading={loading} className="w-full">
             {loading ? 'Guardando...' : 'Guardar Nueva Contraseña'}
           </Button>
         </form>
