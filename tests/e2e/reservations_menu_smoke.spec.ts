@@ -23,16 +23,16 @@ test('reservations_menu_smoke', async ({ page }) => {
     const usePasswordBtn = page.getByText('Usar contraseña');
     const dashboardBtn = page.getByRole('button', { name: /Gestión de Reservas/i });
 
-    await expect(loginHeader.or(usePasswordBtn).or(dashboardBtn)).toBeVisible({ timeout: 15000 });
+    await expect(loginHeader.or(usePasswordBtn).or(dashboardBtn).first()).toBeVisible({ timeout: 15000 });
 
-    if (await loginHeader.isVisible() || await usePasswordBtn.isVisible()) {
+    if (await loginHeader.first().isVisible() || await usePasswordBtn.first().isVisible()) {
         const emailInput = page.locator('input[type="email"]');
         if (await emailInput.isVisible()) {
              await emailInput.fill('rockwell.harrison@gmail.com');
         }
 
-        if (await usePasswordBtn.isVisible()) {
-            await usePasswordBtn.click();
+        if (await usePasswordBtn.first().isVisible()) {
+            await usePasswordBtn.first().click();
         }
 
         await page.fill('input[type="password"]', '270386');
