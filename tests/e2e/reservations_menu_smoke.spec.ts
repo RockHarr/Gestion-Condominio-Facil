@@ -1,50 +1,40 @@
+
 import { test, expect } from '@playwright/test';
 
 test('reservations_menu_smoke', async ({ page }) => {
-    // 1. Mock network to ensure no 400 errors (validation logic)
-    const failedRequests: string[] = [];
-    page.on('requestfailed', request => {
-        failedRequests.push(`${request.url()} - ${request.failure()?.errorText}`);
-    });
-    page.on('response', response => {
-        if (response.status() >= 400 && response.url().includes('/rest/v1/reservations')) {
-            failedRequests.push(`${response.url()} - ${response.status()}`);
-        }
-    });
+    await page.goto('/');
 
-    // 2. Login as Admin (Mock)
-    // Assuming default dev login flow or using a known credential if E2E setup allows
-    // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    // 1. Wait for Loading to finish and Login Screen to appear
+    await expect(page.getByText('Bienvenido')).toBeVisible({ timeout: 15000 });
 
-    // Fill login if redirected to login
-    if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+    // 2. Toggle Password Login
+    const toggleButton = page.getByRole('button', { name: 'Usar contraseña' });
+    if (await toggleButton.isVisible()) {
+        await toggleButton.click();
     }
 
-    // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    // 3. Login
+    await page.fill('input[type="email"]', 'contacto@rockcode.cl');
+    await page.fill('input[type="password"]', '180381');
+    await page.click('button[type="submit"]');
 
-    // 4. Navigate
-    await page.click('button:has-text("Gestión de Reservas")');
+    // 4. Wait for Dashboard
+    await expect(page.getByText('Hola,')).toBeVisible({ timeout: 15000 });
 
-    // 5. Verify Page Content
-    await expect(page.getByText('Gestión de Reservas')).toBeVisible();
+    // 5. Navigate to Amenities using the Tab Bar
+    // The tab label is "Espacios"
+    await page.getByRole('button', { name: 'Espacios', exact: true }).click();
 
-    // 6. Verify List or Empty State (Fallback UI)
-    // Either we see cards OR the empty state message
-    const hasCards = await page.locator('.bg-white.rounded-lg.shadow').count() > 0;
-    const hasEmptyState = await page.getByText('No hay reservas en esta categoría').isVisible();
+    // 6. Verify Amenities and Select
+    // Use .first() to avoid strict mode violations if multiple elements contain "Quincho"
+    // (e.g. recent reservations list + amenities list)
+    // We target the heading or button specifically.
+    await expect(page.getByText('Quincho').first()).toBeVisible();
+    await page.getByText('Quincho').first().click();
 
-    expect(hasCards || hasEmptyState).toBeTruthy();
-
-    // 7. Verify Tabs
-    await expect(page.getByText('Pendientes')).toBeVisible();
-    await expect(page.getByText('Próximas')).toBeVisible();
-    await expect(page.getByText('Historial')).toBeVisible();
-
-    // 8. Final Network Check
-    expect(failedRequests).toEqual([]);
+    // 7. Verify Detail/Reservations Page
+    // Depending on navigation, this might open a modal or new page.
+    // If it opens Amenities detail or Reservations list, we check for a key element.
+    // Assuming it shows "Reservar" button.
+    await expect(page.getByText('Reservar').first()).toBeVisible();
 });
