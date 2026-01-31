@@ -63,6 +63,10 @@ test.describe('System Setup', () => {
             await page.getByLabel('Duración Máxima (minutos)').fill('240');
 
             await page.click('button:has-text("Guardar")');
+
+            // Wait for modal to disappear
+            await expect(page.getByRole('dialog')).toBeHidden();
+
             await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible();
         }
     });

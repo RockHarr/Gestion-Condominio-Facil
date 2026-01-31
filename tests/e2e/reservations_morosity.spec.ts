@@ -105,13 +105,30 @@ test.describe('Reservations - Morosity Check', () => {
         await page.click('text=Quincho');
 
         // Wait for calendar
-        // The custom calendar renders buttons for days. We wait for a day to be visible.
-        // We pick the 15th day of the current month.
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
-        await expect(dayButton).toBeVisible({ timeout: 10000 });
+        // Select a date in the future to ensure it's enabled (e.g., 28th)
+        // Ideally we should calculate next available day, but for now 28 is safe for most "current" runs unless end of month
+        // Better: Select the first enabled button that is a day number
 
-        // 4. Select a day
-        await dayButton.click();
+        await expect(page.locator('.grid button:not([disabled])').first()).toBeVisible({ timeout: 10000 });
+
+        // Click the first available day button that is a number
+        const enabledDays = page.locator('.grid button:not([disabled])');
+        const dayCount = await enabledDays.count();
+        let clicked = false;
+
+        for (let i = 0; i < dayCount; i++) {
+            const btn = enabledDays.nth(i);
+            const text = await btn.textContent();
+            if (text && !isNaN(Number(text)) && Number(text) > 0) {
+                await btn.click();
+                clicked = true;
+                break;
+            }
+        }
+
+        if (!clicked) {
+             throw new Error('No available day found to click');
+        }
 
         // 5. Attempt to Reserve
         await expect(page.getByText('Solicitar Reserva')).toBeVisible();
@@ -163,9 +180,20 @@ test.describe('Reservations - Morosity Check', () => {
 
         await page.click('text=Reservar');
         await page.click('text=Quincho');
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
-        await expect(dayButton).toBeVisible({ timeout: 10000 });
-        await dayButton.click();
+
+        // Select a valid day again
+        await expect(page.locator('.grid button:not([disabled])').first()).toBeVisible({ timeout: 10000 });
+        const enabledDays = page.locator('.grid button:not([disabled])');
+        const dayCount = await enabledDays.count();
+
+        for (let i = 0; i < dayCount; i++) {
+            const btn = enabledDays.nth(i);
+            const text = await btn.textContent();
+            if (text && !isNaN(Number(text)) && Number(text) > 0) {
+                await btn.click();
+                break;
+            }
+        }
 
         const typeSelect = page.locator('select');
         if (await typeSelect.isVisible()) {
