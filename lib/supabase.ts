@@ -13,23 +13,23 @@ const getEnv = (key: string) => {
     return '';
 }
 
-const supabaseUrl = getEnv('VITE_SUPABASE_URL');
-const supabaseAnonKey = getEnv('VITE_SUPABASE_ANON_KEY');
+const envUrl = getEnv('VITE_SUPABASE_URL');
+const envKey = getEnv('VITE_SUPABASE_ANON_KEY');
 
-if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('Missing Supabase environment variables. Please check .env.local');
+// Check if env vars are missing or are dummy/placeholder values
+const isDummyUrl = !envUrl || envUrl.includes('example.supabase.co') || envUrl.includes('placeholder');
+
+const supabaseUrl = isDummyUrl ? 'https://tqshoddiisfgfjqlkntv.supabase.co' : envUrl;
+const supabaseAnonKey = isDummyUrl ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc' : envKey;
+
+if (isDummyUrl) {
+    console.warn('Using Demo Supabase credentials because environment variables are missing or placeholders.');
 }
 
-// Fallback to dummy values to prevent crash if env vars are missing, allowing App to show proper error UI
-// In CI, we fallback to the known demo instance to allow E2E tests to pass
-export const supabase = createClient(
-    supabaseUrl || 'https://tqshoddiisfgfjqlkntv.supabase.co',
-    supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc',
-    {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
-        }
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
     }
-);
+});
