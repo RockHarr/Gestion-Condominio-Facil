@@ -241,9 +241,12 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                   required
                   maxLength={100}
                   placeholder="Ej: Filtración en el baño"
+                  aria-describedby="title-counter"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
                 />
-                <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/100</p>
+                <p id="title-counter" className="text-xs text-gray-400 mt-1 text-right">
+                  {title.length}/100
+                </p>
               </div>
               <div>
                 <label
@@ -260,9 +263,12 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                   required
                   maxLength={2000}
                   placeholder="Describe el problema con el mayor detalle posible..."
+                  aria-describedby="description-counter"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
                 />
-                <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/2000</p>
+                <p id="description-counter" className="text-xs text-gray-400 mt-1 text-right">
+                  {description.length}/2000
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -308,6 +314,8 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                               accept="image/*"
                               className="sr-only"
                               onChange={handlePhotoChange}
+                              aria-invalid={!!error}
+                              aria-describedby={error ? 'photo-error' : undefined}
                             />
                           </label>
                         </div>
@@ -319,7 +327,12 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                   </div>
                 </div>
                 {error && (
-                  <p className="text-sm mt-2 text-red-600 dark:text-red-400 font-medium">{error}</p>
+                  <p
+                    id="photo-error"
+                    className="text-sm mt-2 text-red-600 dark:text-red-400 font-medium"
+                  >
+                    {error}
+                  </p>
                 )}
                 {photoName && !photo && !error && (
                   <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">
