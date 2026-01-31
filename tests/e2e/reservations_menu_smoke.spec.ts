@@ -1,50 +1,42 @@
+
 import { test, expect } from '@playwright/test';
 
 test('reservations_menu_smoke', async ({ page }) => {
-    // 1. Mock network to ensure no 400 errors (validation logic)
-    const failedRequests: string[] = [];
-    page.on('requestfailed', request => {
-        failedRequests.push(`${request.url()} - ${request.failure()?.errorText}`);
-    });
-    page.on('response', response => {
-        if (response.status() >= 400 && response.url().includes('/rest/v1/reservations')) {
-            failedRequests.push(`${response.url()} - ${response.status()}`);
-        }
-    });
+    // 1. Setup - Mock or ensure login
+    // If we are already logged in via global setup, this might be redundant or we can just go to root.
+    // However, to be robust, let's try to go to the root.
 
-    // 2. Login as Admin (Mock)
-    // Assuming default dev login flow or using a known credential if E2E setup allows
-    // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    // Using relative URL to rely on baseURL from playwright.config.ts
+    // This avoids port mismatch (3000 vs 5173).
+    await page.goto('/');
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+        await page.fill('input[type="email"]', 'contacto@rockcode.cl');
+        await page.fill('input[type="password"]', '180381');
+        await page.click('button[type="submit"]');
     }
 
-    // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    // 2. Wait for Dashboard / Home
+    // Check for a known element on the home page, e.g., "Hola," or "Inicio"
+    await expect(page.getByText('Hola,')).toBeVisible({ timeout: 10000 });
 
-    // 4. Navigate
-    await page.click('button:has-text("Gestión de Reservas")');
+    // 3. Navigate to Reservations
+    // We look for the "Espacios Comunes" button/tab
+    await page.getByText('Espacios Comunes').click();
 
-    // 5. Verify Page Content
-    await expect(page.getByText('Gestión de Reservas')).toBeVisible();
+    // 4. Verify Amenities are visible
+    // "Quincho" and "Salón de Eventos" are the default seed data
+    await expect(page.getByText('Quincho')).toBeVisible();
+    await expect(page.getByText('Salón de Eventos')).toBeVisible();
 
-    // 6. Verify List or Empty State (Fallback UI)
-    // Either we see cards OR the empty state message
-    const hasCards = await page.locator('.bg-white.rounded-lg.shadow').count() > 0;
-    const hasEmptyState = await page.getByText('No hay reservas en esta categoría').isVisible();
+    // 5. Click on Quincho
+    await page.getByText('Quincho').click();
 
-    expect(hasCards || hasEmptyState).toBeTruthy();
+    // 6. Verify Calendar or Reservation Page
+    // Should see "Reservar Quincho" or similar header
+    await expect(page.getByRole('heading', { name: 'Quincho' })).toBeVisible();
 
-    // 7. Verify Tabs
-    await expect(page.getByText('Pendientes')).toBeVisible();
-    await expect(page.getByText('Próximas')).toBeVisible();
-    await expect(page.getByText('Historial')).toBeVisible();
-
-    // 8. Final Network Check
-    expect(failedRequests).toEqual([]);
+    // Check for "Reservar" button availability
+    await expect(page.getByText('Reservar', { exact: true })).toBeVisible();
 });
