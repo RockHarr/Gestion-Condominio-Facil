@@ -68,7 +68,10 @@ export const Toast: React.FC<{ message: string; type: 'success' | 'error' | 'inf
     };
 
     return (
-        <div className={`fixed top-4 right-4 z-50 p-4 rounded-md text-white shadow-lg animate-fade-in-down ${typeClasses[type]}`}>
+        <div
+            role={type === 'error' ? 'alert' : 'status'}
+            className={`fixed top-4 right-4 z-50 p-4 rounded-md text-white shadow-lg animate-fade-in-down ${typeClasses[type]}`}
+        >
             <div className="flex items-center justify-between">
                 <span>{message}</span>
                 <button onClick={onClose} className="ml-4 -mr-2 p-1 rounded-full hover:bg-white/20" aria-label="Cerrar notificación">
