@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-01-28 - [Incomplete Security Patch Application]
+**Vulnerability:** Although a migration file existed to fix the privilege escalation vulnerability (`20260124_prevent_profile_role_escalation.sql`), the `supabase/schema.sql` (used for new deployments) did not include the trigger or the necessary `is_admin` function, leaving new environments vulnerable by default.
+**Learning:** Security patches in migrations must be backported to the primary schema definition file to ensure consistency and security for new instances.
+**Prevention:** Verify that `schema.sql` matches the state of applied migrations, especially for critical security objects like RLS policies and triggers.
