@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('reservations_menu_smoke', async ({ page }) => {
     // 1. Mock network to ensure no 400 errors (validation logic)
+    // Ensures stability in CI environment
     const failedRequests: string[] = [];
     page.on('requestfailed', request => {
         failedRequests.push(`${request.url()} - ${request.failure()?.errorText}`);
