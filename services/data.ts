@@ -48,6 +48,18 @@ export const dataService = {
   },
 
   async createTicket(ticket: Omit<Ticket, 'id' | 'fecha' | 'user' | 'estado'>, userId: string) {
+    // Security: Validate input length to prevent DoS
+    if (ticket.titulo.length > 100) {
+      throw new Error('El título no puede exceder los 100 caracteres.');
+    }
+    if (ticket.descripcion.length > 2000) {
+      throw new Error('La descripción no puede exceder los 2000 caracteres.');
+    }
+    // Limit photo size (Base64 string). 5MB file is ~7MB Base64.
+    if (ticket.foto && ticket.foto.length > 7000000) {
+      throw new Error('La imagen es demasiado grande (máximo ~5MB).');
+    }
+
     const { data, error } = await withTimeout(
       supabase
         .from('tickets')
