@@ -1,0 +1,101 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - heading "Inicio" [level=1] [ref=e6]
+    - main [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - heading "Hola, Residente" [level=1] [ref=e10]
+          - paragraph [ref=e11]: Unidad A-101
+        - generic [ref=e12]:
+          - generic [ref=e15]:
+            - img [ref=e17]
+            - paragraph [ref=e19]: ¡Estás al día!
+            - paragraph [ref=e20]: No tienes deudas pendientes
+          - generic [ref=e21]:
+            - heading "Accesos Rápidos" [level=2] [ref=e22]
+            - generic [ref=e23]:
+              - button "Reservar" [ref=e24] [cursor=pointer]:
+                - img [ref=e26]
+                - generic [ref=e28]: Reservar
+              - button "Nuevo Ticket" [ref=e29] [cursor=pointer]:
+                - img [ref=e31]
+                - generic [ref=e33]: Nuevo Ticket
+          - generic [ref=e34]:
+            - generic [ref=e35]:
+              - heading "Gastos por Categoría" [level=3] [ref=e36]
+              - generic [ref=e39]:
+                - list [ref=e41]:
+                  - listitem [ref=e42]:
+                    - img "Administracion legend icon" [ref=e43]
+                    - text: Administracion
+                  - listitem [ref=e45]:
+                    - img "Otros legend icon" [ref=e46]
+                    - text: Otros
+                - application [ref=e48]
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - heading "Ingresos vs Gastos" [level=3] [ref=e58]
+                - generic [ref=e59]: ⓘ
+              - generic [ref=e62]:
+                - list [ref=e64]:
+                  - listitem [ref=e65]:
+                    - img "Gastos legend icon" [ref=e66]
+                    - text: Gastos
+                  - listitem [ref=e68]:
+                    - img "Ingresos legend icon" [ref=e69]
+                    - text: Ingresos
+                - application [ref=e71]:
+                  - generic [ref=e96]:
+                    - generic [ref=e97]:
+                      - generic [ref=e99]: oct.
+                      - generic [ref=e101]: dic.
+                      - generic [ref=e103]: feb.
+                    - generic [ref=e104]:
+                      - generic [ref=e106]: $0k
+                      - generic [ref=e108]: $100k
+                      - generic [ref=e110]: $200k
+                      - generic [ref=e112]: $300k
+                      - generic [ref=e114]: $400k
+          - generic [ref=e115]:
+            - generic [ref=e116]:
+              - generic [ref=e117]:
+                - heading "Gastos Comunidad" [level=2] [ref=e118]
+                - generic [ref=e119]: febrero de 2026
+              - paragraph [ref=e120]: $0
+              - paragraph [ref=e121]: Total aprobado este mes
+            - generic [ref=e122]:
+              - paragraph [ref=e124]: No hay gastos registrados aún.
+              - generic [ref=e125]:
+                - button "Ver Detalle" [ref=e126] [cursor=pointer]
+                - button "Descargar PDF" [ref=e127] [cursor=pointer]:
+                  - img [ref=e128]
+                  - text: Descargar PDF
+    - navigation [ref=e130]:
+      - generic [ref=e131]:
+        - button "Inicio" [ref=e132] [cursor=pointer]:
+          - img [ref=e134]
+          - generic [ref=e136]: Inicio
+        - button "Pagos" [ref=e137] [cursor=pointer]:
+          - img [ref=e139]
+          - generic [ref=e141]: Pagos
+        - button "Tickets" [ref=e142] [cursor=pointer]:
+          - img [ref=e144]
+          - generic [ref=e146]: Tickets
+        - button "Espacios" [ref=e147] [cursor=pointer]:
+          - img [ref=e149]
+          - generic [ref=e151]: Espacios
+        - button "Avisos" [ref=e152] [cursor=pointer]:
+          - img [ref=e154]
+          - generic [ref=e156]: Avisos
+        - button "Votar" [ref=e157] [cursor=pointer]:
+          - img [ref=e159]
+          - generic [ref=e161]: Votar
+        - button "Más" [ref=e162] [cursor=pointer]:
+          - img [ref=e164]
+          - generic [ref=e167]: Más
+  - generic [ref=e168]: $100k
+```

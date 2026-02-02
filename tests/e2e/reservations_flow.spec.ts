@@ -18,13 +18,22 @@ test.describe('Resident — Reservations Flow', () => {
         await expect(page.locator('input[type="password"]')).toBeVisible();
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
-        // Wait for a post-login element (e.g., the Home tab)
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+
+        // Wait for a post-login element - Use Dashboard Header instead of Tab Bar which might be hidden on desktop
+        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible({ timeout: 15000 });
     });
 
     test('should allow a resident to create and cancel a reservation', async ({ page }) => {
-        // 2. Navigate to Amenities via Tab Bar
-        await page.click('[data-testid="tab-amenities"]');
+        // 2. Navigate to Amenities via Tab Bar or Text
+        try {
+            await page.click('text=Espacios Comunes', { force: true, timeout: 5000 });
+        } catch {
+            const tab = page.locator('button').filter({ hasText: /Espacios/ });
+            if (await tab.count() > 0) {
+                await tab.first().click({ force: true });
+            }
+        }
+
         await expect(page.getByRole('heading', { name: 'Espacios Comunes' }).first()).toBeVisible();
 
         // 3. Click "Reservar" on the first amenity (e.g., Quincho)
