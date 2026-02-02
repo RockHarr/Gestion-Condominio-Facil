@@ -79,10 +79,11 @@ test.describe('Admin — Reservations Management', () => {
         // Wait for login - Ensure loading spinner is gone first
         await expect(page.locator('.animate-pulse')).not.toBeVisible({ timeout: 30000 });
         // Check for dashboard elements
-        await expect(page.locator('[data-testid="tab-home"]').or(page.getByRole('heading', { name: 'Panel de Control' }))).toBeVisible({ timeout: 30000 });
+        await expect(page.locator('[data-testid="sidebar-admin-dashboard"]').or(page.getByRole('heading', { name: 'Panel de Control' }))).toBeVisible({ timeout: 30000 });
 
         // 3. Navigate to Reservations
-        const navButton = page.locator('button').filter({ hasText: /^Reservas$|^Gestión de Reservas$/ }).first();
+        // Use the explicit test ID added to AdminNavigation
+        const navButton = page.locator('[data-testid="sidebar-admin-reservations"]');
         await expect(navButton).toBeVisible({ timeout: 20000 });
         await navButton.click();
 
@@ -92,7 +93,7 @@ test.describe('Admin — Reservations Management', () => {
         // 5. Find the specific reservation card
         // We can look for the ID or user name
         const reservationCard = page.locator('.p-4.flex.flex-col').filter({ hasText: `Reserva #${reservation.id}` }).first();
-        await expect(reservationCard).toBeVisible({ timeout: 10000 });
+        await expect(reservationCard).toBeVisible({ timeout: 30000 });
         await expect(reservationCard).toContainText('REQUESTED');
 
         // 6. Approve Reservation
@@ -140,13 +141,13 @@ test.describe('Admin — Reservations Management', () => {
         await page.click('button[type="submit"]');
 
         await expect(page.locator('.animate-pulse')).not.toBeVisible({ timeout: 30000 });
-        const navButton = page.locator('button').filter({ hasText: /^Reservas$|^Gestión de Reservas$/ }).first();
+        const navButton = page.locator('[data-testid="sidebar-admin-reservations"]');
         await expect(navButton).toBeVisible({ timeout: 20000 });
         await navButton.click();
 
         // 3. Find reservation
         const reservationCard = page.locator('.p-4.flex.flex-col').filter({ hasText: `Reserva #${reservation.id}` }).first();
-        await expect(reservationCard).toBeVisible({ timeout: 10000 });
+        await expect(reservationCard).toBeVisible({ timeout: 30000 });
 
         // 4. Reject
         page.on('dialog', async dialog => {

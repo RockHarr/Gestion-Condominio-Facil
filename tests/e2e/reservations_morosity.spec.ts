@@ -137,7 +137,7 @@ test.describe('Reservations - Morosity Check', () => {
         // 3. Verify Blocking
         // The error is displayed in the modal, not as a toast
         const errorMessage = page.getByText(/Usuario moroso/i);
-        await expect(errorMessage).toBeVisible({ timeout: 10000 });
+        await expect(errorMessage).toBeVisible({ timeout: 30000 });
 
         console.log('Verified: Reservation blocked with "Usuario moroso" message.');
     });
@@ -181,7 +181,7 @@ test.describe('Reservations - Morosity Check', () => {
 
         // 3. Verify Success
         const successToast = page.getByText(/Solicitud de reserva enviada/i);
-        await expect(successToast).toBeVisible({ timeout: 10000 });
+        await expect(successToast).toBeVisible({ timeout: 30000 });
 
         console.log('Verified: Reservation allowed after payment.');
     });

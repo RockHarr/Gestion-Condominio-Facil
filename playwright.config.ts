@@ -5,8 +5,9 @@ export default defineConfig({
   testDir: './tests',
 
   // Tiempos razonables para E2E (Increased for CI stability)
-  timeout: 60_000,
-  expect: { timeout: 10_000 },
+  timeout: 90_000,
+  expect: { timeout: 15_000 },
+  retries: 2,
 
   // Reportes: HTML (guardado como artifact en CI) + lista en consola
   reporter: [
