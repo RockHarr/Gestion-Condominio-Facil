@@ -155,3 +155,52 @@ create policy "Users can create tickets" on public.tickets for insert with check
 
 -- For now, we will allow authenticated users to read most tables to simplify development
 -- In production, you would tighten these policies significantly.
+
+-- Helper function to check if user is admin
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Security: Prevent Privilege Escalation and Unauthorized Updates on Profiles
+CREATE OR REPLACE FUNCTION public.protect_sensitive_profile_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Check if the user is an admin
+    IF public.is_admin() THEN
+        RETURN NEW;
+    END IF;
+
+    -- Non-admins cannot change 'role'
+    IF NEW.role IS DISTINCT FROM OLD.role THEN
+        RAISE EXCEPTION 'Unauthorized: You are not allowed to change the user role.';
+    END IF;
+
+    -- Non-admins cannot change 'has_parking'
+    IF NEW.has_parking IS DISTINCT FROM OLD.has_parking THEN
+        RAISE EXCEPTION 'Unauthorized: You are not allowed to change the parking status.';
+    END IF;
+
+    -- Non-admins cannot change 'unidad' (Unit Name)
+    IF NEW.unidad IS DISTINCT FROM OLD.unidad THEN
+        RAISE EXCEPTION 'Unauthorized: You are not allowed to change the unit name.';
+    END IF;
+
+    -- Note: If 'unit_id' column exists (via migrations), it should also be protected here.
+    -- IF NEW.unit_id IS DISTINCT FROM OLD.unit_id THEN
+    --    RAISE EXCEPTION 'Unauthorized: You are not allowed to change the assigned unit.';
+    -- END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_profile_sensitive_update
+BEFORE UPDATE ON public.profiles
+FOR EACH ROW
+EXECUTE FUNCTION public.protect_sensitive_profile_fields();
