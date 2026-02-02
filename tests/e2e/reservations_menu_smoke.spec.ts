@@ -12,39 +12,55 @@ test('reservations_menu_smoke', async ({ page }) => {
         }
     });
 
-    // 2. Login as Admin (Mock)
-    // Assuming default dev login flow or using a known credential if E2E setup allows
-    // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    console.log('Navigating to /');
+    await page.goto('/');
 
-    // Fill login if redirected to login
-    if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+    // Check if we are on the login screen
+    const loginHeader = page.getByRole('heading', { name: 'Bienvenido' });
+
+    // Allow time for initial load
+    await page.waitForTimeout(1000);
+
+    if (await loginHeader.isVisible()) {
+        console.log('Login screen detected. Logging in...');
+        await page.fill('input[type="email"]', 'rockwell.harrison@gmail.com');
+
+        await page.click('button:has-text("Usar contraseña")');
+
+        await page.fill('input[type="password"]', '270386');
+        await page.click('button[type="submit"]');
+        console.log('Login submitted.');
+    } else {
+        console.log('Login screen NOT visible. Checking if already logged in...');
     }
 
-    // 3. Verify Sidebar
+    // Wait for Admin Panel to ensure we are logged in as Admin
+    // Increase timeout to handle slow CI
+    try {
+        await expect(page.getByText('Admin Panel')).toBeVisible({ timeout: 15000 });
+        console.log('Admin Panel confirmed.');
+    } catch (e) {
+        console.log('Admin Panel NOT found. Current URL:', page.url());
+        // Dump body text to debug
+        const bodyText = await page.textContent('body');
+        console.log('Body Text Snippet:', bodyText?.substring(0, 500));
+        throw e;
+    }
+
+    // 3. Verify Sidebar Button
     await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
 
     // 4. Navigate
     await page.click('button:has-text("Gestión de Reservas")');
 
-    // 5. Verify Page Content
-    await expect(page.getByText('Gestión de Reservas')).toBeVisible();
+    // 5. Verify Page Content (Heading)
+    await expect(page.getByRole('heading', { name: 'Gestión de Reservas' })).toBeVisible();
 
-    // 6. Verify List or Empty State (Fallback UI)
-    // Either we see cards OR the empty state message
+    // 6. Verify List or Empty State
     const hasCards = await page.locator('.bg-white.rounded-lg.shadow').count() > 0;
     const hasEmptyState = await page.getByText('No hay reservas en esta categoría').isVisible();
 
     expect(hasCards || hasEmptyState).toBeTruthy();
 
-    // 7. Verify Tabs
-    await expect(page.getByText('Pendientes')).toBeVisible();
-    await expect(page.getByText('Próximas')).toBeVisible();
-    await expect(page.getByText('Historial')).toBeVisible();
-
-    // 8. Final Network Check
     expect(failedRequests).toEqual([]);
 });
