@@ -16,6 +16,8 @@ test.describe('Security Policy Verification', () => {
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
+        // Wait for password
+        await expect(page.locator('input[type="password"]')).toBeVisible();
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
@@ -48,6 +50,8 @@ test.describe('Security Policy Verification', () => {
         await page.goto('/');
         await page.fill('input[type="email"]', ADMIN_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
+        // Wait for password
+        await expect(page.locator('input[type="password"]')).toBeVisible();
         await page.fill('input[type="password"]', ADMIN_PASSWORD);
         await page.click('button[type="submit"]');
 
