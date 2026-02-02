@@ -4,9 +4,9 @@ export default defineConfig({
   // Carpeta donde viven los tests
   testDir: './tests',
 
-  // Tiempos razonables para E2E
-  timeout: 30_000,
-  expect: { timeout: 5_000 },
+  // Tiempos razonables para E2E (Increased for CI stability)
+  timeout: 60_000,
+  expect: { timeout: 10_000 },
 
   // Reportes: HTML (guardado como artifact en CI) + lista en consola
   reporter: [

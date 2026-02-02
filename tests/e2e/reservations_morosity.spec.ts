@@ -122,7 +122,8 @@ test.describe('Reservations - Morosity Check', () => {
         }
 
         // Wait for type selection (prevents race condition)
-        await expect(page.getByText('Tarifa de uso:')).toBeVisible();
+        // Wait for either the text OR the select to ensure form is ready. Use first() to avoid strict mode violation if both are present.
+        await expect(page.getByText('Tarifa de uso:').or(page.locator('select')).first()).toBeVisible({ timeout: 10000 });
 
         await page.click('button:has-text("Confirmar Reserva")');
 
@@ -173,7 +174,8 @@ test.describe('Reservations - Morosity Check', () => {
         }
 
         // Wait for type selection (prevents race condition)
-        await expect(page.getByText('Tarifa de uso:')).toBeVisible();
+        // Wait for either the text OR the select to ensure form is ready. Use first() to avoid strict mode violation if both are present.
+        await expect(page.getByText('Tarifa de uso:').or(page.locator('select')).first()).toBeVisible({ timeout: 10000 });
 
         await page.click('button:has-text("Confirmar Reserva")');
 

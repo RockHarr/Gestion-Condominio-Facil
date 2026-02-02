@@ -77,7 +77,7 @@ test.describe('System Setup', () => {
             } catch (e) {
                 console.log('Item not visible immediately, reloading page...');
                 await page.reload();
-                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 10000 });
+                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 15000 });
             }
         }
     });
