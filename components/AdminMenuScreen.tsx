@@ -7,7 +7,7 @@ interface AdminMenuScreenProps {
     onNavigate: (page: Page) => void;
 }
 
-export const AdminMenuScreen: React.FC<AdminMenuScreenProps> = ({ onNavigate }) => {
+export const AdminMenuScreen: React.FC<AdminMenuScreenProps & { onLogout?: () => void }> = ({ onNavigate, onLogout }) => {
     const menuItems = [
         {
             page: 'admin-units',
@@ -34,6 +34,14 @@ export const AdminMenuScreen: React.FC<AdminMenuScreenProps> = ({ onNavigate }) 
             bg: 'bg-green-50 dark:bg-green-900/20'
         },
         {
+            page: 'admin-voting',
+            icon: 'archive-box',
+            label: 'Votaciones',
+            description: 'Crear y gestionar encuestas',
+            color: 'text-purple-600 dark:text-purple-400',
+            bg: 'bg-purple-50 dark:bg-purple-900/20'
+        },
+        {
             page: 'admin-config',
             icon: 'cog-6-tooth',
             label: 'Configuración General',
@@ -49,7 +57,12 @@ export const AdminMenuScreen: React.FC<AdminMenuScreenProps> = ({ onNavigate }) 
             color: 'text-gray-600 dark:text-gray-400',
             bg: 'bg-gray-100 dark:bg-gray-800'
         }
+
     ];
+
+    const handleLogout = () => {
+         if (onLogout) onLogout();
+    };
 
     return (
         <div className="p-4 space-y-6 animate-page pb-24">
@@ -78,6 +91,23 @@ export const AdminMenuScreen: React.FC<AdminMenuScreenProps> = ({ onNavigate }) 
                         </Card>
                     </button>
                 ))}
+            </div>
+            
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button
+                    onClick={handleLogout}
+                    className="w-full text-left group focus:outline-none"
+                >
+                    <Card className="flex items-center p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30">
+                        <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-800/30 flex items-center justify-center text-red-600 dark:text-red-400 mr-4">
+                            <Icons name="arrow-left-on-rectangle" className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-red-700 dark:text-red-400 text-base">Cerrar Sesión</h3>
+                            <p className="text-xs text-red-500/80 dark:text-red-400/70">Salir de la aplicación</p>
+                        </div>
+                    </Card>
+                </button>
             </div>
         </div>
     );

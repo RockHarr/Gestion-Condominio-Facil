@@ -1,0 +1,166 @@
+* Host localhost:4173 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:4173...
+* Connected to localhost (::1) port 4173
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: localhost:4173
+> User-Agent: curl/8.15.0
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Vary: Origin
+< Content-Type: text/html
+< Cache-Control: no-cache
+< Etag: W/"ed3-1YdqvEUIujjIujlW2o599IFs9kY"
+< Date: Mon, 26 Jan 2026 10:58:48 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Content-Length: 3795
+< 
+{ [3795 bytes data]
+100  3795  100  3795    0     0   200k      0 --:--:-- --:--:-- --:--:--  205k
+* Connection #0 to host localhost left intact
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Condominio Fácil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .dark .glass {
+            background: rgba(17, 24, 39, 0.7);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-page {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.5);
+            border-radius: 20px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background-color: rgba(75, 85, 99, 0.5);
+        }
+
+        /* --- Global Print Styles --- */
+        @media print {
+            @page {
+                size: A4;
+                margin: 12mm;
+            }
+
+            body {
+                background: white;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Isolation Strategy */
+            body.printing * {
+                visibility: hidden;
+            }
+
+            body.printing [data-print-root],
+            body.printing [data-print-root] * {
+                visibility: visible;
+            }
+
+            body.printing [data-print-root] {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+
+            /* Table & Layout Safety */
+            tr, td, th, .break-inside-avoid {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+        }
+    </style>
+    <script>
+        // Previene el "flash of unstyled content" (FOUC) al cargar el tema oscuro
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-2Ubeo8RE.js"></script>
+</head>
+
+<body
+    class="bg-gray-50 dark:bg-gray-900 antialiased text-gray-900 dark:text-gray-100 selection:bg-blue-500 selection:text-white">
+    <div id="root"></div>
+</body>
+
+</html>

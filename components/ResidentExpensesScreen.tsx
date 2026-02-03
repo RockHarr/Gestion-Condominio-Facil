@@ -57,7 +57,7 @@ export const ResidentExpensesScreen: React.FC<ResidentExpensesScreenProps> = ({
             <div className="flex-1">
               <label
                 htmlFor="month-select"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5"
               >
                 Mes
               </label>
@@ -65,7 +65,7 @@ export const ResidentExpensesScreen: React.FC<ResidentExpensesScreenProps> = ({
                 id="month-select"
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
-                className="mt-1 block w-full input-field"
+                className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-900/50 dark:text-white dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2.5 px-3 transition-colors"
               >
                 {availableMonths.map((month) => (
                   <option key={month} value={month}>
@@ -77,7 +77,7 @@ export const ResidentExpensesScreen: React.FC<ResidentExpensesScreenProps> = ({
             <div className="flex-1">
               <label
                 htmlFor="search"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5"
               >
                 Buscar
               </label>
@@ -88,7 +88,7 @@ export const ResidentExpensesScreen: React.FC<ResidentExpensesScreenProps> = ({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Proveedor, descripción..."
-                  className="w-full input-field pl-10"
+                  className="w-full rounded-lg border-gray-300 bg-gray-50 pl-10 py-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-900/50 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors"
                 />
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Icons name="magnifying-glass" className="w-5 h-5 text-gray-400" />

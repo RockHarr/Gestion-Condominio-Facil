@@ -27,6 +27,7 @@ import {
   AdminEditUnitScreen,
   AdminUnitDetailScreen,
 } from './AdminUnits';
+import { AdminPollsManager } from './AdminPollsManager';
 import { AdminPaymentEntry } from './AdminPaymentEntry';
 import { AdminSettingsScreen } from './AdminSettings';
 import { AdminSidebar, AdminTabBar } from './AdminNavigation';
@@ -208,6 +209,18 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
         );
       case 'admin-config':
         return <AdminSettingsScreen settings={settings} onUpdateSettings={updateSettings} />;
+      case 'admin-requests':
+        return (
+          <AdminRequestsScreen
+            pendingTicketsCount={pendingTicketsCount}
+            pendingReservationsCount={pendingReservationsCount}
+            onNavigate={handleNavigate}
+          />
+        );
+      case 'admin-menu':
+        return <AdminMenuScreen onNavigate={handleNavigate} onLogout={handleLogout} />;
+      case 'admin-voting':
+        return <AdminPollsManager />;
       case 'profile':
         return (
           <ProfileScreen
@@ -269,6 +282,12 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
         return 'Bandeja de Reservas';
       case 'admin-config':
         return 'Configuración';
+      case 'admin-requests':
+        return 'Solicitudes';
+      case 'admin-menu':
+        return 'Menú';
+      case 'admin-voting':
+        return 'Votaciones';
       default:
         return 'Admin Panel';
     }
@@ -283,6 +302,7 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
       'admin-unit-edit': 'admin-units',
       'admin-unit-detail': 'admin-units',
       'admin-reservation-types': 'admin-amenities',
+      'admin-voting': 'admin-menu',
       // New mobile structure mappings
       'admin-tickets': 'admin-requests',
       'admin-reservations': 'admin-requests',

@@ -1,0 +1,22 @@
+En la rama feature/post-mvp-modules
+Cambios no rastreados para el commit:
+  (usa "git add <archivo>..." para actualizar lo que será confirmado)
+  (usa "git restore <archivo>..." para descartar los cambios en el directorio de trabajo)
+	modificados:     .eslintrc.cjs
+	modificados:     benchmark/benchmark_reservations.ts
+	modificados:     data.ts
+	modificados:     docs/DEPLOYMENT.md
+	modificados:     package-lock.json
+	modificados:     package.json
+
+Archivos sin seguimiento:
+  (usa "git add <archivo>..." para incluirlo a lo que será confirmado)
+	curl_output.txt
+	git_status_debug.txt
+	home_ls.txt
+	npm_version.txt
+	scripts/diagnose_amenities.ts
+	tests/e2e/reservations_menu_smoke.spec.ts
+	toolbox_list.txt
+
+sin cambios agregados al commit (usa "git add" y/o "git commit -a")

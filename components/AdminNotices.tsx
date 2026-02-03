@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import type { Notice, Page, PageParams } from '../types';
 import { NoticeStatus, NoticeType } from '../types';
-import { Card, Button, Header } from './Shared';
+import { Card, Button } from './Shared';
 import Icons from './Icons';
 
 interface AdminNoticesScreenProps {
@@ -32,7 +32,7 @@ export const AdminNoticesScreen: React.FC<AdminNoticesScreenProps> = ({ notices,
 
   return (
     <div className="animate-page pb-24">
-      <Header title="Mural de Avisos" onBack={() => onNavigate('admin-dashboard')} />
+
       <div className="p-6 max-w-5xl mx-auto space-y-6">
         <div className="flex justify-between items-center">
           <div>
@@ -125,7 +125,7 @@ export const AdminNoticeDetailScreen: React.FC<AdminNoticeDetailScreenProps> = (
 }) => {
   return (
     <div className="animate-page pb-24">
-      <Header title="Detalle del Aviso" onBack={onBack} />
+
       <div className="p-4 md:p-8 max-w-3xl mx-auto space-y-6">
         <Card className="overflow-hidden">
           <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 border-b border-gray-100 dark:border-gray-700 pb-6">
@@ -206,7 +206,7 @@ export const AdminCreateNoticeScreen: React.FC<AdminCreateNoticeScreenProps> = (
 
   return (
     <div className="animate-page pb-24">
-      <Header title="Redactar Nuevo Aviso" onBack={onBack} />
+
       <div className="p-4 md:p-8 max-w-3xl mx-auto space-y-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <Card>

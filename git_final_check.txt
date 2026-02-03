@@ -1,0 +1,16 @@
+En la rama feature/post-mvp-modules
+Archivos sin seguimiento:
+  (usa "git add <archivo>..." para incluirlo a lo que será confirmado)
+	commit_log.txt
+	curl_output.txt
+	diff_summary.txt
+	git_final_check.txt
+	git_status_2.txt
+	git_status_debug.txt
+	home_ls.txt
+	npm_version.txt
+	recent_changes.txt
+	toolbox_list.txt
+
+no hay nada agregado al commit pero hay archivos sin seguimiento presentes (usa "git add" para hacerles seguimiento)
+cad6860 Mejoras: scripts de diagnóstico, pruebas E2E y correcciones en la lógica de reservaciones

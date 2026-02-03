@@ -76,7 +76,7 @@ interface TicketsScreenProps {
 export const TicketsScreen: React.FC<TicketsScreenProps> = ({ tickets, onNavigate }) => {
   return (
     <div className="animate-page pb-24">
-      <Header title="Mis Tickets" onBack={() => onNavigate('home')} />
+      <Header title="Mis Tickets" onBack={() => onNavigate('more')} />
       <div className="p-4 space-y-4">
         <div className="flex justify-end items-center mb-2">
           <span className="text-sm text-gray-500 dark:text-gray-400">{tickets.length} total</span>

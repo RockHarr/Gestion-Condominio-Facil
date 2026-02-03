@@ -1,0 +1,3 @@
+.
+./git_status_debug.txt
+./recent_changes.txt

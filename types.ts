@@ -304,7 +304,9 @@ export type Page =
   | 'admin-requests'
   | 'admin-menu'
   | 'polls'
-  | 'admin-polls';
+  | 'admin-polls'
+  | 'admin-voting'
+  | 'reservation-availability';
 
 export enum ChargeType {
   RESERVATION_FEE = 'RESERVATION_FEE',

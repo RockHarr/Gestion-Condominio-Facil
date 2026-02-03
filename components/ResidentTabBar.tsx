@@ -12,18 +12,21 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
     const navItems = [
         { page: 'home', icon: 'home', label: 'Inicio' },
         { page: 'payments', icon: 'wallet', label: 'Pagos' },
-        { page: 'tickets', icon: 'ticket', label: 'Tickets' },
         { page: 'amenities', icon: 'building-office', label: 'Espacios' },
-        { page: 'notices', icon: 'bell', label: 'Avisos' },
-        { page: 'polls', icon: 'chartBar', label: 'Votar' },
         { page: 'more', icon: 'ellipsis-horizontal-circle', label: 'Más' },
     ];
-    const mainPages = ['home', 'payments', 'tickets', 'amenities', 'notices', 'polls', 'more'];
+    const mainPages = ['home', 'payments', 'amenities', 'more'];
 
     const getActiveTab = () => {
         if (mainPages.includes(currentPage)) return currentPage;
-        if (['profile', 'reservations', 'financial-statements', 'reserve-fund', 'resident-expenses'].includes(currentPage)) return 'home'; // Default to home for sub-pages
-        return null;
+        
+        // Items accessed via "More" should highlight the "More" tab
+        if (['tickets', 'notices', 'polls', 'profile', 'ticket-detail', 'notice-detail', 'ticket-create', 'resident-expenses', 'financial-statements', 'reserve-fund'].includes(currentPage)) return 'more';
+
+        // Sub-pages of other tabs
+        if (['reservations'].includes(currentPage)) return 'amenities';
+        
+        return 'home';
     }
     const activeTab = getActiveTab();
 

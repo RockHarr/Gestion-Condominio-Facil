@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Notice, Page, PageParams } from '../types';
 import { NoticeType } from '../types';
-import { Card, Button } from './Shared';
+import { Card, Button, Header } from './Shared';
 import Icons from './Icons';
 
 interface NoticesScreenProps {
@@ -110,11 +110,14 @@ export const NoticesScreen: React.FC<NoticesScreenProps> = ({ notices, onNavigat
 
 interface NoticeDetailScreenProps {
   notice: Notice;
+  onBack: () => void;
 }
 
-export const NoticeDetailScreen: React.FC<NoticeDetailScreenProps> = ({ notice }) => {
+export const NoticeDetailScreen: React.FC<NoticeDetailScreenProps> = ({ notice, onBack }) => {
   return (
-    <div className="p-4 animate-page">
+    <div className="animate-page">
+      <Header title="Detalle del Aviso" onBack={onBack} />
+      <div className="p-4">
       <Card className="overflow-hidden">
         <div
           className={`-mx-6 -mt-6 px-6 py-4 mb-6 border-b ${
@@ -168,6 +171,7 @@ export const NoticeDetailScreen: React.FC<NoticeDetailScreenProps> = ({ notice }
           </div>
         </div>
       </Card>
+      </div>
     </div>
   );
 };

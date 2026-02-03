@@ -31,7 +31,7 @@ export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigat
         if (['admin-tickets', 'admin-reservations', 'admin-ticket-detail'].includes(currentPage)) return 'admin-requests';
 
         // Menu sub-pages
-        if (['admin-units', 'admin-notices', 'admin-amenities', 'admin-config', 'profile', 'admin-unit-create', 'admin-unit-edit', 'admin-unit-detail', 'admin-notice-create', 'admin-notice-detail', 'admin-reservation-types'].includes(currentPage)) return 'admin-menu';
+        if (['admin-units', 'admin-notices', 'admin-amenities', 'admin-config', 'profile', 'admin-unit-create', 'admin-unit-edit', 'admin-unit-detail', 'admin-notice-create', 'admin-notice-detail', 'admin-reservation-types', 'admin-voting'].includes(currentPage)) return 'admin-menu';
 
         return 'admin-dashboard';
     };
@@ -87,6 +87,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
         { page: 'admin-tickets', icon: 'ticket', label: 'Gestión de Tickets', badge: pendingTicketsCount },
         { page: 'admin-notices', icon: 'bell', label: 'Mural de Avisos' },
         { page: 'admin-config', icon: 'cog-6-tooth', label: 'Configuración' },
+        { page: 'admin-voting', icon: 'archive-box', label: 'Votaciones' },
         { page: 'profile', icon: 'user', label: 'Mi Perfil' },
     ];
 
