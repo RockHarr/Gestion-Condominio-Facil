@@ -16,6 +16,51 @@ create table public.profiles (
 -- Enable Row Level Security (RLS)
 alter table public.profiles enable row level security;
 
+-- Security: Prevent Privilege Escalation
+-- Helper function: is_admin()
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+STABLE
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.profiles p
+    WHERE p.id = auth.uid()
+      AND p.role = 'admin'
+  );
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.is_admin() FROM anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.is_admin() TO service_role;
+
+-- Trigger Function: prevent_role_escalation
+CREATE OR REPLACE FUNCTION public.prevent_role_escalation()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  -- Check if role is being changed
+  IF (NEW.role IS DISTINCT FROM OLD.role) THEN
+    -- Check if the user is an admin
+    IF NOT public.is_admin() THEN
+      RAISE EXCEPTION 'Unauthorized: You cannot change your own role.';
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+-- Create Trigger
+CREATE TRIGGER prevent_role_escalation
+  BEFORE UPDATE ON public.profiles
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.prevent_role_escalation();
+
 -- 2. Community Settings
 create table public.community_settings (
   id serial primary key,
