@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('reservations_menu_smoke', async ({ page }) => {
     // 1. Mock Authentication
-    await page.route('**/auth/v1/token?*', async route => {
+    await page.route('**/auth/v1/token*', async route => {
         await route.fulfill({
             status: 200,
             contentType: 'application/json',

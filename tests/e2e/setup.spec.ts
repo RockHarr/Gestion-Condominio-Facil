@@ -5,6 +5,44 @@ const ADMIN_PASSWORD = '270386';
 
 test.describe('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
+        // Mock Authentication for CI stability
+        await page.route('**/auth/v1/token*', async route => {
+            await route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify({
+                    access_token: 'mock-token',
+                    token_type: 'bearer',
+                    expires_in: 3600,
+                    refresh_token: 'mock-refresh',
+                    user: {
+                        id: 'mock-user-id',
+                        aud: 'authenticated',
+                        role: 'authenticated',
+                        email: ADMIN_EMAIL,
+                        app_metadata: { provider: 'email' },
+                        user_metadata: {},
+                        created_at: new Date().toISOString(),
+                    }
+                })
+            });
+        });
+
+        // Mock profile query to return admin role
+        await page.route('**/rest/v1/profiles*', async route => {
+            await route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify([{
+                    id: 'mock-user-id',
+                    nombre: 'Admin Test',
+                    unidad: 'Admin',
+                    role: 'admin',
+                    has_parking: false
+                }])
+            });
+        });
+
         // 1. Login as Admin
         await page.goto('/');
 
