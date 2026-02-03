@@ -9,10 +9,7 @@ export default defineConfig({
   expect: { timeout: 5_000 },
 
   // Reportes: HTML (guardado como artifact en CI) + lista en consola
-  reporter: [
-    ['html', { open: 'never' }],
-    ['list']
-  ],
+  reporter: [['html', { open: 'never' }], ['list']],
 
   // Defaults para todos los tests
   use: {
