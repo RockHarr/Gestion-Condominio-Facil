@@ -1,23 +1,23 @@
 
 import { test } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import {
+    TEST_SUPABASE_URL,
+    TEST_SUPABASE_KEY,
+    TEST_RESIDENT_EMAIL,
+    TEST_RESIDENT_PASSWORD,
+    TEST_ADMIN_EMAIL,
+    TEST_ADMIN_PASSWORD
+} from './test-config';
 
-const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381';
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+const supabase = createClient(TEST_SUPABASE_URL!, TEST_SUPABASE_KEY!);
 
 test('repro rpc hang with debt', async () => {
     // 1. Login as Resident to get ID
     console.log('1. Logging in as Resident...');
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: RESIDENT_EMAIL,
-        password: RESIDENT_PASSWORD
+        email: TEST_RESIDENT_EMAIL!,
+        password: TEST_RESIDENT_PASSWORD!
     });
     if (authError || !authData.user) {
         console.error('Resident login failed:', authError);
@@ -30,8 +30,8 @@ test('repro rpc hang with debt', async () => {
     // 2. Login as Admin to insert debt
     console.log('2. Logging in as Admin...');
     const { error: adminError } = await supabase.auth.signInWithPassword({
-        email: ADMIN_EMAIL,
-        password: ADMIN_PASSWORD
+        email: TEST_ADMIN_EMAIL!,
+        password: TEST_ADMIN_PASSWORD!
     });
     if (adminError) {
         console.error('Admin login failed:', adminError);
@@ -57,8 +57,8 @@ test('repro rpc hang with debt', async () => {
     // 4. Login as Resident again to call RPC
     console.log('4. Logging in as Resident again...');
     await supabase.auth.signInWithPassword({
-        email: RESIDENT_EMAIL,
-        password: RESIDENT_PASSWORD
+        email: TEST_RESIDENT_EMAIL!,
+        password: TEST_RESIDENT_PASSWORD!
     });
 
     // Get a valid amenity and type
@@ -105,8 +105,8 @@ test('repro rpc hang with debt', async () => {
     console.log('6. Cleanup...');
     await supabase.auth.signOut();
     await supabase.auth.signInWithPassword({
-        email: ADMIN_EMAIL,
-        password: ADMIN_PASSWORD
+        email: TEST_ADMIN_EMAIL!,
+        password: TEST_ADMIN_PASSWORD!
     });
     await supabase.from('common_expense_debts').delete().eq('user_id', userId).eq('mes', '2025-01');
 });
