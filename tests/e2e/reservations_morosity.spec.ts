@@ -6,12 +6,18 @@ import {
     TEST_RESIDENT_EMAIL,
     TEST_RESIDENT_PASSWORD,
     TEST_ADMIN_EMAIL,
-    TEST_ADMIN_PASSWORD
+    TEST_ADMIN_PASSWORD,
+    checkTestEnv
 } from '../test-config';
 
-const supabase = createClient(TEST_SUPABASE_URL!, TEST_SUPABASE_KEY!);
-
 test.describe('Reservations - Morosity Check', () => {
+    // Gracefully skip if environment is not configured
+    test.skip(!checkTestEnv(), 'Skipping test: Missing environment variables (TEST_*)');
+
+    const supabase = createClient(
+        TEST_SUPABASE_URL || 'https://placeholder.supabase.co',
+        TEST_SUPABASE_KEY || 'placeholder'
+    );
     let moroseUnitId: number;
     let moroseUserId: string;
 

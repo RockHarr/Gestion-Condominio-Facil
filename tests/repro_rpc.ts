@@ -4,12 +4,18 @@ import {
     TEST_SUPABASE_URL,
     TEST_SUPABASE_KEY,
     TEST_RESIDENT_EMAIL,
-    TEST_RESIDENT_PASSWORD
+    TEST_RESIDENT_PASSWORD,
+    checkTestEnv
 } from './test-config';
 
-const supabase = createClient(TEST_SUPABASE_URL!, TEST_SUPABASE_KEY!);
-
 async function main() {
+    if (!checkTestEnv()) {
+        console.error('Missing environment variables. Skipping script execution.');
+        process.exit(0);
+    }
+
+    const supabase = createClient(TEST_SUPABASE_URL!, TEST_SUPABASE_KEY!);
+
     console.log('1. Logging in...');
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: TEST_RESIDENT_EMAIL!,

@@ -8,7 +8,27 @@ export const TEST_RESIDENT_PASSWORD = process.env.TEST_RESIDENT_PASSWORD;
 export const TEST_ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL;
 export const TEST_ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD;
 
-function validateEnv() {
+/**
+ * Checks if all required environment variables for testing are present.
+ * Returns true if valid, false otherwise.
+ */
+export function checkTestEnv(): boolean {
+  const vars = [
+    TEST_SUPABASE_URL,
+    TEST_SUPABASE_KEY,
+    TEST_RESIDENT_EMAIL,
+    TEST_RESIDENT_PASSWORD,
+    TEST_ADMIN_EMAIL,
+    TEST_ADMIN_PASSWORD
+  ];
+  return vars.every(v => v !== undefined && v !== '');
+}
+
+/**
+ * Validates environment variables and throws an error if any are missing.
+ * Use this inside test blocks or scripts where you want to enforce configuration.
+ */
+export function validateTestEnv() {
   const missingVars: string[] = [];
 
   if (!TEST_SUPABASE_URL) missingVars.push('VITE_SUPABASE_URL or SUPABASE_URL');
@@ -22,6 +42,3 @@ function validateEnv() {
     throw new Error(`Missing required environment variables for tests:\n${missingVars.join('\n')}\nPlease create a .env file with these values.`);
   }
 }
-
-// Validate on import
-validateEnv();
