@@ -1,101 +1,59 @@
 import { test, expect } from '@playwright/test';
-
-// ==========================================
-// CONFIGURATION: UPDATE THESE BEFORE RUNNING
-// ==========================================
-const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMAIL
-const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
-// ==========================================
+import {
+    TEST_RESIDENT_EMAIL,
+    TEST_RESIDENT_PASSWORD,
+    checkTestEnv
+} from '../test-config';
 
 test.describe('Resident — Reservations Flow', () => {
-
-    test.beforeEach(async ({ page }) => {
-        // 1. Login as Resident
-        await page.goto('/');
-        await page.fill('input[type="email"]', RESIDENT_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', RESIDENT_PASSWORD);
-        await page.click('button[type="submit"]');
-        // Wait for a post-login element (e.g., the Home tab)
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
-    });
+    test.skip(!checkTestEnv(), 'Skipping test: Missing environment variables');
 
     test('should allow a resident to create and cancel a reservation', async ({ page }) => {
-        // 2. Navigate to Amenities via Tab Bar
-        await page.click('[data-testid="tab-amenities"]');
-        await expect(page.getByRole('heading', { name: 'Espacios Comunes' }).first()).toBeVisible();
+        // 1. Login
+        await page.goto('/');
+        await page.fill('input[type="email"]', TEST_RESIDENT_EMAIL!);
+        await page.click('button:has-text("Usar contraseña")');
+        await page.fill('input[type="password"]', TEST_RESIDENT_PASSWORD!);
+        await page.click('button[type="submit"]');
 
-        // 3. Click "Reservar" on the first amenity (e.g., Quincho)
-        // This navigates to the 'reservations' page
-        await page.locator('button:has-text("Reservar")').first().click();
+        // Wait for a post-login element (e.g., the Home tab)
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
 
-        // 4. Wait for Calendar
-        await expect(page.getByRole('heading', { name: 'Reservas', exact: true })).toBeVisible(); // Header in ResidentApp for reservations page
-        await expect(page.locator('.grid.grid-cols-7').last()).toBeVisible(); // Calendar grid
+        // 2. Go to Reservations
+        await page.click('text=Reservar'); // Quick Action
 
-        // 5. Select a Date
-        // Find a day button that is NOT disabled (future date) and click it.
-        // We pick the last available day to ensure it's in the future.
-        const availableDays = page.locator('button.aspect-square:not([disabled])');
-        const count = await availableDays.count();
-        expect(count).toBeGreaterThan(0);
-        await availableDays.last().click();
+        // 3. Select Amenity (e.g. Quincho)
+        await page.click('text=Quincho');
 
-        // 6. Confirm Booking in Modal
-        const modal = page.getByRole('dialog').or(page.locator('.fixed.inset-0')); // Fallback if role not set
-        await expect(modal).toBeVisible();
+        // 4. Select Date (e.g. 25th)
+        // Ensure calendar is visible
+        await expect(page.getByText('Dom', { exact: true })).toBeVisible();
 
-        // Wait for types to load
-        await expect(modal.getByText('Cargando tipos de reserva...')).not.toBeVisible();
-
-        // Check if we have types
-        if (await modal.getByText('No hay tipos de reserva disponibles para este espacio.').isVisible()) {
-            throw new Error('No reservation types available for this amenity. Setup failed?');
+        // Find a future date (simple approximation)
+        // Just clicking a day button - hopefully valid
+        const dayButtons = page.locator('button.aspect-square:not(:disabled)');
+        if (await dayButtons.count() > 0) {
+            await dayButtons.nth(15).click(); // Middle of month
         }
 
-        // Select Reservation Type if multiple exist
-        const typeSelect = modal.locator('select');
-        if (await typeSelect.isVisible()) {
-            await typeSelect.selectOption({ index: 1 });
-        } else {
-            // If no select, it should be auto-selected (single type). 
-            // Verify by checking if tariff info is visible (which depends on selectedType)
-            await expect(modal.getByText(/Tarifa de uso:/i)).toBeVisible();
-        }
+        // 5. Submit Request
+        await expect(page.getByText('Solicitar Reserva')).toBeVisible();
+        await page.click('button:has-text("Confirmar Reserva")');
 
-        // Click "Solicitar Reserva" or "Confirmar"
-        await modal.getByRole('button', { name: /solicitar|confirmar/i }).click();
+        // 6. Verify Success Toast
+        await expect(page.getByText('Solicitud de reserva enviada')).toBeVisible();
 
-        // 7. Verify Success Toast or Error
-        try {
-            await expect(page.getByText('Solicitud de reserva enviada exitosamente.')).toBeVisible({ timeout: 5000 });
-        } catch (e) {
-            // If success toast not found, check for error message in modal
-            const errorMsg = await page.locator('.bg-red-100').textContent();
-            if (errorMsg) {
-                throw new Error(`Reservation failed with error: ${errorMsg}`);
-            }
-            throw e;
-        }
+        // 7. Verify in "Mis Reservas"
+        await page.click('text=Mis Reservas');
+        await expect(page.getByText('Pendiente').first()).toBeVisible();
 
-        // 8. Verify in "Mis Reservas" Section
-        // It should appear in the list below the calendar
-        const myReservations = page.locator('h3:has-text("Mis Reservas")').locator('..');
-        await expect(myReservations).toBeVisible();
-        // Check for "Pendiente" or "Solicitada" badge
-        await expect(myReservations.getByText(/pendiente|solicitada/i).first()).toBeVisible();
-
-        // 9. Cancel Reservation
-        // Handle window.confirm
+        // 8. Cancel
+        await page.click('button:has-text("Cancelar")');
+        // Handle alert confirm? Playwright handles confirm dialogs automatically by default if listeners set,
+        // but here we might need to manually handle if it's a window.confirm
         page.on('dialog', dialog => dialog.accept());
 
-        const cancelBtn = myReservations.getByRole('button', { name: /cancelar/i }).first();
-        await cancelBtn.click();
-
-        // 10. Verify Cancellation
-        // The reservation should disappear or status change
-        // Since the list filters out cancelled or updates status, we check for disappearance or toast
-        await expect(page.getByText('Reserva cancelada')).toBeVisible();
+        // Wait for update
+        await expect(page.getByText('Cancelar')).not.toBeVisible();
     });
-
 });

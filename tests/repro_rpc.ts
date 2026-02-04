@@ -1,25 +1,19 @@
 
 import { createClient } from '@supabase/supabase-js';
-import {
-    TEST_SUPABASE_URL,
-    TEST_SUPABASE_KEY,
-    TEST_RESIDENT_EMAIL,
-    TEST_RESIDENT_PASSWORD,
-    checkTestEnv
-} from './test-config';
+
+const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const RESIDENT_EMAIL = 'contacto@rockcode.cl';
+const RESIDENT_PASSWORD = '180381';
 
 async function main() {
-    if (!checkTestEnv()) {
-        console.error('Missing environment variables. Skipping script execution.');
-        process.exit(0);
-    }
-
-    const supabase = createClient(TEST_SUPABASE_URL!, TEST_SUPABASE_KEY!);
-
     console.log('1. Logging in...');
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: TEST_RESIDENT_EMAIL!,
-        password: TEST_RESIDENT_PASSWORD!
+        email: RESIDENT_EMAIL,
+        password: RESIDENT_PASSWORD
     });
 
     if (authError || !authData.user) {
