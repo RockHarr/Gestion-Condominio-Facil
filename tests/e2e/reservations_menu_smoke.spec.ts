@@ -13,7 +13,7 @@ test('reservations_menu_smoke', async ({ page }) => {
     });
 
     // Mock Supabase Auth to bypass CI network issues
-    await page.route('**/auth/v1/token?grant_type=password', async route => {
+    await page.route('**/auth/v1/token*', async route => {
         const json = {
             access_token: "fake-access-token",
             token_type: "bearer",
