@@ -17,8 +17,14 @@ test.describe('Admin — Reservations Management', () => {
 
         // 1. Create a Reservation as Resident to ensure we have data to test
         await page.goto('/');
+
+        // Handle Magic Link/Password Toggle
+        if (await page.getByText('Usar contraseña').isVisible()) {
+            await page.click('text=Usar contraseña');
+            await expect(page.locator('input[type="password"]')).toBeVisible();
+        }
+
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
@@ -120,8 +126,14 @@ test.describe('Admin — Reservations Management', () => {
         console.log('Starting approve test...');
         // 2. Login as Admin
         // We are already at Login Screen due to beforeEach
+
+        // Handle Magic Link/Password Toggle
+        if (await page.getByText('Usar contraseña').isVisible()) {
+            await page.click('text=Usar contraseña');
+            await expect(page.locator('input[type="password"]')).toBeVisible();
+        }
+
         await page.fill('input[type="email"]', ADMIN_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
         await page.fill('input[type="password"]', ADMIN_PASSWORD);
         await page.click('button[type="submit"]');
         console.log('Admin login submitted');
@@ -166,8 +178,14 @@ test.describe('Admin — Reservations Management', () => {
     test('should allow admin to reject a pending reservation', async ({ page }) => {
         console.log('Starting reject test...');
         // 2. Login as Admin
+
+        // Handle Magic Link/Password Toggle
+        if (await page.getByText('Usar contraseña').isVisible()) {
+            await page.click('text=Usar contraseña');
+            await expect(page.locator('input[type="password"]')).toBeVisible();
+        }
+
         await page.fill('input[type="email"]', ADMIN_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
         await page.fill('input[type="password"]', ADMIN_PASSWORD);
         await page.click('button[type="submit"]');
 

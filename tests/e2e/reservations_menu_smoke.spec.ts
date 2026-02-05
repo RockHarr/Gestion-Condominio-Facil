@@ -15,13 +15,23 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
     // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
-    if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+    // Check if we are on the login screen by looking for the "Bienvenido" title or email input
+    if (await page.locator('input[type="email"]').isVisible()) {
+        // If we are in "magic link" mode, switch to password mode
+        // Use a more specific selector for the button
+        const toggleButton = page.getByRole('button', { name: 'Usar contraseña' });
+        if (await toggleButton.isVisible()) {
+            await toggleButton.click();
+            // Wait for password input to appear with a longer timeout
+            await expect(page.locator('input[type="password"]')).toBeVisible({ timeout: 10000 });
+        }
+
+        await page.fill('input[type="email"]', 'rockwell.harrison@gmail.com');
+        await page.fill('input[type="password"]', '270386'); // Known valid admin creds
+        await page.click('button:has-text("Iniciar Sesión")');
     }
 
     // 3. Verify Sidebar
