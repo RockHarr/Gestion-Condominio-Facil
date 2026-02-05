@@ -274,7 +274,7 @@ function App() {
         }
         showToast('Ticket creado exitosamente.');
       } catch (error) {
-        showToast('Error al crear ticket', 'error');
+        showToast(`Error al crear ticket: ${getErrorMessage(error)}`, 'error');
       }
     }
   };

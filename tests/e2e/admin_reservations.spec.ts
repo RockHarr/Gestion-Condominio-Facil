@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-utils';
 
 // ==========================================
 // CONFIGURATION
@@ -10,6 +11,7 @@ const ADMIN_PASSWORD = '270386';
 // ==========================================
 
 test.describe('Admin — Reservations Management', () => {
+    test.skip(!checkTestEnv(), 'Skipping because environment variables are missing');
 
     test.beforeEach(async ({ page }) => {
         // Enable console logging from browser
