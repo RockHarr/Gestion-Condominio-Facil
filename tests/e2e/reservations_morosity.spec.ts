@@ -87,8 +87,14 @@ test.describe('Reservations - Morosity Check', () => {
     test('should block reservation for morose user', async ({ page }) => {
         // 1. Login
         await page.goto('/');
+
+        // Handle Magic Link/Password Toggle
+        if (await page.getByText('Usar contraseña').isVisible()) {
+            await page.click('text=Usar contraseña');
+            await expect(page.locator('input[type="password"]')).toBeVisible();
+        }
+
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
@@ -154,8 +160,14 @@ test.describe('Reservations - Morosity Check', () => {
         // 2. Retry Reservation
         // We need to login again because each test has a fresh context
         await page.goto('/');
+
+        // Handle Magic Link/Password Toggle
+        if (await page.getByText('Usar contraseña').isVisible()) {
+            await page.click('text=Usar contraseña');
+            await expect(page.locator('input[type="password"]')).toBeVisible();
+        }
+
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
