@@ -9,6 +9,7 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
 test.describe('Resident — Reservations Flow', () => {
+    test.skip(!checkTestEnv(), 'Skipping because environment variables are missing');
 
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident
