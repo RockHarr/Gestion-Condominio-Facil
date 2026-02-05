@@ -1,0 +1,352 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - heading "Espacios Comunes" [level=1] [ref=e6]
+    - main [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - heading "Espacios Comunes" [level=2] [ref=e10]
+          - button "Mis Reservas" [ref=e11] [cursor=pointer]:
+            - img [ref=e12]
+            - text: Mis Reservas
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - generic [ref=e16]:
+              - img "Quincho" [ref=e17]
+              - generic [ref=e19]:
+                - heading "Quincho" [level=3] [ref=e20]
+                - paragraph [ref=e21]:
+                  - img [ref=e22]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e24]:
+              - paragraph [ref=e25]: Espacio para asados y eventos al aire libre
+              - generic [ref=e26]:
+                - generic [ref=e27]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e28] [cursor=pointer]
+          - generic [ref=e29]:
+            - generic [ref=e30]:
+              - img "Sala de Eventos" [ref=e31]
+              - generic [ref=e33]:
+                - heading "Sala de Eventos" [level=3] [ref=e34]
+                - paragraph [ref=e35]:
+                  - img [ref=e36]
+                  - text: "Capacidad: 50 personas"
+            - generic [ref=e38]:
+              - paragraph [ref=e39]: Salón multiuso para celebraciones
+              - generic [ref=e40]:
+                - generic [ref=e41]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e42] [cursor=pointer]
+          - generic [ref=e43]:
+            - generic [ref=e44]:
+              - img "Piscina" [ref=e45]
+              - generic [ref=e47]:
+                - heading "Piscina" [level=3] [ref=e48]
+                - paragraph [ref=e49]:
+                  - img [ref=e50]
+                  - text: "Capacidad: 10 personas"
+            - generic [ref=e52]:
+              - paragraph [ref=e53]: Piscina temperada
+              - generic [ref=e54]:
+                - generic [ref=e55]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e56] [cursor=pointer]
+          - generic [ref=e57]:
+            - generic [ref=e58]:
+              - img "Quincho Central" [ref=e59]
+              - generic [ref=e61]:
+                - heading "Quincho Central" [level=3] [ref=e62]
+                - paragraph [ref=e63]:
+                  - img [ref=e64]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e66]:
+              - paragraph [ref=e67]: Espacio para asados con parrilla y mesas.
+              - generic [ref=e68]:
+                - generic [ref=e69]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e70] [cursor=pointer]
+          - generic [ref=e71]:
+            - generic [ref=e72]:
+              - img "Sala de Eventos" [ref=e73]
+              - generic [ref=e75]:
+                - heading "Sala de Eventos" [level=3] [ref=e76]
+                - paragraph [ref=e77]:
+                  - img [ref=e78]
+                  - text: "Capacidad: 50 personas"
+            - generic [ref=e80]:
+              - paragraph [ref=e81]: Salón multiuso para celebraciones y reuniones.
+              - generic [ref=e82]:
+                - generic [ref=e83]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e84] [cursor=pointer]
+          - generic [ref=e85]:
+            - generic [ref=e86]:
+              - img "Sala TV QA 19012026 11:35" [ref=e87]
+              - generic [ref=e89]:
+                - heading "Sala TV QA 19012026 11:35" [level=3] [ref=e90]
+                - paragraph [ref=e91]:
+                  - img [ref=e92]
+                  - text: "Capacidad: 10 personas"
+            - generic [ref=e94]:
+              - paragraph [ref=e95]: Texto de prueba QA
+              - generic [ref=e96]:
+                - generic [ref=e97]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e98] [cursor=pointer]
+          - generic [ref=e99]:
+            - generic [ref=e100]:
+              - img "Prueba QA 260126 0804" [ref=e101]
+              - generic [ref=e103]:
+                - heading "Prueba QA 260126 0804" [level=3] [ref=e104]
+                - paragraph [ref=e105]:
+                  - img [ref=e106]
+                  - text: "Capacidad: 5 personas"
+            - generic [ref=e108]:
+              - paragraph [ref=e109]: Descripcion de prueba
+              - generic [ref=e110]:
+                - generic [ref=e111]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e112] [cursor=pointer]
+          - generic [ref=e113]:
+            - generic [ref=e114]:
+              - img "Quincho" [ref=e115]
+              - generic [ref=e117]:
+                - heading "Quincho" [level=3] [ref=e118]
+                - paragraph [ref=e119]:
+                  - img [ref=e120]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e122]:
+              - paragraph [ref=e123]: Espacio para asados
+              - generic [ref=e124]:
+                - generic [ref=e125]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e126] [cursor=pointer]
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - img "Quincho" [ref=e129]
+              - generic [ref=e131]:
+                - heading "Quincho" [level=3] [ref=e132]
+                - paragraph [ref=e133]:
+                  - img [ref=e134]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e136]:
+              - paragraph [ref=e137]: Espacio para asados
+              - generic [ref=e138]:
+                - generic [ref=e139]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e140] [cursor=pointer]
+          - generic [ref=e141]:
+            - generic [ref=e142]:
+              - img "Quincho" [ref=e143]
+              - generic [ref=e145]:
+                - heading "Quincho" [level=3] [ref=e146]
+                - paragraph [ref=e147]:
+                  - img [ref=e148]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e150]:
+              - paragraph [ref=e151]: Espacio para asados
+              - generic [ref=e152]:
+                - generic [ref=e153]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e154] [cursor=pointer]
+          - generic [ref=e155]:
+            - generic [ref=e156]:
+              - img "Quincho" [ref=e157]
+              - generic [ref=e159]:
+                - heading "Quincho" [level=3] [ref=e160]
+                - paragraph [ref=e161]:
+                  - img [ref=e162]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e164]:
+              - paragraph [ref=e165]: Espacio para asados
+              - generic [ref=e166]:
+                - generic [ref=e167]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e168] [cursor=pointer]
+          - generic [ref=e169]:
+            - generic [ref=e170]:
+              - img "Quincho" [ref=e171]
+              - generic [ref=e173]:
+                - heading "Quincho" [level=3] [ref=e174]
+                - paragraph [ref=e175]:
+                  - img [ref=e176]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e178]:
+              - paragraph [ref=e179]: Espacio para asados
+              - generic [ref=e180]:
+                - generic [ref=e181]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e182] [cursor=pointer]
+          - generic [ref=e183]:
+            - generic [ref=e184]:
+              - img "Quincho" [ref=e185]
+              - generic [ref=e187]:
+                - heading "Quincho" [level=3] [ref=e188]
+                - paragraph [ref=e189]:
+                  - img [ref=e190]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e192]:
+              - paragraph [ref=e193]: Espacio para asados
+              - generic [ref=e194]:
+                - generic [ref=e195]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e196] [cursor=pointer]
+          - generic [ref=e197]:
+            - generic [ref=e198]:
+              - img "Quincho" [ref=e199]
+              - generic [ref=e201]:
+                - heading "Quincho" [level=3] [ref=e202]
+                - paragraph [ref=e203]:
+                  - img [ref=e204]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e206]:
+              - paragraph [ref=e207]: Espacio para asados
+              - generic [ref=e208]:
+                - generic [ref=e209]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e210] [cursor=pointer]
+          - generic [ref=e211]:
+            - generic [ref=e212]:
+              - img "Quincho" [ref=e213]
+              - generic [ref=e215]:
+                - heading "Quincho" [level=3] [ref=e216]
+                - paragraph [ref=e217]:
+                  - img [ref=e218]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e220]:
+              - paragraph [ref=e221]: Espacio para asados
+              - generic [ref=e222]:
+                - generic [ref=e223]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e224] [cursor=pointer]
+          - generic [ref=e225]:
+            - generic [ref=e226]:
+              - img "Quincho" [ref=e227]
+              - generic [ref=e229]:
+                - heading "Quincho" [level=3] [ref=e230]
+                - paragraph [ref=e231]:
+                  - img [ref=e232]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e234]:
+              - paragraph [ref=e235]: Espacio para asados
+              - generic [ref=e236]:
+                - generic [ref=e237]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e238] [cursor=pointer]
+          - generic [ref=e239]:
+            - generic [ref=e240]:
+              - img "Quincho" [ref=e241]
+              - generic [ref=e243]:
+                - heading "Quincho" [level=3] [ref=e244]
+                - paragraph [ref=e245]:
+                  - img [ref=e246]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e248]:
+              - paragraph [ref=e249]: Espacio para asados
+              - generic [ref=e250]:
+                - generic [ref=e251]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e252] [cursor=pointer]
+          - generic [ref=e253]:
+            - generic [ref=e254]:
+              - img "Quincho" [ref=e255]
+              - generic [ref=e257]:
+                - heading "Quincho" [level=3] [ref=e258]
+                - paragraph [ref=e259]:
+                  - img [ref=e260]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e262]:
+              - paragraph [ref=e263]: Espacio para asados
+              - generic [ref=e264]:
+                - generic [ref=e265]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e266] [cursor=pointer]
+          - generic [ref=e267]:
+            - generic [ref=e268]:
+              - img "Quincho" [ref=e269]
+              - generic [ref=e271]:
+                - heading "Quincho" [level=3] [ref=e272]
+                - paragraph [ref=e273]:
+                  - img [ref=e274]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e276]:
+              - paragraph [ref=e277]: Espacio para asados
+              - generic [ref=e278]:
+                - generic [ref=e279]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e280] [cursor=pointer]
+          - generic [ref=e281]:
+            - generic [ref=e282]:
+              - img "Quincho" [ref=e283]
+              - generic [ref=e285]:
+                - heading "Quincho" [level=3] [ref=e286]
+                - paragraph [ref=e287]:
+                  - img [ref=e288]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e290]:
+              - paragraph [ref=e291]: Espacio para asados
+              - generic [ref=e292]:
+                - generic [ref=e293]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e294] [cursor=pointer]
+          - generic [ref=e295]:
+            - generic [ref=e296]:
+              - img "Quincho" [ref=e297]
+              - generic [ref=e299]:
+                - heading "Quincho" [level=3] [ref=e300]
+                - paragraph [ref=e301]:
+                  - img [ref=e302]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e304]:
+              - paragraph [ref=e305]: Espacio para asados
+              - generic [ref=e306]:
+                - generic [ref=e307]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e308] [cursor=pointer]
+          - generic [ref=e309]:
+            - generic [ref=e310]:
+              - img "Quincho" [ref=e311]
+              - generic [ref=e313]:
+                - heading "Quincho" [level=3] [ref=e314]
+                - paragraph [ref=e315]:
+                  - img [ref=e316]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e318]:
+              - paragraph [ref=e319]: Espacio para asados
+              - generic [ref=e320]:
+                - generic [ref=e321]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e322] [cursor=pointer]
+          - generic [ref=e323]:
+            - generic [ref=e324]:
+              - img "Quincho" [ref=e325]
+              - generic [ref=e327]:
+                - heading "Quincho" [level=3] [ref=e328]
+                - paragraph [ref=e329]:
+                  - img [ref=e330]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e332]:
+              - paragraph [ref=e333]: Espacio para asados
+              - generic [ref=e334]:
+                - generic [ref=e335]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e336] [cursor=pointer]
+          - generic [ref=e337]:
+            - generic [ref=e338]:
+              - img "Quincho" [ref=e339]
+              - generic [ref=e341]:
+                - heading "Quincho" [level=3] [ref=e342]
+                - paragraph [ref=e343]:
+                  - img [ref=e344]
+                  - text: "Capacidad: 20 personas"
+            - generic [ref=e346]:
+              - paragraph [ref=e347]: Espacio para asados
+              - generic [ref=e348]:
+                - generic [ref=e349]: "Horario: 09:00 - 22:00"
+                - button "Reservar" [ref=e350] [cursor=pointer]
+    - navigation [ref=e351]:
+      - generic [ref=e352]:
+        - button "Inicio" [ref=e353] [cursor=pointer]:
+          - img [ref=e355]
+          - generic [ref=e357]: Inicio
+        - button "Pagos" [ref=e358] [cursor=pointer]:
+          - img [ref=e360]
+          - generic [ref=e362]: Pagos
+        - button "Tickets" [ref=e363] [cursor=pointer]:
+          - img [ref=e365]
+          - generic [ref=e367]: Tickets
+        - button "Espacios" [active] [ref=e368] [cursor=pointer]:
+          - img [ref=e370]
+          - generic [ref=e372]: Espacios
+        - button "Avisos" [ref=e373] [cursor=pointer]:
+          - img [ref=e375]
+          - generic [ref=e377]: Avisos
+        - button "Votar" [ref=e378] [cursor=pointer]:
+          - img [ref=e380]
+          - generic [ref=e382]: Votar
+        - button "Más" [ref=e383] [cursor=pointer]:
+          - img [ref=e385]
+          - generic [ref=e388]: Más
+  - generic [ref=e389]: $0k
+```

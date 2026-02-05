@@ -155,3 +155,37 @@ create policy "Users can create tickets" on public.tickets for insert with check
 
 -- For now, we will allow authenticated users to read most tables to simplify development
 -- In production, you would tighten these policies significantly.
+
+-- 13. Security Functions & Triggers (Added by Sentinel)
+
+-- Helper function to check if user is admin
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Prevent Privilege Escalation via Profile Updates
+CREATE OR REPLACE FUNCTION public.prevent_role_escalation()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Check if the role is being changed
+    IF NEW.role IS DISTINCT FROM OLD.role THEN
+        -- Allow change only if the user is an admin
+        IF NOT public.is_admin() THEN
+            RAISE EXCEPTION 'Unauthorized: You are not allowed to change the user role.';
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_profile_role_update ON public.profiles;
+CREATE TRIGGER on_profile_role_update
+BEFORE UPDATE ON public.profiles
+FOR EACH ROW
+EXECUTE FUNCTION public.prevent_role_escalation();
