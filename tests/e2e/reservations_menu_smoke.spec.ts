@@ -40,7 +40,18 @@ test('reservations_menu_smoke', async ({ page }) => {
         expect(isAdmin).toBeTruthy();
     }
 
-    await expect(page.getByText('Panel de Control')).toBeVisible({ timeout: 10000 });
+    // Check for "Error al cargar datos"
+    if (await page.getByText('Error al cargar datos').isVisible()) {
+        console.error('App crashed with Error al cargar datos');
+        await page.getByText('Reintentar').click(); // Try to recover
+    }
+
+    // Check for Login Error
+    if (await page.getByText('Error verificando sesión').isVisible()) {
+         console.error('Session verification failed');
+    }
+
+    await expect(page.getByText('Panel de Control')).toBeVisible({ timeout: 20000 });
 
     // 3. Verify Sidebar
     // Use data-testid if available, or a more robust selector

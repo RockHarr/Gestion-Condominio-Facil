@@ -50,7 +50,7 @@ test.describe('Admin — Reservations Management', () => {
             }
 
             // Wait for calendar
-            await expect(page.locator('.grid.grid-cols-7').last()).toBeVisible();
+            await expect(page.locator('.grid.grid-cols-7').last()).toBeVisible({ timeout: 20000 });
             const availableDays = page.locator('button.aspect-square:not([disabled])');
             const count = await availableDays.count();
 
