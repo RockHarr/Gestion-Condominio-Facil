@@ -15,20 +15,54 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
     // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+        // Use known valid admin credentials
+        await page.fill('input[type="email"]', 'rockwell.harrison@gmail.com');
+        await page.click('button:has-text("Usar contraseña")');
+        await page.fill('input[type="password"]', '270386');
+        await page.click('button[type="submit"]');
     }
 
+    // 3. Wait for Dashboard to Load
+    // Ensure we are past the loading state
+    await expect(page.locator('.animate-pulse')).not.toBeVisible({ timeout: 20000 });
+
+    // Check if we are logged in as Admin or Resident (to debug role issues)
+    const isAdmin = await page.getByText('Panel de Control').isVisible();
+    const isResident = await page.getByText('Hola,').isVisible();
+
+    if (isResident) {
+        console.error('Logged in as Resident, expected Admin.');
+        // Fail the test if we are resident, as this test requires Admin
+        expect(isAdmin).toBeTruthy();
+    }
+
+    // Check for "Error al cargar datos"
+    if (await page.getByText('Error al cargar datos').isVisible()) {
+        console.error('App crashed with Error al cargar datos');
+        await page.getByText('Reintentar').click(); // Try to recover
+    }
+
+    // Check for Login Error
+    if (await page.getByText('Error verificando sesión').isVisible()) {
+         console.error('Session verification failed');
+    }
+
+    await expect(page.getByText('Panel de Control')).toBeVisible({ timeout: 20000 });
+
     // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    // Use data-testid if available, or a more robust selector
+    // We target the nav item specifically
+    const navButton = page.locator('[data-testid="nav-admin-reservations"]').or(
+        page.getByRole('button', { name: /Gestión de Reservas/i })
+    );
+    await expect(navButton).toBeVisible({ timeout: 10000 });
 
     // 4. Navigate
-    await page.click('button:has-text("Gestión de Reservas")');
+    await navButton.click();
 
     // 5. Verify Page Content
     await expect(page.getByText('Gestión de Reservas')).toBeVisible();

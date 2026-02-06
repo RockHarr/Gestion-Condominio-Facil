@@ -48,6 +48,13 @@ export const dataService = {
   },
 
   async createTicket(ticket: Omit<Ticket, 'id' | 'fecha' | 'user' | 'estado'>, userId: string) {
+    // 🛡️ Sentinel: Input Validation
+    if (ticket.titulo.length > 100) throw new Error('El título no puede exceder los 100 caracteres');
+    if (ticket.descripcion.length > 2000)
+      throw new Error('La descripción no puede exceder los 2000 caracteres');
+    if (ticket.foto && ticket.foto.length > 7 * 1024 * 1024 * 1.37)
+      throw new Error('La foto excede el tamaño máximo permitido (7MB)');
+
     const { data, error } = await withTimeout(
       supabase
         .from('tickets')
@@ -82,6 +89,11 @@ export const dataService = {
   },
 
   async createNotice(notice: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) {
+    // 🛡️ Sentinel: Input Validation
+    if (notice.titulo.length > 100) throw new Error('El título no puede exceder los 100 caracteres');
+    if (notice.contenido.length > 5000)
+      throw new Error('El contenido no puede exceder los 5000 caracteres');
+
     const { data, error } = await withTimeout(
       supabase
         .from('notices')
@@ -607,6 +619,11 @@ export const dataService = {
 
   // --- Admin: Expenses ---
   async addExpense(expense: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) {
+    // 🛡️ Sentinel: Input Validation
+    if (expense.descripcion.length > 200)
+      throw new Error('La descripción no puede exceder los 200 caracteres');
+    if (expense.monto <= 0) throw new Error('El monto debe ser mayor a 0');
+
     const { data, error } = await withTimeout(
       supabase
         .from('expenses')
