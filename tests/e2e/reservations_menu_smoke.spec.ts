@@ -3,6 +3,8 @@ import { test, expect } from '@playwright/test';
 // Remove skip: This test mocks everything so it SHOULD run in CI even without env vars.
 // test.skip(!checkTestEnv(), 'Skipping test: Missing Supabase environment variables');
 
+test.use({ viewport: { width: 1280, height: 720 } }); // Ensure desktop sidebar is visible
+
 test('reservations_menu_smoke', async ({ page }) => {
     // 0. Mock Supabase Auth & Data to bypass backend requirement
 
