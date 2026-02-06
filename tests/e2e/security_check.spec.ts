@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
+
+test.skip(!checkTestEnv(), 'Skipping test: Missing Supabase environment variables');
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING

@@ -1,0 +1,19 @@
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load env vars from .env file if present
+// process.cwd() is usually the project root where .env lives
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
+export function checkTestEnv() {
+    // In CI, these should be set in the environment.
+    // Locally, they might be in .env
+    const hasUrl = !!process.env.VITE_SUPABASE_URL;
+    const hasKey = !!process.env.VITE_SUPABASE_ANON_KEY;
+
+    if (!hasUrl || !hasKey) {
+        console.warn('Skipping test: VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY missing.');
+        return false;
+    }
+    return true;
+}
