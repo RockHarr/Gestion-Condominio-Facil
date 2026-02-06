@@ -26,11 +26,32 @@ test('reservations_menu_smoke', async ({ page }) => {
         await page.click('button[type="submit"]');
     }
 
+    // 3. Wait for Dashboard to Load
+    // Ensure we are past the loading state
+    await expect(page.locator('.animate-pulse')).not.toBeVisible({ timeout: 20000 });
+
+    // Check if we are logged in as Admin or Resident (to debug role issues)
+    const isAdmin = await page.getByText('Panel de Control').isVisible();
+    const isResident = await page.getByText('Hola,').isVisible();
+
+    if (isResident) {
+        console.error('Logged in as Resident, expected Admin.');
+        // Fail the test if we are resident, as this test requires Admin
+        expect(isAdmin).toBeTruthy();
+    }
+
+    await expect(page.getByText('Panel de Control')).toBeVisible({ timeout: 10000 });
+
     // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    // Use data-testid if available, or a more robust selector
+    // We target the nav item specifically
+    const navButton = page.locator('[data-testid="nav-admin-reservations"]').or(
+        page.getByRole('button', { name: /Gestión de Reservas/i })
+    );
+    await expect(navButton).toBeVisible({ timeout: 10000 });
 
     // 4. Navigate
-    await page.click('button:has-text("Gestión de Reservas")');
+    await navButton.click();
 
     // 5. Verify Page Content
     await expect(page.getByText('Gestión de Reservas')).toBeVisible();

@@ -112,6 +112,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
                     return (
                         <button
                             key={item.page}
+                            data-testid={`nav-${item.page}`}
                             onClick={() => onNavigate(item.page as Page)}
                             className={`w-full flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-200 group ${isActive
                                 ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-sm'
