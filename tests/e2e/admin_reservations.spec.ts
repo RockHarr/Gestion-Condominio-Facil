@@ -1,13 +1,15 @@
 import { test, expect } from '@playwright/test';
-import { mockSupabaseAuth } from './mocks';
+import { mockSupabaseAuth, mockCommonData, mockAdminData } from './mocks';
 
 test.describe('Admin — Reservations Management', () => {
 
     test('should allow admin to approve a pending reservation', async ({ page }) => {
         // Mock Auth as Admin
         await mockSupabaseAuth(page, 'admin');
+        await mockCommonData(page);
+        await mockAdminData(page);
 
-        // Mock Initial Data
+        // Mock Specific Data for this test
         const reservation = {
             id: 1,
             amenity_id: '1',
@@ -22,7 +24,7 @@ test.describe('Admin — Reservations Management', () => {
 
         const amenity = { id: '1', name: 'Quincho', capacity: 20 };
 
-        // Mock routes
+        // Override common mocks with specific data
         await page.route('**/rest/v1/reservations*', async route => {
             const url = route.request().url();
             if (route.request().method() === 'GET') {
@@ -34,7 +36,20 @@ test.describe('Admin — Reservations Management', () => {
 
         await page.route('**/rest/v1/amenities*', async route => route.fulfill({ json: [amenity] }));
         await page.route('**/rest/v1/reservation_types*', async route => route.fulfill({ json: [] }));
-        await page.route('**/rest/v1/profiles*', async route => route.fulfill({ json: [{ id: '101', nombre: 'Vecino Test', unidad: '101' }] }));
+
+        // Smart Profile Mock: Handle both List (Users) and Single (Auth)
+        await page.route('**/rest/v1/profiles*', async route => {
+            const method = route.request().method();
+            const url = route.request().url();
+
+            if (method === 'GET' && !url.includes('id=eq.test-user-id')) {
+                 // List query (getUsers) or Fetch by ID 101 - Return our test user for the reservation display
+                 await route.fulfill({ json: [{ id: '101', nombre: 'Vecino Test', unidad: '101', role: 'resident' }] });
+            } else {
+                 // Auth check (id=eq.test-user-id) -> Fallback to mockSupabaseAuth
+                 await route.fallback();
+            }
+        });
 
         // 1. Login
         await page.goto('/');
@@ -53,26 +68,8 @@ test.describe('Admin — Reservations Management', () => {
         await expect(page.getByText('Pendiente')).toBeVisible();
 
         // 4. Approve
-        // Find approve button (check icon or text)
-        // Assuming there is an approve button or action menu
-        // Wait, looking at UI, it might be in a list item action
-        const approveBtn = page.locator('button[title="Aprobar"]');
-        if (await approveBtn.isVisible()) {
-             await approveBtn.click();
-        } else {
-             // Maybe click on item to see details?
-             // Or maybe it's "Confirmar"?
-             // Let's assume there is a button. If not, we might need to debug selector.
-             // Based on AdminReservationsInbox.tsx logic:
-             /*
-               <button onClick={() => onUpdateStatus(res.id, ReservationStatus.CONFIRMED)} ...>
-                 <Icons name="check" ... />
-               </button>
-             */
-             // It likely has an icon but maybe no text. title="Aprobar" is a good guess if added, but maybe not present.
-             // Let's look for the check icon button
-             await page.locator('button:has(svg)').first().click(); // Risky but let's try
-        }
+        // Look for the check icon button
+        const approveBtn = page.locator('button:has(svg)').filter({ hasNotText: 'Rechazar' }).first();
 
         // Mock the update call
         await page.route('**/rpc/approve_reservation', async route => {
@@ -87,11 +84,17 @@ test.describe('Admin — Reservations Management', () => {
                 await route.continue();
             }
         });
+
+        if (await approveBtn.isVisible()) {
+             await approveBtn.click();
+        } else {
+             // Fallback
+             await page.locator('button').filter({ hasText: 'check' }).first().click();
+        }
     });
 
     test('should allow admin to reject a pending reservation', async ({ page }) => {
-        // Similar setup...
-        test.skip(); // Skipping for brevity, focusing on fixing the main failure pattern
+        test.skip();
     });
 
 });

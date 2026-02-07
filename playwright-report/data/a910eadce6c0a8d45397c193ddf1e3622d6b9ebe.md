@@ -1,0 +1,74 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: La conexión está tardando mucho. Verifique su red o configuración.
+      - button "Cerrar notificación" [ref=e6] [cursor=pointer]:
+        - img [ref=e7]
+    - generic [ref=e9]:
+      - complementary [ref=e10]:
+        - generic [ref=e12]:
+          - img [ref=e14]
+          - generic [ref=e16]:
+            - heading "Admin Panel" [level=1] [ref=e17]
+            - paragraph [ref=e18]: Gestión Condominio
+        - navigation [ref=e19]:
+          - paragraph [ref=e20]: Menu Principal
+          - button "Dashboard" [ref=e21] [cursor=pointer]:
+            - img [ref=e22]
+            - text: Dashboard
+          - button "Directorio de Unidades" [active] [ref=e24] [cursor=pointer]:
+            - img [ref=e25]
+            - text: Directorio de Unidades
+          - button "Registrar Pago" [ref=e28] [cursor=pointer]:
+            - img [ref=e29]
+            - text: Registrar Pago
+          - button "Espacios Comunes" [ref=e31] [cursor=pointer]:
+            - img [ref=e32]
+            - text: Espacios Comunes
+          - button "Gestión de Reservas" [ref=e34] [cursor=pointer]:
+            - img [ref=e35]
+            - text: Gestión de Reservas
+          - button "Gestión de Tickets" [ref=e37] [cursor=pointer]:
+            - img [ref=e38]
+            - text: Gestión de Tickets
+          - button "Mural de Avisos" [ref=e40] [cursor=pointer]:
+            - img [ref=e41]
+            - text: Mural de Avisos
+          - button "Configuración" [ref=e43] [cursor=pointer]:
+            - img [ref=e44]
+            - text: Configuración
+          - button "Votaciones" [ref=e46] [cursor=pointer]:
+            - img [ref=e47]
+            - text: Votaciones
+          - button "Mi Perfil" [ref=e48] [cursor=pointer]:
+            - img [ref=e49]
+            - text: Mi Perfil
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]: AD
+            - paragraph [ref=e55]: Administrador
+          - button "Cerrar Sesión" [ref=e56] [cursor=pointer]:
+            - img [ref=e57]
+            - text: Cerrar Sesión
+      - main [ref=e59]:
+        - generic [ref=e61]:
+          - generic [ref=e62]:
+            - generic [ref=e63]:
+              - heading "Directorio de Unidades" [level=2] [ref=e64]
+              - paragraph [ref=e65]: Gestiona los residentes y sus propiedades
+            - button "Nueva Unidad" [ref=e67] [cursor=pointer]:
+              - img [ref=e68]
+              - text: Nueva Unidad
+          - generic [ref=e70]:
+            - generic:
+              - img
+            - textbox "Buscar por unidad o nombre..." [ref=e71]
+          - generic [ref=e73]:
+            - img [ref=e75]
+            - heading "No hay unidades registradas" [level=3] [ref=e76]
+            - paragraph [ref=e77]: Los usuarios creados en Supabase aparecerán aquí automáticamente si el trigger está configurado.
+  - generic [ref=e78]: $0k
+```

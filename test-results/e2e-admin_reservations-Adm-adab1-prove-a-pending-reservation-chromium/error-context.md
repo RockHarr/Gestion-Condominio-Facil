@@ -1,0 +1,80 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: La conexión está tardando mucho. Verifique su red o configuración.
+      - button "Cerrar notificación" [ref=e6] [cursor=pointer]:
+        - img [ref=e7]
+    - generic [ref=e9]:
+      - complementary [ref=e10]:
+        - generic [ref=e12]:
+          - img [ref=e14]
+          - generic [ref=e16]:
+            - heading "Admin Panel" [level=1] [ref=e17]
+            - paragraph [ref=e18]: Gestión Condominio
+        - navigation [ref=e19]:
+          - paragraph [ref=e20]: Menu Principal
+          - button "Dashboard" [ref=e21] [cursor=pointer]:
+            - img [ref=e22]
+            - text: Dashboard
+          - button "Directorio de Unidades" [ref=e24] [cursor=pointer]:
+            - img [ref=e25]
+            - text: Directorio de Unidades
+          - button "Registrar Pago" [ref=e27] [cursor=pointer]:
+            - img [ref=e28]
+            - text: Registrar Pago
+          - button "Espacios Comunes" [ref=e30] [cursor=pointer]:
+            - img [ref=e31]
+            - text: Espacios Comunes
+          - button "Gestión de Reservas 1" [active] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]
+            - text: Gestión de Reservas
+            - generic [ref=e36]: "1"
+          - button "Gestión de Tickets" [ref=e37] [cursor=pointer]:
+            - img [ref=e38]
+            - text: Gestión de Tickets
+          - button "Mural de Avisos" [ref=e40] [cursor=pointer]:
+            - img [ref=e41]
+            - text: Mural de Avisos
+          - button "Configuración" [ref=e43] [cursor=pointer]:
+            - img [ref=e44]
+            - text: Configuración
+          - button "Votaciones" [ref=e46] [cursor=pointer]:
+            - img [ref=e47]
+            - text: Votaciones
+          - button "Mi Perfil" [ref=e48] [cursor=pointer]:
+            - img [ref=e49]
+            - text: Mi Perfil
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]: AD
+            - paragraph [ref=e55]: Administrador
+          - button "Cerrar Sesión" [ref=e56] [cursor=pointer]:
+            - img [ref=e57]
+            - text: Cerrar Sesión
+      - main [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e61]:
+            - generic [ref=e62]:
+              - heading "Gestión de Reservas" [level=2] [ref=e63]
+              - paragraph [ref=e64]: Administra las solicitudes y uso de espacios comunes
+            - button "Nueva Reserva" [ref=e65] [cursor=pointer]:
+              - img [ref=e66]
+              - text: Nueva Reserva
+          - generic [ref=e68]:
+            - button "Pendientes1" [ref=e69] [cursor=pointer]
+            - button "Próximas" [ref=e70] [cursor=pointer]
+            - button "Historial" [ref=e71] [cursor=pointer]
+            - button "Todas1" [ref=e72] [cursor=pointer]
+          - generic [ref=e74]:
+            - generic [ref=e75]:
+              - generic [ref=e77]: REQUESTED
+              - 'heading "Reserva #1 - 2/8/2026" [level=3] [ref=e78]'
+              - paragraph [ref=e79]: 12:05 PM -01:05 PM
+            - generic [ref=e80]:
+              - button "Aprobar" [ref=e81] [cursor=pointer]
+              - button "Rechazar" [ref=e82] [cursor=pointer]
+  - generic [ref=e83]: $0k
+```

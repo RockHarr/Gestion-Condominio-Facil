@@ -45,6 +45,8 @@ export const mockSupabaseAuth = async (page: Page, role: 'resident' | 'admin' = 
     await page.route('**/rest/v1/profiles*', async route => {
         const headers = route.request().headers();
         const acceptHeader = headers['accept'] || '';
+        const method = route.request().method();
+        const url = route.request().url();
 
         const profile = {
             id: 'test-user-id',
@@ -56,11 +58,42 @@ export const mockSupabaseAuth = async (page: Page, role: 'resident' | 'admin' = 
             alicuota: 1.5
         };
 
-        // Supabase .single() sends this Accept header
-        if (acceptHeader.includes('application/vnd.pgrst.object+json')) {
-             await route.fulfill({ json: profile });
+        if (method === 'GET') {
+            // Check for Auth query (id=eq.test-user-id) OR single object header
+            if (url.includes('id=eq.test-user-id') || acceptHeader.includes('application/vnd.pgrst.object+json')) {
+                 await route.fulfill({ json: profile });
+            } else {
+                 await route.fulfill({ json: [profile] });
+            }
         } else {
-             await route.fulfill({ json: [profile] });
+            await route.continue();
         }
     });
+};
+
+// Mock Common Data (fetched by both roles)
+export const mockCommonData = async (page: Page) => {
+    await page.route('**/rest/v1/notices*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/amenities*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/reservations*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/expenses*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/community_settings*', async route => route.fulfill({ json: { commonExpense: 50000, parkingCost: 10000 } }));
+};
+
+// Mock Resident Data
+export const mockResidentData = async (page: Page) => {
+    await page.route('**/rest/v1/tickets*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/common_expense_debts*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/parking_debts*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/payments*', async route => route.fulfill({ json: [] }));
+};
+
+// Mock Admin Data
+export const mockAdminData = async (page: Page) => {
+    await page.route('**/rest/v1/tickets*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/payments*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/common_expense_debts*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/parking_debts*', async route => route.fulfill({ json: [] }));
+    // Removed profiles mock to avoid conflict with mockSupabaseAuth
+    await page.route('**/rpc/get_financial_kpis*', async route => route.fulfill({ json: { total_collected: 0, deposits_custody: 0, pending_review_count: 0, total_expenses_approved: 0 } }));
 };
