@@ -47,6 +47,8 @@ test.describe('Security Policy Verification', () => {
     });
 
     test('Admin should see all data', async ({ page }) => {
+        test.skip(!checkTestEnv(), 'Skipping test: Missing Supabase credentials');
+
         // 1. Login as Admin
         await page.goto('/');
         await page.fill('input[type="email"]', ADMIN_EMAIL);
