@@ -72,7 +72,7 @@
             - generic [ref=e75]:
               - generic [ref=e77]: REQUESTED
               - 'heading "Reserva #1 - 2/8/2026" [level=3] [ref=e78]'
-              - paragraph [ref=e79]: 12:05 PM -01:05 PM
+              - paragraph [ref=e79]: 12:21 PM -01:21 PM
             - generic [ref=e80]:
               - button "Aprobar" [ref=e81] [cursor=pointer]
               - button "Rechazar" [ref=e82] [cursor=pointer]

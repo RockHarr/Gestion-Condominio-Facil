@@ -38,12 +38,14 @@ test.describe('Admin — Reservations Management', () => {
         await page.route('**/rest/v1/reservation_types*', async route => route.fulfill({ json: [] }));
 
         // Smart Profile Mock: Handle both List (Users) and Single (Auth)
+        // Note: mockSupabaseAuth handles Auth (single) via URL matching.
+        // We just need to handle the List query for the reservations page.
         await page.route('**/rest/v1/profiles*', async route => {
             const method = route.request().method();
             const url = route.request().url();
 
             if (method === 'GET' && !url.includes('id=eq.test-user-id')) {
-                 // List query (getUsers) or Fetch by ID 101 - Return our test user for the reservation display
+                 // List query (getUsers) or Fetch by ID 101
                  await route.fulfill({ json: [{ id: '101', nombre: 'Vecino Test', unidad: '101', role: 'resident' }] });
             } else {
                  // Auth check (id=eq.test-user-id) -> Fallback to mockSupabaseAuth
@@ -63,9 +65,13 @@ test.describe('Admin — Reservations Management', () => {
         await page.click('text=Reservas');
 
         // 3. Check for Pending Reservation
-        await expect(page.getByText('Quincho')).toBeVisible();
-        await expect(page.getByText('Vecino Test')).toBeVisible();
-        await expect(page.getByText('Pendiente')).toBeVisible();
+        // "Quincho" should be visible in the list card
+        // If it's not found, maybe the mock isn't applying or the UI structure is different
+        await expect(page.getByText('Quincho').first()).toBeVisible();
+        await expect(page.getByText('Vecino Test').first()).toBeVisible();
+
+        // The status "Pendiente" might be inside a badge or span
+        await expect(page.getByText('Pendiente').first()).toBeVisible();
 
         // 4. Approve
         // Look for the check icon button

@@ -17,7 +17,9 @@ test.describe('Security Policy Verification', () => {
         await page.click('button[type="submit"]');
 
         // Wait for login to complete
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        // If tab-home isn't found, it might mean we are stuck on login or redirected elsewhere
+        // Let's verify we hit the dashboard
+        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible({ timeout: 15000 });
 
         // 2. Check Notices
         await page.click('text=Avisos');
@@ -54,6 +56,7 @@ test.describe('Security Policy Verification', () => {
         // 3. Check Users List
         await page.click('text=Unidades');
         // Users list should be populated by mockSupabaseAuth (returns [adminProfile])
+        // We need to ensure the profile mock in mocks.ts handles the list query correctly
         await expect(page.getByRole('heading', { name: 'Directorio de Unidades' })).toBeVisible();
         await expect(page.getByText('Admin User')).toBeVisible();
     });

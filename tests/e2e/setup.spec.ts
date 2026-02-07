@@ -8,7 +8,7 @@ test.describe('System Setup', () => {
         await mockCommonData(page);
         await mockAdminData(page);
 
-        // Override Amenities Mock for this specific test
+        // Explicitly override the Amenities mock from mockCommonData
         // Initial state: Empty list (to trigger creation flow)
         await page.route('**/rest/v1/amenities*', async route => {
             if (route.request().method() === 'GET') {
@@ -38,7 +38,7 @@ test.describe('System Setup', () => {
         // 3. Check/Create Quincho
         const quinchoCard = page.getByRole('heading', { name: 'Quincho' }).first();
 
-        // Handle creation mocks - Exact match for POST
+        // Mock the creation POST request
         await page.route('**/rest/v1/amenities', async route => {
             if (route.request().method() === 'POST') {
                 const postData = route.request().postDataJSON();
@@ -58,13 +58,15 @@ test.describe('System Setup', () => {
             await page.fill('textarea[placeholder="Detalles sobre el espacio..."]', 'Espacio para asados');
             await page.fill('input[placeholder="0"]', '20');
 
-            // Update GET mock to return the new amenity after save
-            // Use fallback() to allow POSTs (which don't match GET) to bubble up to the previous POST handler
+            // IMPORTANT: Update the GET mock *before* triggering the save/refresh
+            // We use unroute to remove the "empty list" mock, then add the "populated list" mock
+            // This ensures the next fetch sees the new data.
+            await page.unroute('**/rest/v1/amenities*');
             await page.route('**/rest/v1/amenities*', async route => {
                 if (route.request().method() === 'GET') {
                      await route.fulfill({ json: [{ id: '1', name: 'Quincho', description: 'Espacio para asados', capacity: 20 }] });
                 } else {
-                    await route.fallback();
+                    await route.continue();
                 }
             });
 
