@@ -1,0 +1,84 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - heading "Inicio" [level=1] [ref=e6]
+    - main [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - heading "Hola, Test" [level=1] [ref=e10]
+          - paragraph [ref=e11]: Unidad 101
+        - generic [ref=e12]:
+          - generic [ref=e15]:
+            - img [ref=e17]
+            - paragraph [ref=e19]: ¡Estás al día!
+            - paragraph [ref=e20]: No tienes deudas pendientes
+          - generic [ref=e21]:
+            - heading "Accesos Rápidos" [level=2] [ref=e22]
+            - generic [ref=e23]:
+              - button "Reservar" [ref=e24] [cursor=pointer]:
+                - img [ref=e26]
+                - generic [ref=e28]: Reservar
+              - button "Nuevo Ticket" [ref=e29] [cursor=pointer]:
+                - img [ref=e31]
+                - generic [ref=e33]: Nuevo Ticket
+          - generic [ref=e34]:
+            - generic [ref=e35]:
+              - heading "Gastos por Categoría" [level=3] [ref=e36]
+              - application [ref=e40]
+            - generic [ref=e41]:
+              - generic [ref=e42]:
+                - heading "Ingresos vs Gastos" [level=3] [ref=e43]
+                - generic [ref=e44]: ⓘ
+              - generic [ref=e47]:
+                - list [ref=e49]:
+                  - listitem [ref=e50]:
+                    - img "Gastos legend icon" [ref=e51]
+                    - text: Gastos
+                  - listitem [ref=e53]:
+                    - img "Ingresos legend icon" [ref=e54]
+                    - text: Ingresos
+                - application [ref=e56]:
+                  - generic [ref=e68]:
+                    - generic [ref=e69]:
+                      - generic [ref=e71]: oct.
+                      - generic [ref=e73]: dic.
+                      - generic [ref=e75]: feb.
+                    - generic [ref=e76]:
+                      - generic [ref=e78]: $0k
+                      - generic [ref=e80]: $0.001k
+                      - generic [ref=e82]: $0.002k
+                      - generic [ref=e84]: $0.003k
+                      - generic [ref=e86]: $0.004k
+          - generic [ref=e87]:
+            - generic [ref=e88]:
+              - generic [ref=e89]:
+                - heading "Gastos Comunidad" [level=2] [ref=e90]
+                - generic [ref=e91]: febrero de 2026
+              - paragraph [ref=e92]: $0
+              - paragraph [ref=e93]: Total aprobado este mes
+            - generic [ref=e94]:
+              - paragraph [ref=e96]: No hay gastos registrados aún.
+              - generic [ref=e97]:
+                - button "Ver Detalle" [ref=e98] [cursor=pointer]
+                - button "Descargar PDF" [ref=e99] [cursor=pointer]:
+                  - img [ref=e100]
+                  - text: Descargar PDF
+    - navigation [ref=e102]:
+      - generic [ref=e103]:
+        - button "Inicio" [ref=e104] [cursor=pointer]:
+          - img [ref=e106]
+          - generic [ref=e108]: Inicio
+        - button "Pagos" [ref=e109] [cursor=pointer]:
+          - img [ref=e111]
+          - generic [ref=e113]: Pagos
+        - button "Espacios" [ref=e114] [cursor=pointer]:
+          - img [ref=e116]
+          - generic [ref=e118]: Espacios
+        - button "Más" [ref=e119] [cursor=pointer]:
+          - img [ref=e121]
+          - generic [ref=e123]: Más
+  - generic [ref=e124]: $0k
+```

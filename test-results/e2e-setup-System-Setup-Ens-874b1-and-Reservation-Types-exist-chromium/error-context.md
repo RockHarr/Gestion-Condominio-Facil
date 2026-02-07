@@ -1,0 +1,94 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: La conexión está tardando mucho. Verifique su red o configuración.
+      - button "Cerrar notificación" [ref=e6] [cursor=pointer]:
+        - img [ref=e7]
+    - generic [ref=e9]:
+      - complementary [ref=e10]:
+        - generic [ref=e12]:
+          - img [ref=e14]
+          - generic [ref=e16]:
+            - heading "Admin Panel" [level=1] [ref=e17]
+            - paragraph [ref=e18]: Gestión Condominio
+        - navigation [ref=e19]:
+          - paragraph [ref=e20]: Menu Principal
+          - button "Dashboard" [ref=e21] [cursor=pointer]:
+            - img [ref=e22]
+            - text: Dashboard
+          - button "Directorio de Unidades" [ref=e24] [cursor=pointer]:
+            - img [ref=e25]
+            - text: Directorio de Unidades
+          - button "Registrar Pago" [ref=e27] [cursor=pointer]:
+            - img [ref=e28]
+            - text: Registrar Pago
+          - button "Espacios Comunes" [ref=e30] [cursor=pointer]:
+            - img [ref=e31]
+            - text: Espacios Comunes
+          - button "Gestión de Reservas" [ref=e34] [cursor=pointer]:
+            - img [ref=e35]
+            - text: Gestión de Reservas
+          - button "Gestión de Tickets" [ref=e37] [cursor=pointer]:
+            - img [ref=e38]
+            - text: Gestión de Tickets
+          - button "Mural de Avisos" [ref=e40] [cursor=pointer]:
+            - img [ref=e41]
+            - text: Mural de Avisos
+          - button "Configuración" [ref=e43] [cursor=pointer]:
+            - img [ref=e44]
+            - text: Configuración
+          - button "Votaciones" [ref=e46] [cursor=pointer]:
+            - img [ref=e47]
+            - text: Votaciones
+          - button "Mi Perfil" [ref=e48] [cursor=pointer]:
+            - img [ref=e49]
+            - text: Mi Perfil
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]: AD
+            - paragraph [ref=e55]: Administrador
+          - button "Cerrar Sesión" [ref=e56] [cursor=pointer]:
+            - img [ref=e57]
+            - text: Cerrar Sesión
+      - main [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e61]:
+            - generic [ref=e62]:
+              - generic [ref=e63]:
+                - button [ref=e64] [cursor=pointer]:
+                  - img [ref=e65]
+                - heading "Espacios Comunes" [level=1] [ref=e67]
+              - paragraph [ref=e68]: Gestiona los quinchos, salas y áreas reservables.
+            - button "Nuevo Espacio" [ref=e69] [cursor=pointer]:
+              - img [ref=e70]
+              - text: Nuevo Espacio
+          - generic [ref=e73]:
+            - img [ref=e74]
+            - heading "No hay espacios creados" [level=3] [ref=e76]
+            - paragraph [ref=e77]: Comienza creando el primer espacio común.
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - heading "Nuevo Espacio" [level=2] [ref=e81]
+              - button [ref=e82] [cursor=pointer]:
+                - img [ref=e83]
+            - generic [ref=e85]:
+              - generic [ref=e86]:
+                - generic [ref=e87]: Nombre
+                - 'textbox "Ej: Quincho Norte" [ref=e88]': Quincho
+              - generic [ref=e89]:
+                - generic [ref=e90]: Descripción
+                - textbox "Detalles sobre el espacio..." [ref=e91]: Espacio para asados
+              - generic [ref=e93]:
+                - generic [ref=e94]: Capacidad (Personas)
+                - spinbutton [ref=e95]: "20"
+              - generic [ref=e96]:
+                - generic [ref=e97]: URL Foto (Opcional)
+                - textbox "https://..." [ref=e98]
+              - generic [ref=e99]:
+                - button "Cancelar" [ref=e100] [cursor=pointer]
+                - button "Guardar" [active] [ref=e101] [cursor=pointer]
+  - generic [ref=e102]: $0k
+```
