@@ -274,7 +274,7 @@ function App() {
         }
         showToast('Ticket creado exitosamente.');
       } catch (error) {
-        showToast('Error al crear ticket', 'error');
+        showToast(`Error al crear ticket: ${getErrorMessage(error)}`, 'error');
       }
     }
   };
@@ -406,8 +406,8 @@ function App() {
       setExpenses(expenses);
       showToast('Gasto enviado a revisión.');
     } catch (error: unknown) {
-      console.error('App: Error rejecting expense', error);
-      showToast(`Error al rechazar gasto: ${getErrorMessage(error)}`, 'error');
+      console.error('App: Error adding expense', error);
+      showToast(`Error al crear gasto: ${getErrorMessage(error)}`, 'error');
     }
   };
 
