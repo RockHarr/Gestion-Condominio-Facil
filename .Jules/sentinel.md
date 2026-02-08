@@ -17,3 +17,8 @@
 **Vulnerability:** Input validation was absent in the service layer (`services/data.ts`) for critical mutation functions (`createTicket`, `createNotice`, `addExpense`, `createPoll`), relying implicitly on frontend constraints or database schema (which used unbounded `text`).
 **Learning:** Memory or documentation claiming validation exists can be misleading. "Trust but Verify" applies to internal knowledgebases too.
 **Prevention:** Implement explicit input validation (length checks, logical constraints) at the service boundary as a defense-in-depth measure, independent of UI or DB constraints.
+
+## 2026-02-08 - [Hardcoded Ports in E2E Tests]
+**Vulnerability:** Hardcoded `localhost:5173` in E2E tests caused CI failures because the CI environment runs on port 3000 (configured in `playwright.config.ts`). This is a configuration drift vulnerability.
+**Learning:** Never hardcode URLs in tests. Always use the `baseURL` from the test runner configuration.
+**Prevention:** Use relative paths (e.g., `page.goto('/')`) in Playwright tests to respect the environment's base URL.
