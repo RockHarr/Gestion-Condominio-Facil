@@ -48,6 +48,11 @@ export const dataService = {
   },
 
   async createTicket(ticket: Omit<Ticket, 'id' | 'fecha' | 'user' | 'estado'>, userId: string) {
+    if (ticket.titulo.length > 100) throw new Error('El título es demasiado largo (máximo 100 caracteres)');
+    if (ticket.descripcion.length > 2000)
+      throw new Error('La descripción es demasiado larga (máximo 2000 caracteres)');
+    if (ticket.foto && ticket.foto.length > 2000) throw new Error('La URL de la foto es demasiado larga');
+
     const { data, error } = await withTimeout(
       supabase
         .from('tickets')
@@ -82,6 +87,10 @@ export const dataService = {
   },
 
   async createNotice(notice: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) {
+    if (notice.titulo.length > 100) throw new Error('El título es demasiado largo (máximo 100 caracteres)');
+    if (notice.contenido.length > 5000)
+      throw new Error('El contenido es demasiado largo (máximo 5000 caracteres)');
+
     const { data, error } = await withTimeout(
       supabase
         .from('notices')
@@ -486,6 +495,12 @@ export const dataService = {
     strategy: 'UNIT' | 'ALICUOTA',
     showResultsWhen: 'LIVE' | 'CLOSED',
   ) {
+    if (question.length > 200) throw new Error('La pregunta es demasiado larga (máximo 200 caracteres)');
+    if (options.length < 2) throw new Error('Debe haber al menos 2 opciones');
+    if (options.length > 20) throw new Error('Demasiadas opciones (máximo 20)');
+    if (options.some((o) => o.length > 100))
+      throw new Error('Una opción es demasiado larga (máximo 100 caracteres)');
+
     const { data, error } = await withTimeout(
       supabase.rpc('create_poll', {
         p_question: question,
@@ -607,6 +622,10 @@ export const dataService = {
 
   // --- Admin: Expenses ---
   async addExpense(expense: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) {
+    if (expense.descripcion.length > 200)
+      throw new Error('La descripción es demasiado larga (máximo 200 caracteres)');
+    if (expense.monto <= 0) throw new Error('El monto debe ser positivo');
+
     const { data, error } = await withTimeout(
       supabase
         .from('expenses')
