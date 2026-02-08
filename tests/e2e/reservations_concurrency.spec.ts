@@ -1,26 +1,29 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv, TEST_RESIDENT_EMAIL, TEST_RESIDENT_PASSWORD } from '../test-config';
 
-// Credentials (hardcoded for test execution)
-const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'placeholder';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381';
-
 test.describe('Reservations - Concurrency Check', () => {
+    test.beforeEach(() => {
+        test.skip(!checkTestEnv(), 'Environment variables missing or invalid');
+    });
+
     let amenityId: number;
     let typeId: number;
     let unitId: number;
     let userId: string;
 
     test.beforeAll(async () => {
+        if (!checkTestEnv()) return;
+
         // 1. Get User/Unit Info
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email: RESIDENT_EMAIL,
-            password: RESIDENT_PASSWORD
+            email: TEST_RESIDENT_EMAIL,
+            password: TEST_RESIDENT_PASSWORD
         });
         if (authError || !authData.user) throw new Error('Login failed');
         userId = authData.user.id;
