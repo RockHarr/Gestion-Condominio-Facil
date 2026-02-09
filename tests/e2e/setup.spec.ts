@@ -1,9 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../utils';
 
 const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
 test.describe('System Setup', () => {
+    test.beforeAll(() => {
+        if (!checkTestEnv()) {
+            test.skip(true, 'Skipping test because Supabase credentials are missing');
+        }
+    });
+
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
         // 1. Login as Admin
         await page.goto('/');
@@ -13,7 +20,10 @@ test.describe('System Setup', () => {
         await emailInput.fill(ADMIN_EMAIL);
 
         // Click "Usar contraseña" to reveal the password field
-        await page.click('button:has-text("Usar contraseña")');
+        const usePassBtn = page.locator('button:has-text("Usar contraseña")');
+        if (await usePassBtn.isVisible()) {
+            await usePassBtn.click();
+        }
 
         const passwordInput = page.locator('input[type="password"]');
         await expect(passwordInput).toBeVisible();

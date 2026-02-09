@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../utils';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
@@ -8,6 +9,12 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
 test.describe('Resident — Reservations Flow', () => {
+
+    test.beforeAll(() => {
+        if (!checkTestEnv()) {
+            test.skip(true, 'Skipping test because Supabase credentials are missing');
+        }
+    });
 
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident
