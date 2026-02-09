@@ -4,6 +4,20 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 1. Mock network to ensure no 400 errors (validation logic)
     const failedRequests: string[] = [];
 
+    // A minimally valid JWT structure (header.payload.signature)
+    // Payload should have exp in the future
+    const futureExp = Math.floor(Date.now() / 1000) + 3600;
+    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const payload = btoa(JSON.stringify({
+        sub: 'fake-admin-id',
+        role: 'authenticated',
+        exp: futureExp,
+        app_metadata: { provider: 'email', providers: ['email'] },
+        user_metadata: { role: 'admin', nombre: 'Admin User' }
+    }));
+    const signature = 'fake-signature';
+    const fakeJwt = `${header}.${payload}.${signature}`;
+
     // Generic Data Mock (return empty list for all GETs to Supabase)
     await page.route('**/rest/v1/*', async route => {
         if (route.request().method() === 'GET') {
@@ -28,7 +42,7 @@ test('reservations_menu_smoke', async ({ page }) => {
             status: 200,
             contentType: 'application/json',
             body: JSON.stringify({
-                access_token: 'fake-jwt-token',
+                access_token: fakeJwt,
                 token_type: 'bearer',
                 expires_in: 3600,
                 refresh_token: 'fake-refresh-token',
@@ -102,25 +116,29 @@ test('reservations_menu_smoke', async ({ page }) => {
         await page.click('button:has-text("Iniciar Sesión")');
     }
 
-    // 3. Verify Sidebar
+    // 3. Verify Login Success via Dashboard Header
+    // This confirms we are logged in and on the Admin Dashboard
+    await expect(page.getByRole('heading', { name: /Panel de Control|Admin Panel/i })).toBeVisible({ timeout: 15000 });
+
+    // 4. Verify Sidebar
     // Wait for sidebar to load
     await expect(page.getByRole('button', { name: /Gestión de Reservas|Reservas/i }).first()).toBeVisible({ timeout: 10000 });
 
-    // 4. Navigate
+    // 5. Navigate
     await page.getByRole('button', { name: /Gestión de Reservas|Reservas/i }).first().click();
 
-    // 5. Verify Page Content
+    // 6. Verify Page Content
     await expect(page.getByText('Gestión de Reservas').first()).toBeVisible();
 
-    // 6. Verify List or Empty State (Fallback UI)
+    // 7. Verify List or Empty State (Fallback UI)
     // Since we mock [], we expect empty state
     // Just check that page loaded without crashing
 
-    // 7. Verify Tabs
+    // 8. Verify Tabs
     await expect(page.getByText('Pendientes').first()).toBeVisible();
     await expect(page.getByText('Próximas').first()).toBeVisible();
     await expect(page.getByText('Historial').first()).toBeVisible();
 
-    // 8. Final Network Check
+    // 9. Final Network Check
     expect(failedRequests).toEqual([]);
 });
