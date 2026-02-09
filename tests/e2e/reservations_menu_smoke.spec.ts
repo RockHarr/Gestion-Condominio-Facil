@@ -25,11 +25,13 @@ test('reservations_menu_smoke', async ({ page }) => {
         await page.click('button:has-text("Iniciar Sesión")');
     }
 
-    // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    // 3. Verify Dashboard/Sidebar Link
+    // Use a text locator which catches both sidebar buttons and dashboard cards
+    const menuButton = page.locator('text=Gestión de Reservas').first();
+    await expect(menuButton).toBeVisible();
 
     // 4. Navigate
-    await page.click('button:has-text("Gestión de Reservas")');
+    await menuButton.click();
 
     // 5. Verify Page Content
     await expect(page.getByText('Gestión de Reservas')).toBeVisible();
