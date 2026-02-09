@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../utils';
 
 // ==========================================
 // CONFIGURATION
@@ -10,6 +11,12 @@ const ADMIN_PASSWORD = '270386';
 // ==========================================
 
 test.describe('Admin — Reservations Management', () => {
+
+    test.beforeAll(() => {
+        if (!checkTestEnv()) {
+            test.skip(true, 'Skipping test because Supabase credentials are missing');
+        }
+    });
 
     test.beforeEach(async ({ page }) => {
         // Enable console logging from browser
