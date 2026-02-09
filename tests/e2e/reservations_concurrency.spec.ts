@@ -49,9 +49,10 @@ test.describe('Reservations - Concurrency Check', () => {
     });
 
     test('should prevent double booking on simultaneous requests', async () => {
-        // Define a slot for testing
+        // Define a slot for testing - Use a random offset to minimize collisions
         const startAt = new Date();
-        startAt.setDate(startAt.getDate() + 20); // 20 days in future
+        const daysOffset = 30 + Math.floor(Math.random() * 30); // 30-60 days in future
+        startAt.setDate(startAt.getDate() + daysOffset);
         startAt.setHours(10, 0, 0, 0);
 
         const endAt = new Date(startAt);

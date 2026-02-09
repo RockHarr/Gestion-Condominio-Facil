@@ -19,9 +19,10 @@ test('reservations_menu_smoke', async ({ page }) => {
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+        await page.fill('input[type="email"]', 'rockwell.harrison@gmail.com');
+        await page.click('button:has-text("Usar contraseña")');
+        await page.fill('input[type="password"]', '270386');
+        await page.click('button:has-text("Iniciar Sesión")');
     }
 
     // 3. Verify Sidebar
