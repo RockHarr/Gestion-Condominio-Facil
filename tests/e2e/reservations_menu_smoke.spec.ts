@@ -5,7 +5,6 @@ test('reservations_menu_smoke', async ({ page }) => {
     const failedRequests: string[] = [];
 
     // A minimally valid JWT structure (header.payload.signature)
-    // Payload should have exp in the future
     const futureExp = Math.floor(Date.now() / 1000) + 3600;
     const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
     const payload = btoa(JSON.stringify({
@@ -20,14 +19,49 @@ test('reservations_menu_smoke', async ({ page }) => {
 
     // Generic Data Mock (return empty list for all GETs to Supabase)
     await page.route('**/rest/v1/*', async route => {
-        if (route.request().method() === 'GET') {
+        const url = route.request().url();
+        const method = route.request().method();
+        const headers = route.request().headers();
+
+        // Specific handling for Profiles
+        if (url.includes('/rest/v1/profiles')) {
+            // Check if it's a "single" request (Accept header implies object expectation)
+            // or if it filters by ID (auth check)
+            const isSingle = headers['accept']?.includes('application/vnd.pgrst.object+json');
+
+            if (isSingle || url.includes('id=eq.')) {
+                await route.fulfill({
+                    status: 200,
+                    contentType: 'application/json',
+                    body: JSON.stringify({
+                        id: 'fake-admin-id',
+                        role: 'admin',
+                        nombre: 'Admin User',
+                        unidad: '101'
+                    })
+                });
+                return;
+            }
+
+            // Otherwise return array (list of users)
+            await route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify([
+                    { id: 'fake-admin-id', role: 'admin', nombre: 'Admin User', unidad: '101' }
+                ])
+            });
+            return;
+        }
+
+        // Generic fallback
+        if (method === 'GET') {
             await route.fulfill({
                 status: 200,
                 contentType: 'application/json',
                 body: JSON.stringify([])
             });
         } else {
-            // For POST/PUT/DELETE, return success with empty object
              await route.fulfill({
                 status: 200,
                 contentType: 'application/json',
@@ -36,7 +70,7 @@ test('reservations_menu_smoke', async ({ page }) => {
         }
     });
 
-    // Mock Auth Token endpoint to return success (overrides generic if auth is under rest/v1 which it isn't usually, but usually /auth/v1)
+    // Mock Auth Token
     await page.route('**/auth/v1/token?*', async route => {
         await route.fulfill({
             status: 200,
@@ -76,19 +110,7 @@ test('reservations_menu_smoke', async ({ page }) => {
         });
     });
 
-    // Mock Profiles specifically to ensure we have an Admin profile
-    await page.route('**/rest/v1/profiles*', async route => {
-         await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify([
-                { id: 'fake-admin-id', role: 'admin', nombre: 'Admin User', unidad: '101' }
-            ])
-        });
-    });
-
     page.on('requestfailed', request => {
-        // Ignore aborted requests (often due to navigation)
         if (request.failure()?.errorText !== 'net::ERR_ABORTED') {
              failedRequests.push(`${request.url()} - ${request.failure()?.errorText}`);
         }
@@ -101,13 +123,10 @@ test('reservations_menu_smoke', async ({ page }) => {
     });
 
     // 2. Login as Admin (Mock)
-    // Use relative URL to leverage baseURL from config
     await page.goto('/');
 
-    // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
         await page.fill('input[type="email"]', 'admin@condominio.com');
-        // Click "Usar contraseña" if present
         const usePassBtn = page.locator('button:has-text("Usar contraseña")');
         if (await usePassBtn.isVisible()) {
             await usePassBtn.click();
@@ -117,11 +136,9 @@ test('reservations_menu_smoke', async ({ page }) => {
     }
 
     // 3. Verify Login Success via Dashboard Header
-    // This confirms we are logged in and on the Admin Dashboard
     await expect(page.getByRole('heading', { name: /Panel de Control|Admin Panel/i })).toBeVisible({ timeout: 15000 });
 
     // 4. Verify Sidebar
-    // Wait for sidebar to load
     await expect(page.getByRole('button', { name: /Gestión de Reservas|Reservas/i }).first()).toBeVisible({ timeout: 10000 });
 
     // 5. Navigate
@@ -130,15 +147,11 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 6. Verify Page Content
     await expect(page.getByText('Gestión de Reservas').first()).toBeVisible();
 
-    // 7. Verify List or Empty State (Fallback UI)
-    // Since we mock [], we expect empty state
-    // Just check that page loaded without crashing
-
-    // 8. Verify Tabs
+    // 7. Verify Tabs
     await expect(page.getByText('Pendientes').first()).toBeVisible();
     await expect(page.getByText('Próximas').first()).toBeVisible();
     await expect(page.getByText('Historial').first()).toBeVisible();
 
-    // 9. Final Network Check
+    // 8. Final Network Check
     expect(failedRequests).toEqual([]);
 });
