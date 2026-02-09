@@ -153,5 +153,25 @@ alter table public.tickets enable row level security;
 create policy "Users can see own tickets" on public.tickets for select using (auth.uid() = user_id);
 create policy "Users can create tickets" on public.tickets for insert with check (auth.uid() = user_id);
 
--- For now, we will allow authenticated users to read most tables to simplify development
--- In production, you would tighten these policies significantly.
+-- Helper function for RLS
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1
+    FROM public.profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+END;
+$$;
+
+-- Expenses RLS
+alter table public.expenses enable row level security;
+create policy "Authenticated users can view expenses" on public.expenses for select using (status = 'Aprobado' OR public.is_admin());
+create policy "Admins can insert expenses" on public.expenses for insert with check (public.is_admin());
+create policy "Admins can update expenses" on public.expenses for update using (public.is_admin());
+create policy "Admins can delete expenses" on public.expenses for delete using (public.is_admin());
