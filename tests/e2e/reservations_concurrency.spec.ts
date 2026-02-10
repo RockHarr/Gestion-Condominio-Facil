@@ -17,7 +17,7 @@ test.describe('Reservations - Concurrency Check', () => {
     let userId: string;
 
     test.beforeAll(async () => {
-        // 1. Get User/Unit Info
+        // 1. Get User/Unit Info (Login Resident)
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email: RESIDENT_EMAIL,
             password: RESIDENT_PASSWORD
@@ -29,11 +29,14 @@ test.describe('Reservations - Concurrency Check', () => {
         if (!profile) throw new Error('Profile not found');
         unitId = profile.unit_id;
 
-        // Ensure no debt exists (cleanup from other tests)
-        await supabase.from('common_expense_debts').delete().eq('user_id', userId);
-        await supabase.from('parking_debts').delete().eq('user_id', userId);
+        // 2. Login as Admin for Setup & Cleanup
+        await supabase.auth.signOut();
+        await supabase.auth.signInWithPassword({
+            email: 'rockwell.harrison@gmail.com',
+            password: '270386'
+        });
 
-        // 2. Get Amenity and Type
+        // 3. Get Amenity and Type (Admin can see these)
         const { data: amenities } = await supabase.from('amenities').select('id').limit(1);
         if (!amenities || amenities.length === 0) throw new Error('No amenities found');
         amenityId = amenities[0].id;
@@ -41,11 +44,37 @@ test.describe('Reservations - Concurrency Check', () => {
         const { data: types } = await supabase.from('reservation_types').select('id').eq('amenity_id', amenityId).limit(1);
         if (!types || types.length === 0) throw new Error('No reservation types found');
         typeId = types[0].id;
+
+        // 4. Cleanup
+        await supabase.from('common_expense_debts').delete().eq('user_id', userId);
+        await supabase.from('parking_debts').delete().eq('user_id', userId);
+        await supabase.from('reservations').delete().eq('user_id', userId).eq('amenity_id', amenityId);
+
+        await supabase.auth.signOut();
+
+        // 5. Login back as Resident
+        await supabase.auth.signInWithPassword({
+            email: RESIDENT_EMAIL,
+            password: RESIDENT_PASSWORD
+        });
     });
 
     test.afterEach(async () => {
         // Cleanup reservations created during test
+        // Login as Admin to cleanup
+        await supabase.auth.signOut();
+        await supabase.auth.signInWithPassword({
+            email: 'rockwell.harrison@gmail.com',
+            password: '270386'
+        });
         await supabase.from('reservations').delete().eq('user_id', userId).eq('amenity_id', amenityId);
+        await supabase.auth.signOut();
+
+        // Login back as Resident
+        await supabase.auth.signInWithPassword({
+            email: RESIDENT_EMAIL,
+            password: RESIDENT_PASSWORD
+        });
     });
 
     test('should prevent double booking on simultaneous requests', async () => {
@@ -107,10 +136,11 @@ test.describe('Reservations - Concurrency Check', () => {
         const error = failure.reason || failure.value?.error;
         const msg = error.message || error.details || JSON.stringify(error);
 
-        // We expect a constraint violation OR a timeout (if lock wait exceeded)
+        // We expect a constraint violation OR a timeout (if lock wait exceeded) OR the manual check
         const isConstraintViolation = msg.includes('reservations_no_overlap_excl') || msg.includes('conflicting key value violates exclusion constraint');
         const isTimeout = msg.includes('lock_timeout') || msg.includes('canceling statement due to lock timeout');
+        const isManualCheck = msg.includes('Reservation overlaps with an existing booking');
 
-        expect(isConstraintViolation || isTimeout).toBeTruthy();
+        expect(isConstraintViolation || isTimeout || isManualCheck).toBeTruthy();
     });
 });

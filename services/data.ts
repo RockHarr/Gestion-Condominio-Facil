@@ -544,16 +544,15 @@ export const dataService = {
     if (error) throw error;
   },
 
-  async payAllDebts(userId: string | number) {
-    const { error: error1 } = await withTimeout(
-      supabase.from('common_expense_debts').update({ pagado: true }).eq('user_id', userId),
-    );
+  async payAllDebts(_userId: string | number) {
+    // We use RPC now to securely pay debts based on auth.uid()
+    // The userId param is kept for signature compatibility but ignored for security
+    const { error } = await withTimeout(supabase.rpc('pay_my_debts'));
 
-    const { error: error2 } = await withTimeout(
-      supabase.from('parking_debts').update({ pagado: true }).eq('user_id', userId),
-    );
-
-    if (error1 || error2) throw new Error('Error paying debts');
+    if (error) {
+      console.error('Error paying debts:', error);
+      throw new Error('Error paying debts');
+    }
   },
 
   // --- Admin: Users ---
