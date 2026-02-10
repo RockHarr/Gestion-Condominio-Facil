@@ -8,7 +8,7 @@ interface ResidentTabBarProps {
     unreadNotices: number;
 }
 
-export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onNavigate, unreadNotices }) => {
+export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onNavigate, unreadNotices = 0 }) => {
     const navItems = [
         { page: 'home', icon: 'home', label: 'Inicio' },
         { page: 'payments', icon: 'wallet', label: 'Pagos' },
