@@ -76,6 +76,13 @@ test.describe('Reservations - Morosity Check', () => {
     test.afterAll(async () => {
         // Cleanup: Pay the debt
         if (moroseUserId) {
+            // Ensure we are admin
+            await supabase.auth.signOut();
+            await supabase.auth.signInWithPassword({
+                email: 'rockwell.harrison@gmail.com',
+                password: '270386'
+            });
+
             await supabase
                 .from('common_expense_debts')
                 .delete()
