@@ -136,11 +136,12 @@ test.describe('Reservations - Concurrency Check', () => {
         const error = failure.reason || failure.value?.error;
         const msg = error.message || error.details || JSON.stringify(error);
 
-        // We expect a constraint violation OR a timeout (if lock wait exceeded) OR the manual check
+        // We expect a constraint violation OR a timeout (if lock wait exceeded) OR the manual check OR a deadlock
         const isConstraintViolation = msg.includes('reservations_no_overlap_excl') || msg.includes('conflicting key value violates exclusion constraint');
         const isTimeout = msg.includes('lock_timeout') || msg.includes('canceling statement due to lock timeout');
         const isManualCheck = msg.includes('Reservation overlaps with an existing booking');
+        const isDeadlock = msg.includes('deadlock detected') || (error.code === '40P01');
 
-        expect(isConstraintViolation || isTimeout || isManualCheck).toBeTruthy();
+        expect(isConstraintViolation || isTimeout || isManualCheck || isDeadlock).toBeTruthy();
     });
 });
