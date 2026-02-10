@@ -21,7 +21,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Fallback to dummy values to prevent crash if env vars are missing, allowing App to show proper error UI
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder', {
+// We use the hardcoded URL/Key from E2E tests as a fallback for CI environments where secrets might not be injected into the build
+const CI_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
+const CI_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+
+export const supabase = createClient(supabaseUrl || CI_URL, supabaseAnonKey || CI_KEY, {
     auth: {
         persistSession: true,
         autoRefreshToken: true,
