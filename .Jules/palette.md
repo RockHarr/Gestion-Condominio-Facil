@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - Icon Consistency and Keyboard Accessibility
+**Learning:** The `Icons` component fails silently for undefined keys (e.g., 'close' vs 'xmark'), leading to invisible controls. Also, removing default focus outlines without providing replacements (`focus:outline-none`) makes buttons inaccessible to keyboard users.
+**Action:** Verify icon names against `components/Icons.tsx` definitions. Always pair `focus:outline-none` with `focus-visible` styles (e.g., `ring-2`) to ensure accessibility.

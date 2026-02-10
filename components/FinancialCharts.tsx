@@ -67,12 +67,17 @@ export const FinancialCharts: React.FC<FinancialChartsProps> = ({ expenses, paym
 
     const formatCurrency = (value: number) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(value);
 
+    // Defensive check to avoid Recharts "width > 0" error during layout shifts or loading
+    if (expenses.length === 0 && payments.length === 0) {
+        return null; // Or render an empty state placeholder if preferred
+    }
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Pie Chart */}
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Gastos por Categoría</h3>
-                <div className="h-64 w-full">
+                <div className="h-64 w-full" style={{ minHeight: '250px' }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
@@ -111,7 +116,7 @@ export const FinancialCharts: React.FC<FinancialChartsProps> = ({ expenses, paym
                         </div>
                     </div>
                 </div>
-                <div className="h-64 w-full">
+                <div className="h-64 w-full" style={{ minHeight: '250px' }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={barData}>
                             <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#e5e7eb'} />
