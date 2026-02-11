@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv } from '../test-config';
 
 // Credentials (hardcoded for test execution)
 const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
@@ -11,6 +12,8 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381';
 
 test.describe('Reservations - Concurrency Check', () => {
+    test.skip(!checkTestEnv(), 'Skipping test due to missing environment variables');
+
     let amenityId: number;
     let typeId: number;
     let unitId: number;
