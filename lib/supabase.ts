@@ -2,7 +2,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 const getEnv = (key: string) => {
-    // Check for import.meta.env (Vite)
+    // Check for import.meta.env (Vite) - Prefer direct access if possible, but map-like is used here
     if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
         return import.meta.env[key];
     }
@@ -13,8 +13,12 @@ const getEnv = (key: string) => {
     return '';
 }
 
-const supabaseUrl = getEnv('VITE_SUPABASE_URL');
-const supabaseAnonKey = getEnv('VITE_SUPABASE_ANON_KEY');
+// Explicitly access VITE_ variables to ensure Vite replacement
+const viteSupabaseUrl = import.meta.env?.VITE_SUPABASE_URL;
+const viteSupabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY;
+
+const supabaseUrl = viteSupabaseUrl || getEnv('VITE_SUPABASE_URL');
+const supabaseAnonKey = viteSupabaseAnonKey || getEnv('VITE_SUPABASE_ANON_KEY');
 
 if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Missing Supabase environment variables. Please check .env.local');
