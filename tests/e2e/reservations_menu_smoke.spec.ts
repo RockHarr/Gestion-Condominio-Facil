@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test('reservations_menu_smoke', async ({ page }) => {
+    // Debug console logs to verify Auth state
+    page.on('console', msg => console.log(`BROWSER: ${msg.text()}`));
+
     // 1. Mock Supabase Auth (Sign In)
     await page.route('**/auth/v1/token?grant_type=password', async route => {
         const json = {
@@ -27,6 +30,11 @@ test('reservations_menu_smoke', async ({ page }) => {
     });
 
     // 2. Mock User Profile (Admin Role)
+    // The app uses .select('*').eq('id', user.id).single()
+    // This translates to a request with ?id=eq.admin-user-id&select=*
+    // And expects a single object in return (Accept header usually indicates this, or client handles array)
+    // However, supabase-js .single() checks if response is array and has 1 element, or object.
+    // If we return an array [obj], .single() works.
     await page.route('**/rest/v1/profiles?*', async route => {
         const json = {
             id: 'admin-user-id',
@@ -36,23 +44,12 @@ test('reservations_menu_smoke', async ({ page }) => {
             unidad: 'Admin Unit',
             has_parking: false
         };
-        // Return single object if 'single' or array if 'select'
-        // But usually profiles query is .select().eq().single()
-        // If url has select=*, usually returns array. If single() used, returns object.
-        // Let's assume array for safety if select is used without single(), or object if single.
-        // Safest is to return array with one item if query params suggest list, but the app uses .single() often.
-        // Let's check the url.
-        if (route.request().url().includes('select=')) {
-             // If the client expects a single object (header Accept: application/vnd.pgrst.object+json), return object
-             const headers = route.request().headers();
-             if (headers['accept']?.includes('application/vnd.pgrst.object+json')) {
-                 await route.fulfill({ json });
-             } else {
-                 await route.fulfill({ json: [json] });
-             }
-        } else {
-            await route.fulfill({ json: [json] });
-        }
+
+        // If the request is for specific ID, return array with 1 item (Supabase standard for select)
+        // If the app uses .single(), the client unwraps it.
+        // If we return just the object, it might fail if client expects array.
+        // SAFEST MOCK: Return Array [Object]. Supabase client .single() handles this.
+        await route.fulfill({ json: [json] });
     });
 
     // 3. Mock Reservations Data
@@ -85,6 +82,7 @@ test('reservations_menu_smoke', async ({ page }) => {
 
     // 7. Verify Admin Dashboard Access
     // Wait for the layout to load. The "Gestión de Reservas" button is in the Admin Sidebar.
+    // If this fails, check console logs for "AuthService: Event ..."
     await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible({ timeout: 10000 });
 
     // 8. Navigate to Reservations
