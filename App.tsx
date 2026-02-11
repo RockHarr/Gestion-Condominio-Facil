@@ -150,8 +150,18 @@ function App() {
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
 
     // Check Env Vars
-    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-      showToast('Faltan credenciales de Supabase en .env.local', 'error');
+    const hasSupabaseUrl =
+      import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_URL.startsWith('http');
+    const hasAnonKey =
+      import.meta.env.VITE_SUPABASE_ANON_KEY &&
+      import.meta.env.VITE_SUPABASE_ANON_KEY !== 'placeholder';
+
+    if (!hasSupabaseUrl || !hasAnonKey) {
+      console.warn('App: Missing or invalid Supabase credentials');
+      // Only show toast if in dev mode to avoid confusing users in CI/Prod if handled elsewhere
+      if (import.meta.env.DEV) {
+        showToast('Faltan credenciales de Supabase en .env.local', 'error');
+      }
     }
 
     console.log('App: Starting auth check...', window.location.href);
