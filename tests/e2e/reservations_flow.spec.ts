@@ -1,4 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
+
+test.beforeAll(() => {
+    test.skip(!checkTestEnv(), 'Skipping tests due to missing environment variables');
+});
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
