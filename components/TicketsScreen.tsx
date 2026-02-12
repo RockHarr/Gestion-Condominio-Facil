@@ -243,7 +243,17 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                   placeholder="Ej: Filtración en el baño"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
                 />
-                <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/100</p>
+                <p
+                  className={`text-xs mt-1 text-right transition-colors duration-200 ${
+                    title.length > 90
+                      ? 'text-red-500 font-medium'
+                      : title.length > 80
+                        ? 'text-orange-500'
+                        : 'text-gray-400'
+                  }`}
+                >
+                  {title.length}/100
+                </p>
               </div>
               <div>
                 <label
@@ -262,7 +272,17 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                   placeholder="Describe el problema con el mayor detalle posible..."
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4"
                 />
-                <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/2000</p>
+                <p
+                  className={`text-xs mt-1 text-right transition-colors duration-200 ${
+                    description.length > 1900
+                      ? 'text-red-500 font-medium'
+                      : description.length > 1600
+                        ? 'text-orange-500'
+                        : 'text-gray-400'
+                  }`}
+                >
+                  {description.length}/2000
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -288,6 +308,8 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                             setError(null);
                           }}
                           className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600"
+                          aria-label="Eliminar foto adjunta"
+                          title="Eliminar foto"
                         >
                           <Icons name="xmark" className="w-4 h-4" />
                         </button>
