@@ -10,6 +10,12 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
     },
     plugins: [react()],
+    define: {
+      // Explicitly inject Supabase variables to ensure they are available in the client bundle,
+      // especially in CI environments where automatic injection might vary.
+      'process.env.VITE_SUPABASE_URL': JSON.stringify(env.VITE_SUPABASE_URL),
+      'process.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(env.VITE_SUPABASE_ANON_KEY)
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
