@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
@@ -10,6 +11,7 @@ const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 // ==========================================
 
 test.describe('Security Policy Verification', () => {
+    test.skip(!checkTestEnv(), 'Skipping tests due to missing env vars');
 
     test('Resident should only see own data and public notices', async ({ page }) => {
         // 1. Login as Resident

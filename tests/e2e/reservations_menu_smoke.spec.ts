@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
 
 test('reservations_menu_smoke', async ({ page }) => {
+    test.skip(!checkTestEnv(), 'Skipping tests due to missing env vars');
+
     // 1. Mock network to ensure no 400 errors (validation logic)
     const failedRequests: string[] = [];
     page.on('requestfailed', request => {
