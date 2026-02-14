@@ -2,15 +2,19 @@
 import { createClient } from '@supabase/supabase-js';
 
 const getEnv = (key: string) => {
+    let val = '';
     // Check for import.meta.env (Vite)
     if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
-        return import.meta.env[key];
+        val = import.meta.env[key];
     }
     // Check for process.env (Node)
-    if (typeof process !== 'undefined' && process.env && process.env[key]) {
-        return process.env[key];
+    else if (typeof process !== 'undefined' && process.env && process.env[key]) {
+        val = process.env[key];
     }
-    return '';
+
+    // Guard against literal "undefined" string which some build tools might inject
+    if (val === 'undefined') return '';
+    return val;
 }
 
 const supabaseUrl = getEnv('VITE_SUPABASE_URL');
