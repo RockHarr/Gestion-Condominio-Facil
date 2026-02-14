@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-02-05 - [Billing Evasion via Sensitive Profile Updates]
+**Vulnerability:** Similar to the privilege escalation issue, residents could update sensitive billing-related fields (`alicuota`, `has_parking`, `unidad`) in their own profile because RLS allowed full row updates. This could allow a malicious user to bypass parking fees or reduce their common expense share by modifying these fields directly via API.
+**Learning:** Security triggers must be comprehensive. Fixing one sensitive field (`role`) is insufficient if other critical business data resides in the same mutable table.
+**Prevention:** Expand the `BEFORE UPDATE` trigger on `profiles` to whitelist only specific updatable fields for residents (like `nombre`, `email`) or blacklist all sensitive fields (`role`, `unidad`, `has_parking`, `alicuota`), ensuring only admins can modify them.
