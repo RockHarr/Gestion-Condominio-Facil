@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv } from '../test-config';
 
-// Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
-const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'placeholder';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -15,6 +15,8 @@ test.describe('Reservations - Morosity Check', () => {
     let moroseUserId: string;
 
     test.beforeAll(async () => {
+        test.skip(!checkTestEnv(), 'Skipping test because Supabase credentials are missing');
+
         // 1. Get the Resident User ID
         // Login as Resident first to get their own ID
         const { data: residentAuth, error: residentError } = await supabase.auth.signInWithPassword({
