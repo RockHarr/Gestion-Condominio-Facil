@@ -14,6 +14,7 @@ import type {
 } from '../types';
 import { TicketStatus } from '../types';
 import { Header } from './Shared';
+import ErrorBoundary from './ErrorBoundary';
 import { AdminDashboard } from './AdminDashboard';
 import { AdminTicketsScreen, AdminTicketDetailScreen } from './AdminTickets';
 import {
@@ -335,7 +336,9 @@ export const AdminApp: React.FC<AdminAppProps> = (props) => {
           <Header title={getPageTitle()} onBack={onBackHandler} onLogout={handleLogout} />
         </div>
         <main className="flex-1 overflow-x-hidden overflow-y-auto pb-24 md:pb-0">
-          {renderPage()}
+          <ErrorBoundary>
+            {renderPage()}
+          </ErrorBoundary>
         </main>
         <AdminTabBar currentPage={page} onNavigate={handleNavigate} />
       </div>
