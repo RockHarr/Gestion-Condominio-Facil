@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-01-26 - [Insecure Environment Variable Injection in Vite]
+**Vulnerability:** `vite.config.ts` was configured to inject `process.env.GEMINI_API_KEY` into the client-side bundle using the `define` property. This would hardcode the value of this environment variable into the production build artifacts, exposing it to anyone who inspects the client code.
+**Learning:** Never use `define` in Vite to shim potentially sensitive environment variables. Once built, these values are static strings in the public JavaScript files.
+**Prevention:** Use `import.meta.env` to access environment variables in Vite. Only variables prefixed with `VITE_` are exposed to the client, making the exposure explicit and intentional. For sensitive keys that must remain secret, do not use them in client-side code at all; use a backend proxy.
