@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
@@ -10,6 +11,9 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 test.describe('Resident — Reservations Flow', () => {
 
     test.beforeEach(async ({ page }) => {
+        // Skip if no test env
+        test.skip(!checkTestEnv(), 'Test environment not configured (VITE_SUPABASE_URL missing)');
+
         // 1. Login as Resident
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);

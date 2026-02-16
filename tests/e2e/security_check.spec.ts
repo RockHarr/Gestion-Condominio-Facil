@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
@@ -12,6 +13,9 @@ const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 test.describe('Security Policy Verification', () => {
 
     test('Resident should only see own data and public notices', async ({ page }) => {
+        // Skip if no test env
+        test.skip(!checkTestEnv(), 'Test environment not configured (VITE_SUPABASE_URL missing)');
+
         // 1. Login as Resident
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
@@ -44,6 +48,9 @@ test.describe('Security Policy Verification', () => {
     });
 
     test('Admin should see all data', async ({ page }) => {
+        // Skip if no test env
+        test.skip(!checkTestEnv(), 'Test environment not configured (VITE_SUPABASE_URL missing)');
+
         // 1. Login as Admin
         await page.goto('/');
         await page.fill('input[type="email"]', ADMIN_EMAIL);

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
 
 // ==========================================
 // CONFIGURATION
@@ -12,6 +13,9 @@ const ADMIN_PASSWORD = '270386';
 test.describe('Admin — Reservations Management', () => {
 
     test.beforeEach(async ({ page }) => {
+        // Skip if no test env
+        test.skip(!checkTestEnv(), 'Test environment not configured (VITE_SUPABASE_URL missing)');
+
         // Enable console logging from browser
         page.on('console', msg => console.log(`BROWSER: ${msg.text()}`));
 
