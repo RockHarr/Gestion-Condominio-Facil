@@ -41,6 +41,12 @@ test.describe('Reservations - Concurrency Check', () => {
         const { data: types } = await supabase.from('reservation_types').select('id').eq('amenity_id', amenityId).limit(1);
         if (!types || types.length === 0) throw new Error('No reservation types found');
         typeId = types[0].id;
+
+        // 3. Pre-cleanup: Delete ANY reservations for this amenity in the target test slot to avoid overlap
+        // We use admin credentials or just ensure the current user (if they made them) deletes them.
+        // For robustness, we try to delete for the specific user first.
+        // Note: RLS might prevent deleting others' reservations, but we mostly care about our own test user's conflicts from previous runs.
+        await supabase.from('reservations').delete().eq('user_id', userId).eq('amenity_id', amenityId);
     });
 
     test.afterEach(async () => {
