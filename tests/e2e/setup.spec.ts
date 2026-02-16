@@ -1,10 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
 
 const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
 test.describe('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
+        // Skip if no test env
+        test.skip(!checkTestEnv(), 'Test environment not configured (VITE_SUPABASE_URL missing)');
+
         // 1. Login as Admin
         await page.goto('/');
 
