@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-01-26 - [Missing Input Validation Layer]
+**Vulnerability:** The application lacked a centralized input validation layer in the frontend service, relying solely on database constraints and UI restrictions. This could allow malformed data or logic bypasses (e.g., reservation times) if the API was called directly.
+**Learning:** Backend validation is mandatory, but client-side validation (in the service layer) provides immediate feedback and reduces load on the database. It serves as a first line of defense against accidental or malicious data entry.
+**Prevention:** Implement a dedicated validation module (e.g., `services/validation.ts`) and enforce it within data service methods before making API calls.

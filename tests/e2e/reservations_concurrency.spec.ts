@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv } from '../test-config';
+
+test.skip(!checkTestEnv(), 'Skipping tests due to missing Supabase credentials');
 
 // Credentials (hardcoded for test execution)
 const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
@@ -107,10 +110,11 @@ test.describe('Reservations - Concurrency Check', () => {
         const error = failure.reason || failure.value?.error;
         const msg = error.message || error.details || JSON.stringify(error);
 
-        // We expect a constraint violation OR a timeout (if lock wait exceeded)
+        // We expect a constraint violation OR a timeout (if lock wait exceeded) OR a manual overlap check failure
         const isConstraintViolation = msg.includes('reservations_no_overlap_excl') || msg.includes('conflicting key value violates exclusion constraint');
         const isTimeout = msg.includes('lock_timeout') || msg.includes('canceling statement due to lock timeout');
+        const isManualOverlap = msg.includes('Reservation overlaps with an existing booking'); // P0001 from RPC
 
-        expect(isConstraintViolation || isTimeout).toBeTruthy();
+        expect(isConstraintViolation || isTimeout || isManualOverlap).toBeTruthy();
     });
 });

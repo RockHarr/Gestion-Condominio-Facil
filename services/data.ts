@@ -16,6 +16,14 @@ import type {
   FormData,
 } from '../types';
 import { TicketStatus } from '../types';
+import {
+  validateTicket,
+  validateNotice,
+  validateExpense,
+  validateReservation,
+  validatePoll,
+  validateUserUpdate,
+} from './validation';
 
 // Helper for timeouts
 const withTimeout = async <T>(promise: PromiseLike<T>, ms = 10000): Promise<T> => {
@@ -48,6 +56,7 @@ export const dataService = {
   },
 
   async createTicket(ticket: Omit<Ticket, 'id' | 'fecha' | 'user' | 'estado'>, userId: string) {
+    validateTicket(ticket);
     const { data, error } = await withTimeout(
       supabase
         .from('tickets')
@@ -82,6 +91,7 @@ export const dataService = {
   },
 
   async createNotice(notice: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) {
+    validateNotice(notice);
     const { data, error } = await withTimeout(
       supabase
         .from('notices')
@@ -279,6 +289,7 @@ export const dataService = {
   },
 
   async createReservation(reservation: Pick<Reservation, 'amenityId' | 'startAt' | 'endAt'>) {
+    validateReservation(reservation);
     // 1. Get a reservation type for this amenity (default to first found)
     const { data: types, error: typeError } = await withTimeout(
       supabase
@@ -486,6 +497,7 @@ export const dataService = {
     strategy: 'UNIT' | 'ALICUOTA',
     showResultsWhen: 'LIVE' | 'CLOSED',
   ) {
+    validatePoll({ question, options });
     const { data, error } = await withTimeout(
       supabase.rpc('create_poll', {
         p_question: question,
@@ -567,6 +579,7 @@ export const dataService = {
   },
 
   async updateUser(id: string | number, updates: Partial<User>) {
+    validateUserUpdate(updates);
     const dbUpdates: Record<string, unknown> = { ...updates };
     if ('hasParking' in updates) {
       dbUpdates.has_parking = updates.hasParking;
@@ -607,6 +620,7 @@ export const dataService = {
 
   // --- Admin: Expenses ---
   async addExpense(expense: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) {
+    validateExpense(expense);
     const { data, error } = await withTimeout(
       supabase
         .from('expenses')

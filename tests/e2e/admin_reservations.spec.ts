@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
+
+test.skip(!checkTestEnv(), 'Skipping tests due to missing Supabase credentials');
 
 // ==========================================
 // CONFIGURATION
