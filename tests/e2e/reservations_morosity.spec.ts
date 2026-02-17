@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv } from '../test-config';
+
+test.skip(!checkTestEnv(), 'Skipping tests due to missing Supabase credentials');
 
 // Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
 const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
