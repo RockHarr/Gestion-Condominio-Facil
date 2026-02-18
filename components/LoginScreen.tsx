@@ -136,7 +136,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-full p-1"
                     aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   >
                     <Icons name={showPassword ? 'eye-slash' : 'eye'} className="w-5 h-5" />
@@ -148,6 +148,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
 
           {message && (
             <div
+              role="alert"
+              aria-live="polite"
               className={`p-3 rounded text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
             >
               {message.text}
@@ -155,7 +157,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
           )}
 
           {connectionError && (
-            <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 rounded text-sm border border-yellow-200 dark:border-yellow-700">
+            <div
+              role="alert"
+              className="p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 rounded text-sm border border-yellow-200 dark:border-yellow-700"
+            >
               <div className="flex items-center gap-2 mb-1">
                 <Icons name="exclamation-triangle" className="w-5 h-5" />
                 <span className="font-bold">Problema de Conexión</span>
@@ -179,7 +184,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
                 setUsePassword(!usePassword);
                 setMessage(null);
               }}
-              className="w-full text-sm text-blue-600 dark:text-blue-400 hover:underline focus:outline-none"
+              className="w-full text-sm text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-1"
             >
               {usePassword ? 'Usar enlace mágico (sin contraseña)' : 'Usar contraseña'}
             </button>
