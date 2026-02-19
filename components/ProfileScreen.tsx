@@ -33,13 +33,13 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
       </Card>
 
       <Card>
-      <button
-        onClick={onToggleTheme}
-        className="flex justify-between items-center w-full p-2"
-        role="switch"
-        aria-checked={theme === 'dark'}
-        aria-label="Alternar modo oscuro"
-      >
+        <button
+          onClick={onToggleTheme}
+          className="flex justify-between items-center w-full p-2"
+          role="switch"
+          aria-checked={theme === 'dark'}
+          aria-label="Alternar modo oscuro"
+        >
           <span className="font-medium text-gray-800 dark:text-gray-200">Modo Oscuro</span>
           <div className="relative">
             <div
