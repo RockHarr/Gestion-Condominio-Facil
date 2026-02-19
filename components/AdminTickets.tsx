@@ -152,6 +152,7 @@ export const AdminTicketDetailScreen: React.FC<AdminTicketDetailScreenProps> = (
 
   return (
     <div className="animate-page">
+
       <div className="p-4 md:p-8 max-w-3xl mx-auto space-y-6">
         <Card className="overflow-hidden">
           <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 border-b border-gray-100 dark:border-gray-700 pb-6">

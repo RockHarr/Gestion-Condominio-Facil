@@ -545,7 +545,7 @@ export const dataService = {
   },
 
   async payAllDebts(userId: string | number) {
-    const { error } = await withTimeout(supabase.rpc('pay_my_debts', { p_user_id: userId }));
+    const { error } = await withTimeout(supabase.rpc("pay_my_debts", { p_user_id: userId }));
     if (error) throw error;
   },
 

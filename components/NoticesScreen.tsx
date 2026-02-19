@@ -118,59 +118,59 @@ export const NoticeDetailScreen: React.FC<NoticeDetailScreenProps> = ({ notice, 
     <div className="animate-page">
       <Header title="Detalle del Aviso" onBack={onBack} />
       <div className="p-4">
-        <Card className="overflow-hidden">
-          <div
-            className={`-mx-6 -mt-6 px-6 py-4 mb-6 border-b ${
-              notice.tipo === NoticeType.EMERGENCIA
-                ? 'bg-red-50 border-red-100 dark:bg-red-900/20 dark:border-red-900/50'
-                : notice.tipo === NoticeType.MANTENIMIENTO
-                  ? 'bg-yellow-50 border-yellow-100 dark:bg-yellow-900/20 dark:border-yellow-900/50'
-                  : 'bg-blue-50 border-blue-100 dark:bg-blue-900/20 dark:border-blue-900/50'
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <span
-                className={`text-xs font-bold px-2 py-1 rounded uppercase tracking-wide ${
-                  notice.tipo === NoticeType.EMERGENCIA
-                    ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                    : notice.tipo === NoticeType.MANTENIMIENTO
-                      ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-                      : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
-                }`}
-              >
-                {notice.tipo}
-              </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto flex items-center gap-1">
-                <Icons name="calendar" className="w-4 h-4" />
-                {new Date(notice.fecha).toLocaleDateString('es-CL', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
-            </div>
+      <Card className="overflow-hidden">
+        <div
+          className={`-mx-6 -mt-6 px-6 py-4 mb-6 border-b ${
+            notice.tipo === NoticeType.EMERGENCIA
+              ? 'bg-red-50 border-red-100 dark:bg-red-900/20 dark:border-red-900/50'
+              : notice.tipo === NoticeType.MANTENIMIENTO
+                ? 'bg-yellow-50 border-yellow-100 dark:bg-yellow-900/20 dark:border-yellow-900/50'
+                : 'bg-blue-50 border-blue-100 dark:bg-blue-900/20 dark:border-blue-900/50'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <span
+              className={`text-xs font-bold px-2 py-1 rounded uppercase tracking-wide ${
+                notice.tipo === NoticeType.EMERGENCIA
+                  ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                  : notice.tipo === NoticeType.MANTENIMIENTO
+                    ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+                    : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+              }`}
+            >
+              {notice.tipo}
+            </span>
+            <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto flex items-center gap-1">
+              <Icons name="calendar" className="w-4 h-4" />
+              {new Date(notice.fecha).toLocaleDateString('es-CL', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
           </div>
+        </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-            {notice.titulo}
-          </h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+          {notice.titulo}
+        </h1>
 
-          <div className="prose dark:prose-invert max-w-none">
-            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed text-base">
-              {notice.contenido}
-            </p>
+        <div className="prose dark:prose-invert max-w-none">
+          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed text-base">
+            {notice.contenido}
+          </p>
+        </div>
+
+        <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+          <span>Publicado por Administración</span>
+          <div className="flex gap-4">
+            <button className="flex items-center gap-1 hover:text-blue-600 transition-colors">
+              <Icons name="share" className="w-4 h-4" /> Compartir
+            </button>
           </div>
-
-          <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-            <span>Publicado por Administración</span>
-            <div className="flex gap-4">
-              <button className="flex items-center gap-1 hover:text-blue-600 transition-colors">
-                <Icons name="share" className="w-4 h-4" /> Compartir
-              </button>
-            </div>
-          </div>
-        </Card>
+        </div>
+      </Card>
       </div>
     </div>
   );

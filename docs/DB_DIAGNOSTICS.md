@@ -1,7 +1,6 @@
 # Diagnóstico express: Reservas
 
 ## A) ¿Hay datos?
-
 ```sql
 select id, amenity_id, status, start_at, user_id, unit_id
 from public.reservations
@@ -30,4 +29,3 @@ D) Si el Frontend muestra 400 "relationship not found"
 Solución: crear FK o ajustar el .select().
 
 Créditos: Rockwell Harrison Hernández + Spark
-```

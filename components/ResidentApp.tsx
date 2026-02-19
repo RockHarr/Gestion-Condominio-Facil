@@ -184,84 +184,80 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
       case 'reservations':
         return (
           <div className="animate-in fade-in duration-500 pb-20">
-            <div className="bg-white dark:bg-gray-800 sticky top-0 z-10 shadow-sm">
-              <Header title="Reservas" onBack={() => handleNavigate('amenities')} />
-              <div className="flex px-4 pb-2 gap-2">
-                <button
-                  onClick={() => setReservationTab('book')}
-                  className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${reservationTab === 'book' ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'}`}
-                >
-                  Reservar
-                </button>
-                <button
-                  onClick={() => setReservationTab('my-reservations')}
-                  className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${reservationTab === 'my-reservations' ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'}`}
-                >
-                  Mis Reservas
-                </button>
-              </div>
-            </div>
-
-            <div className="p-4 space-y-4">
-              {reservationTab === 'book' ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-right-4 duration-300">
-                  {amenities.map((amenity) => (
+             <div className="bg-white dark:bg-gray-800 sticky top-0 z-10 shadow-sm">
+                <Header title="Reservas" onBack={() => handleNavigate('amenities')} />
+                <div className="flex px-4 pb-2 gap-2">
                     <button
-                      key={amenity.id}
-                      onClick={() =>
-                        handleNavigate('reservation-availability', { amenityId: amenity.id })
-                      }
-                      className="group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all p-0 text-left border border-gray-100 dark:border-gray-700"
+                        onClick={() => setReservationTab('book')}
+                        className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${reservationTab === 'book' ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'}`}
                     >
-                      <div className="h-32 bg-gray-200 dark:bg-gray-700 relative">
-                        {/* Placeholder for amenity image if available */}
-                        <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                          <Icons name="building-office" className="w-12 h-12 opacity-50" />
-                        </div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-                          <h3 className="font-bold text-white text-lg">{amenity.name}</h3>
-                        </div>
-                      </div>
-                      <div className="p-4">
-                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
-                          {amenity.description}
-                        </p>
-                        <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-semibold group-hover:translate-x-1 transition-transform">
-                          Ver disponibilidad <Icons name="chevronRight" className="w-4 h-4 ml-1" />
-                        </div>
-                      </div>
+                        Reservar
                     </button>
-                  ))}
+                    <button
+                         onClick={() => setReservationTab('my-reservations')}
+                         className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${reservationTab === 'my-reservations' ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'}`}
+                    >
+                        Mis Reservas
+                    </button>
                 </div>
-              ) : (
-                <div className="animate-in slide-in-from-left-4 duration-300">
-                  <MyReservationsScreen
-                    reservations={reservations}
-                    amenities={amenities}
-                    currentUser={currentUser}
-                    onCancelReservation={cancelReservation}
-                    onRefresh={props.onRefreshData || (() => {})}
-                  />
-                </div>
-              )}
-            </div>
+             </div>
+
+             <div className="p-4 space-y-4">
+                {reservationTab === 'book' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-right-4 duration-300">
+                        {amenities.map(amenity => (
+                            <button
+                                key={amenity.id}
+                                onClick={() => handleNavigate('reservation-availability', { amenityId: amenity.id })}
+                                className="group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all p-0 text-left border border-gray-100 dark:border-gray-700"
+                            >
+                                <div className="h-32 bg-gray-200 dark:bg-gray-700 relative">
+                                    {/* Placeholder for amenity image if available */}
+                                    <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                                        <Icons name="building-office" className="w-12 h-12 opacity-50" />
+                                    </div>
+                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                                        <h3 className="font-bold text-white text-lg">{amenity.name}</h3>
+                                    </div>
+                                </div>
+                                <div className="p-4">
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
+                                        {amenity.description}
+                                    </p>
+                                    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                                        Ver disponibilidad <Icons name="chevronRight" className="w-4 h-4 ml-1" />
+                                    </div>
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="animate-in slide-in-from-left-4 duration-300">
+                        <MyReservationsScreen
+                            reservations={reservations}
+                            amenities={amenities}
+                            currentUser={currentUser}
+                            onCancelReservation={cancelReservation}
+                            onRefresh={props.onRefreshData || (() => {})}
+                        />
+                    </div>
+                )}
+             </div>
           </div>
         );
       case 'reservation-availability': {
-        const amenity = amenities.find((a) => a.id === pageParams?.amenityId);
+        const amenity = amenities.find(a => a.id === pageParams?.amenityId);
         return amenity ? (
-          <ReservationAvailabilityScreen
-            amenity={amenity}
-            onBack={() => handleNavigate('reservations')}
-            onSuccess={() => {
-              showToast('Reserva solicitada con éxito', 'success');
-              handleNavigate('reservations');
-              setReservationTab('my-reservations');
-            }}
-          />
-        ) : (
-          <div>Espacio no encontrado</div>
-        );
+            <ReservationAvailabilityScreen
+                amenity={amenity}
+                onBack={() => handleNavigate('reservations')}
+                onSuccess={() => {
+                     showToast('Reserva solicitada con éxito', 'success');
+                     handleNavigate('reservations');
+                     setReservationTab('my-reservations');
+                }}
+            />
+        ) : <div>Espacio no encontrado</div>;
       }
 
       case 'polls':
@@ -338,7 +334,8 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
   const onBackHandler = useMemo(() => {
     if (['ticket-create', 'reservations', 'notice-detail'].includes(page))
       return () => handleNavigate('home');
-    if (['reservation-availability'].includes(page)) return () => handleNavigate('reservations');
+    if (['reservation-availability'].includes(page))
+      return () => handleNavigate('reservations');
     if (['notices', 'tickets', 'polls', 'profile'].includes(page))
       return () => handleNavigate('more');
     return undefined;
