@@ -26,7 +26,7 @@ Mejora la convivencia y el flujo de información.
 
 - Tickets de Soporte: Canal formal para reportar problemas (mantención, ruidos, seguridad).
 - Avisos Oficiales: Tablón digital para comunicados importantes, asegurando que todos los residentes estén informados.
-  
+
 ### 4) Seguridad y Control (Validado QA)
 Infraestructura robusta para proteger la información sensible.
 
@@ -34,7 +34,7 @@ Infraestructura robusta para proteger la información sensible.
 - Protección de Datos: Seguridad a nivel de base de datos (PostgreSQL/Supabase) imposible de saltar desde el frontend.
 
 ---
-  
+
 ## 🔮 Roadmap: Próximas Mejoras
 
 Para la versión 2.0, sugerimos enfocar el desarrollo en la automatización y la extensión del servicio.
@@ -52,7 +52,7 @@ Para la versión 2.0, sugerimos enfocar el desarrollo en la automatización y la
  Integración IoT: Apertura de portones o puertas de amenities vinculada a la reserva activa en la app.
 
  ---
- 
+
 ## ✅ Estado Técnica
 El sistema ha pasado una Auditoría de Calidad Completa (Enero 2026), validando:
 

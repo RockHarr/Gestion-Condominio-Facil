@@ -92,7 +92,7 @@ export const AdminMenuScreen: React.FC<AdminMenuScreenProps & { onLogout?: () =>
                     </button>
                 ))}
             </div>
-            
+
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                 <button
                     onClick={handleLogout}

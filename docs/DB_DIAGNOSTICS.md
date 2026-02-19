@@ -8,7 +8,7 @@ order by id desc
 limit 20;
 
 B) ¿Hay datos + joins sanos?
-select 
+select
   r.id, r.amenity_id, r.status, r.start_at,
   p.nombre as user_name,
   u.name as unit_name

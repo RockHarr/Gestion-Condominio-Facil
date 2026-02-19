@@ -1,6 +1,6 @@
 /**
  * PaymentReceiptModal Component
- * 
+ *
  * Displays a printable receipt for a specific payment record.
  * Features:
  * - Printable view with specific print styles (hides UI, shows only receipt).

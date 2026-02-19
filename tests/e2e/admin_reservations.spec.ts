@@ -10,6 +10,7 @@ const ADMIN_PASSWORD = '270386';
 // ==========================================
 
 test.describe('Admin — Reservations Management', () => {
+  test.skip(!process.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co', 'Skipping test because Supabase credentials are not set');
 
     test.beforeEach(async ({ page }) => {
         // Enable console logging from browser
@@ -130,7 +131,7 @@ test.describe('Admin — Reservations Management', () => {
         await expect(page.locator('.animate-pulse')).not.toBeVisible({ timeout: 20000 });
 
         // 3. Navigate to Reservations
-        // Wait directly for the Reservas button to be visible. This avoids strict mode issues 
+        // Wait directly for the Reservas button to be visible. This avoids strict mode issues
         // with checking for sidebar/mobile nav if both exist in DOM.
         const navButton = page.locator('button').filter({ hasText: /^Reservas$|^Gestión de Reservas$/ }).first();
         await expect(navButton).toBeVisible({ timeout: 20000 });

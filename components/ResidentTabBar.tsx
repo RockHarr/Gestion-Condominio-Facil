@@ -19,13 +19,13 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
 
     const getActiveTab = () => {
         if (mainPages.includes(currentPage)) return currentPage;
-        
+
         // Items accessed via "More" should highlight the "More" tab
         if (['tickets', 'notices', 'polls', 'profile', 'ticket-detail', 'notice-detail', 'ticket-create', 'resident-expenses', 'financial-statements', 'reserve-fund'].includes(currentPage)) return 'more';
 
         // Sub-pages of other tabs
         if (['reservations'].includes(currentPage)) return 'amenities';
-        
+
         return 'home';
     }
     const activeTab = getActiveTab();

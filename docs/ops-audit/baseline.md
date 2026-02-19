@@ -106,25 +106,25 @@ Este documento describe el estado actual del sistema "Gestión Condominio Fácil
 
 **Ver charges de una reserva:**
 ```sql
-SELECT * FROM charges 
-WHERE reference_type = 'RESERVATION' 
+SELECT * FROM charges
+WHERE reference_type = 'RESERVATION'
 AND reference_id = :reservation_id;
 ```
 
 **Validar confirmación automática (Trigger Logic):**
 ```sql
 -- Verificar si ambos cargos están pagados
-SELECT count(*) FROM charges 
-WHERE reference_type = 'RESERVATION' 
-AND reference_id = :reservation_id 
+SELECT count(*) FROM charges
+WHERE reference_type = 'RESERVATION'
+AND reference_id = :reservation_id
 AND status = 'PAID';
 -- Debería ser 2 (Fee + Deposit) para que la reserva pase a CONFIRMED
 ```
 
 **KPI Total Recaudado (Query equivalente a lógica actual):**
 ```sql
-SELECT SUM(monto) 
-FROM payments 
+SELECT SUM(monto)
+FROM payments
 WHERE periodo = to_char(now(), 'YYYY-MM');
 ```
 

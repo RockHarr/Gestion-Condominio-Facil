@@ -4,6 +4,7 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
 test.describe('System Setup', () => {
+  test.skip(!process.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co', 'Skipping test because Supabase credentials are not set');
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
         // 1. Login as Admin
         await page.goto('/');

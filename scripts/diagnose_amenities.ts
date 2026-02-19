@@ -28,7 +28,7 @@ async function diagnose() {
     }
 
     // 2. Check RLS (inferred by error or empty data if we know data exists)
-    // We can't easily check pg_settings from client, but we can try to insert/update if needed, 
+    // We can't easily check pg_settings from client, but we can try to insert/update if needed,
     // but let's stick to read.
 }
 

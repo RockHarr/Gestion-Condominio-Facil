@@ -10,6 +10,7 @@ const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 // ==========================================
 
 test.describe('Security Policy Verification', () => {
+  test.skip(!process.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co', 'Skipping test because Supabase credentials are not set');
 
     test('Resident should only see own data and public notices', async ({ page }) => {
         // 1. Login as Resident

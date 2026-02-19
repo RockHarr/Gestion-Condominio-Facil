@@ -11,6 +11,7 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381';
 
 test.describe('Reservations - Concurrency Check', () => {
+  test.skip(!process.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co', 'Skipping test because Supabase credentials are not set');
     let amenityId: number;
     let typeId: number;
     let unitId: number;

@@ -23,7 +23,7 @@ try {
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
-// To test RLS failure for admin action, we really need the service_role key to bypass, 
+// To test RLS failure for admin action, we really need the service_role key to bypass,
 // OR we need to sign in as an admin user.
 // However, the user said "me salio error", presumably from the UI.
 // The UI uses the anon key but with an authenticated session.
