@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-utils';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
@@ -10,6 +11,7 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 test.describe('Resident — Reservations Flow', () => {
 
     test.beforeEach(async ({ page }) => {
+        test.skip(!checkTestEnv(), 'Skipping test: Missing Supabase environment variables');
         // 1. Login as Resident
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
