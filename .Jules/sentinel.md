@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-02-20 - [Hardcoded Secrets via Vite Define]
+**Vulnerability:** The `vite.config.ts` file was configured to inject `process.env.GEMINI_API_KEY` into the client bundle using the `define` property. This effectively hardcodes the secret into the frontend code if referenced, exposing it to anyone who inspects the application bundle.
+**Learning:** Build tools like Vite perform static replacement for `define` properties. Treating `process.env` as a safe runtime variable in the frontend is a misconception; in build pipelines, these are often baked in at compile time.
+**Prevention:** Never use `define` to inject secrets. Use `import.meta.env` for public configuration only. For sensitive secrets, keep them strictly on the backend (e.g., Supabase Edge Functions) and never expose them to the client environment.
