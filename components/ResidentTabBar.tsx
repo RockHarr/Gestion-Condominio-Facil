@@ -39,20 +39,27 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
                     const isActive = activeTab === item.page;
                     const hasBadge = item.page === 'more' && unreadNotices > 0;
 
+                    const badgeContent = unreadNotices > 9 ? '9+' : unreadNotices;
+                    const ariaLabel = hasBadge
+                        ? `${item.label}, ${unreadNotices} notificaciones nuevas`
+                        : item.label;
+
                     return (
                         <button
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
+                            aria-label={ariaLabel}
                             className={`flex flex-col items-center justify-center w-full pt-2 pb-1 text-sm font-medium focus:outline-none transition-colors duration-200 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
                         >
                             <div className="relative">
                                 <Icons name={item.icon} className="w-7 h-7" />
                                 {hasBadge && (
-                                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full animate-pulse">
+                                    <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[1rem] h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full animate-pulse">
+                                        {badgeContent}
                                     </span>
                                 )}
                             </div>
-                            <span className="mt-1">{item.label}</span>
+                            <span className="mt-1" aria-hidden="true">{item.label}</span>
                         </button>
                     );
                 })}
