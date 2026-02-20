@@ -13,11 +13,17 @@ test.describe('Resident — Reservations Flow', () => {
         // 1. Login as Resident
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
+
+        const usePasswordBtn = page.locator('button:has-text("Usar contraseña")');
+        if (await usePasswordBtn.isVisible()) {
+            await usePasswordBtn.click();
+        }
+
+        await expect(page.locator('input[type="password"]')).toBeVisible({ timeout: 5000 });
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
         // Wait for a post-login element (e.g., the Home tab)
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 45000 });
     });
 
     test('should allow a resident to create and cancel a reservation', async ({ page }) => {

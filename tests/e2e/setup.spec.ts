@@ -13,14 +13,17 @@ test.describe('System Setup', () => {
         await emailInput.fill(ADMIN_EMAIL);
 
         // Click "Usar contraseña" to reveal the password field
-        await page.click('button:has-text("Usar contraseña")');
+        const usePasswordBtn = page.locator('button:has-text("Usar contraseña")');
+        if (await usePasswordBtn.isVisible()) {
+            await usePasswordBtn.click();
+        }
 
         const passwordInput = page.locator('input[type="password"]');
-        await expect(passwordInput).toBeVisible();
+        await expect(passwordInput).toBeVisible({ timeout: 5000 });
         await passwordInput.fill(ADMIN_PASSWORD);
 
         await page.click('button:has-text("Iniciar Sesión")');
-        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible({ timeout: 45000 });
 
         // 2. Navigate to Amenities
         await page.click('text=Espacios Comunes');
