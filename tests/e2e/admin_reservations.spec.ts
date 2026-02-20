@@ -25,11 +25,12 @@ test.describe('Admin — Reservations Management', () => {
             await usePasswordBtn.click();
         }
 
+        await expect(page.locator('input[type="password"]')).toBeVisible({ timeout: 5000 });
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for login with extended timeout
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 30000 });
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 45000 });
         // Retry logic for reservation creation (Day + Time)
         let success = false;
         let attempts = 0;

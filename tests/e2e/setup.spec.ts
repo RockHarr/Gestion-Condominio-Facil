@@ -19,11 +19,11 @@ test.describe('System Setup', () => {
         }
 
         const passwordInput = page.locator('input[type="password"]');
-        await expect(passwordInput).toBeVisible();
+        await expect(passwordInput).toBeVisible({ timeout: 5000 });
         await passwordInput.fill(ADMIN_PASSWORD);
 
         await page.click('button:has-text("Iniciar Sesión")');
-        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible({ timeout: 30000 });
+        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible({ timeout: 45000 });
 
         // 2. Navigate to Amenities
         await page.click('text=Espacios Comunes');

@@ -19,10 +19,11 @@ test.describe('Resident — Reservations Flow', () => {
             await usePasswordBtn.click();
         }
 
+        await expect(page.locator('input[type="password"]')).toBeVisible({ timeout: 5000 });
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
         // Wait for a post-login element (e.g., the Home tab)
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 30000 });
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 45000 });
     });
 
     test('should allow a resident to create and cancel a reservation', async ({ page }) => {

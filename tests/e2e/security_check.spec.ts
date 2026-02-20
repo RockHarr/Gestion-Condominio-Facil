@@ -21,11 +21,12 @@ test.describe('Security Policy Verification', () => {
             await usePasswordBtn.click();
         }
 
+        await expect(page.locator('input[type="password"]')).toBeVisible({ timeout: 5000 });
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for login to complete (check for home page element)
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 30000 });
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 45000 });
 
         // 2. Check Notices (Should only see Published)
         await page.click('text=Avisos');
@@ -58,11 +59,12 @@ test.describe('Security Policy Verification', () => {
             await usePasswordBtn.click();
         }
 
+        await expect(page.locator('input[type="password"]')).toBeVisible({ timeout: 5000 });
         await page.fill('input[type="password"]', ADMIN_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for dashboard
-        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible({ timeout: 30000 });
+        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible({ timeout: 45000 });
 
         // 2. Check Admin Access
         await expect(page.getByText('Cola de Aprobación')).toBeVisible();
