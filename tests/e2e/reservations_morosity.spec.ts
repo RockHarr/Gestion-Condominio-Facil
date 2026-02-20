@@ -88,12 +88,18 @@ test.describe('Reservations - Morosity Check', () => {
         // 1. Login
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
+
+        const usePasswordBtn = page.locator('button:has-text("Usar contraseña")');
+        if (await usePasswordBtn.isVisible()) {
+            await usePasswordBtn.click();
+        }
+
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for dashboard
         // The header title on home is "Inicio", and the greeting is "Hola, [Name]"
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 30000 });
         await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
         await expect(page.getByText(/Hola,/)).toBeVisible();
 
@@ -155,10 +161,16 @@ test.describe('Reservations - Morosity Check', () => {
         // We need to login again because each test has a fresh context
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
+
+        const usePasswordBtn = page.locator('button:has-text("Usar contraseña")');
+        if (await usePasswordBtn.isVisible()) {
+            await usePasswordBtn.click();
+        }
+
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 30000 });
         await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
 
         await page.click('text=Reservar');

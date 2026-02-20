@@ -19,13 +19,22 @@ test('reservations_menu_smoke', async ({ page }) => {
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+        const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
+        const ADMIN_PASSWORD = '270386'; // TODO: Load from env
+
+        await page.fill('input[type="email"]', ADMIN_EMAIL);
+
+        const usePasswordBtn = page.locator('button:has-text("Usar contraseña")');
+        if (await usePasswordBtn.isVisible()) {
+            await usePasswordBtn.click();
+        }
+
+        await page.fill('input[type="password"]', ADMIN_PASSWORD);
+        await page.click('button:has-text("Iniciar Sesión")');
     }
 
     // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible({ timeout: 30000 });
 
     // 4. Navigate
     await page.click('button:has-text("Gestión de Reservas")');

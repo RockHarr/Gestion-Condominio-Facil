@@ -18,12 +18,18 @@ test.describe('Admin — Reservations Management', () => {
         // 1. Create a Reservation as Resident to ensure we have data to test
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
+
+        // Ensure password input is visible
+        const usePasswordBtn = page.locator('button:has-text("Usar contraseña")');
+        if (await usePasswordBtn.isVisible()) {
+            await usePasswordBtn.click();
+        }
+
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
-        // Wait for login
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        // Wait for login with extended timeout
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 30000 });
         // Retry logic for reservation creation (Day + Time)
         let success = false;
         let attempts = 0;

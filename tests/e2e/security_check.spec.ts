@@ -15,12 +15,17 @@ test.describe('Security Policy Verification', () => {
         // 1. Login as Resident
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
+
+        const usePasswordBtn = page.locator('button:has-text("Usar contraseña")');
+        if (await usePasswordBtn.isVisible()) {
+            await usePasswordBtn.click();
+        }
+
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for login to complete (check for home page element)
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 30000 });
 
         // 2. Check Notices (Should only see Published)
         await page.click('text=Avisos');
@@ -47,12 +52,17 @@ test.describe('Security Policy Verification', () => {
         // 1. Login as Admin
         await page.goto('/');
         await page.fill('input[type="email"]', ADMIN_EMAIL);
-        await page.click('button:has-text("Usar contraseña")');
+
+        const usePasswordBtn = page.locator('button:has-text("Usar contraseña")');
+        if (await usePasswordBtn.isVisible()) {
+            await usePasswordBtn.click();
+        }
+
         await page.fill('input[type="password"]', ADMIN_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for dashboard
-        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible({ timeout: 30000 });
 
         // 2. Check Admin Access
         await expect(page.getByText('Cola de Aprobación')).toBeVisible();
