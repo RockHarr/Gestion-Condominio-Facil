@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-23 - Empty Notification Badges
+**Learning:** Found an empty `<span>` used as a notification dot. This provides no information to screen readers and limits information density for sighted users.
+**Action:** Always include the count (or "9+") inside the badge and use `aria-label` on the parent button to announce the full context (e.g., "Tabs, 5 new notifications").
