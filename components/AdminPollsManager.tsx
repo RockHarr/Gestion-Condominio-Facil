@@ -185,18 +185,21 @@ export const AdminPollsManager: React.FC = () => {
                         <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Nueva Encuesta</h3>
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Pregunta</label>
+                                <label htmlFor="poll-question" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Pregunta</label>
                                 <input
+                                    id="poll-question"
                                     type="text"
                                     className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                     value={newPoll.question}
                                     onChange={e => setNewPoll({ ...newPoll, question: e.target.value })}
+                                    placeholder="¿Qué tema desea someter a votación?"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Inicio</label>
+                                    <label htmlFor="poll-start" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Inicio</label>
                                     <input
+                                        id="poll-start"
                                         type="datetime-local"
                                         className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         value={newPoll.startAt}
@@ -204,8 +207,9 @@ export const AdminPollsManager: React.FC = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Fin</label>
+                                    <label htmlFor="poll-end" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Fin</label>
                                     <input
+                                        id="poll-end"
                                         type="datetime-local"
                                         className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         value={newPoll.endAt}
@@ -215,8 +219,9 @@ export const AdminPollsManager: React.FC = () => {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Estrategia</label>
+                                    <label htmlFor="poll-strategy" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Estrategia</label>
                                     <select
+                                        id="poll-strategy"
                                         className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         value={newPoll.strategy}
                                         onChange={e => setNewPoll({ ...newPoll, strategy: e.target.value as any })}
@@ -226,8 +231,9 @@ export const AdminPollsManager: React.FC = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Resultados Visibles</label>
+                                    <label htmlFor="poll-results" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Resultados Visibles</label>
                                     <select
+                                        id="poll-results"
                                         className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         value={newPoll.showResultsWhen}
                                         onChange={e => setNewPoll({ ...newPoll, showResultsWhen: e.target.value as any })}
@@ -240,8 +246,9 @@ export const AdminPollsManager: React.FC = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Opciones</label>
                                 {newPoll.options.map((opt, idx) => (
-                                    <div key={idx} className="flex gap-2 mb-2">
+                                    <div key={idx} className="flex gap-2 mb-2 items-center">
                                         <input
+                                            aria-label={`Opción ${idx + 1}`}
                                             type="text"
                                             className="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                             value={opt}
@@ -249,7 +256,15 @@ export const AdminPollsManager: React.FC = () => {
                                             placeholder={`Opción ${idx + 1}`}
                                         />
                                         {newPoll.options.length > 2 && (
-                                            <Button variant="secondary" onClick={() => removeOption(idx)}>X</Button>
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() => removeOption(idx)}
+                                                aria-label={`Eliminar opción ${idx + 1}`}
+                                                title="Eliminar opción"
+                                                className="w-auto px-3 py-2 flex items-center justify-center"
+                                            >
+                                                <Icons name="trash" className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                                            </Button>
                                         )}
                                     </div>
                                 ))}
