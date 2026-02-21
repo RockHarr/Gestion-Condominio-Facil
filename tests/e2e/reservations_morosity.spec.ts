@@ -106,8 +106,9 @@ test.describe('Reservations - Morosity Check', () => {
 
         // Wait for calendar
         // The custom calendar renders buttons for days. We wait for a day to be visible.
-        // We pick the 15th day of the current month.
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
+        // We find the first enabled day button (to avoid past dates or disabled slots)
+        // Select buttons that are days (1-31) and not disabled
+        const dayButton = page.locator('button:not([disabled])').filter({ hasText: /^([1-9]|[12]\d|3[01])$/ }).first();
         await expect(dayButton).toBeVisible({ timeout: 10000 });
 
         // 4. Select a day
@@ -163,7 +164,7 @@ test.describe('Reservations - Morosity Check', () => {
 
         await page.click('text=Reservar');
         await page.click('text=Quincho');
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
+        const dayButton = page.locator('button:not([disabled])').filter({ hasText: /^([1-9]|[12]\d|3[01])$/ }).first();
         await expect(dayButton).toBeVisible({ timeout: 10000 });
         await dayButton.click();
 
