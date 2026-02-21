@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-02-21 - [Mass Assignment in updateUser]
+**Vulnerability:** The `updateUser` function in `services/data.ts` used a blacklist strategy to filter input, removing only specific fields like `email`. This allowed any other field passed in the `updates` object (e.g., `role: 'admin'`) to be sent to the database. While backend triggers might block this, relying on client-side exclusion is a weak defense.
+**Learning:** Blacklisting fields is prone to errors (forgetting a field) and drift (new fields added to DB but not blacklist). Whitelisting is the only secure default for input handling.
+**Prevention:** Always use a strict whitelist when processing user input for database updates. Explicitly copy allowed fields to a new object.
