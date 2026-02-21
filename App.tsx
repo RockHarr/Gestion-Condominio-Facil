@@ -163,7 +163,7 @@ function App() {
         setIsLoading(false);
         showToast('La conexión está tardando mucho. Verifique su red o configuración.', 'info');
       }
-    }, 5000);
+    }, 30000); // Increased to 30s for CI
 
     // Auth Subscription
     const { data: authListener } = authService.onAuthStateChange((user) => {
