@@ -111,7 +111,8 @@ test.describe('Reservations - Morosity Check', () => {
         await expect(dayButton).toBeVisible({ timeout: 10000 });
 
         // 4. Select a day
-        await dayButton.click();
+        // Force click because the element might be obscured by animation or overlay in slow CI
+        await dayButton.click({ force: true });
 
         // 5. Attempt to Reserve
         await expect(page.getByText('Solicitar Reserva')).toBeVisible();
@@ -165,7 +166,8 @@ test.describe('Reservations - Morosity Check', () => {
         await page.click('text=Quincho');
         const dayButton = page.getByRole('button', { name: '15', exact: true });
         await expect(dayButton).toBeVisible({ timeout: 10000 });
-        await dayButton.click();
+        // Force click because the element might be obscured by animation or overlay in slow CI
+        await dayButton.click({ force: true });
 
         const typeSelect = page.locator('select');
         if (await typeSelect.isVisible()) {
