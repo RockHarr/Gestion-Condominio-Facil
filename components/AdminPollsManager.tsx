@@ -242,14 +242,23 @@ export const AdminPollsManager: React.FC = () => {
                                 {newPoll.options.map((opt, idx) => (
                                     <div key={idx} className="flex gap-2 mb-2">
                                         <input
+                                            id={`poll-option-${idx}`}
                                             type="text"
                                             className="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                             value={opt}
                                             onChange={e => updateOption(idx, e.target.value)}
                                             placeholder={`Opción ${idx + 1}`}
+                                            aria-label={`Opción ${idx + 1}`}
                                         />
                                         {newPoll.options.length > 2 && (
-                                            <Button variant="secondary" onClick={() => removeOption(idx)}>X</Button>
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() => removeOption(idx)}
+                                                aria-label={`Eliminar opción ${idx + 1}`}
+                                                title="Eliminar opción"
+                                            >
+                                                <Icons name="trash" className="w-4 h-4" />
+                                            </Button>
                                         )}
                                     </div>
                                 ))}
