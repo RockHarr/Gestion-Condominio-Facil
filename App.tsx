@@ -156,14 +156,14 @@ function App() {
 
     console.log('App: Starting auth check...', window.location.href);
 
-    // Safety timeout
+    // Safety timeout (Increased to 15s for slower connections/CI)
     const safetyTimeout = setTimeout(() => {
       if (isLoading) {
         console.warn('App: Safety timeout triggered');
         setIsLoading(false);
         showToast('La conexión está tardando mucho. Verifique su red o configuración.', 'info');
       }
-    }, 5000);
+    }, 15000);
 
     // Auth Subscription
     const { data: authListener } = authService.onAuthStateChange((user) => {
