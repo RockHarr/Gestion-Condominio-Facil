@@ -15,7 +15,7 @@ test('reservations_menu_smoke', async ({ page }) => {
 
     // 2. Login as Admin
     // Using centralized test configuration
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {

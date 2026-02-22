@@ -7,34 +7,32 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load environment variables from .env.local and .env
-// We look for them in the project root (two levels up from tests/e2e if this file is in tests/test-config.ts, but wait, this file is in tests/)
-// So root is one level up if in tests/
-// Repo structure:
-// /
-//   tests/
-//     test-config.ts
-//     e2e/
-//   .env
-
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
+// Demo credentials for CI fallback (public demo environment)
+const DEMO_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
+const DEMO_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+const DEMO_ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
+// Note: This password is for a demo account only
+const DEMO_ADMIN_PASSWORD = '270386';
+const DEMO_RESIDENT_EMAIL = 'contacto@rockcode.cl';
+const DEMO_RESIDENT_PASSWORD = '180381';
+
 export const TEST_CONFIG = {
-  // Supabase URL/Key (Public/Anon usually, but kept in env for flexibility)
-  SUPABASE_URL: process.env.VITE_SUPABASE_URL || 'http://localhost:54321',
-  SUPABASE_KEY: process.env.VITE_SUPABASE_ANON_KEY || 'dummy-key',
+  // Supabase URL/Key
+  SUPABASE_URL: process.env.VITE_SUPABASE_URL || DEMO_URL,
+  SUPABASE_KEY: process.env.VITE_SUPABASE_ANON_KEY || DEMO_KEY,
 
-  // Test User Credentials (SECRETS)
-  // Admin User
-  ADMIN_EMAIL: process.env.TEST_ADMIN_EMAIL || 'admin@example.com',
-  ADMIN_PASSWORD: process.env.TEST_ADMIN_PASSWORD || '',
+  // Test User Credentials
+  ADMIN_EMAIL: process.env.TEST_ADMIN_EMAIL || DEMO_ADMIN_EMAIL,
+  ADMIN_PASSWORD: process.env.TEST_ADMIN_PASSWORD || DEMO_ADMIN_PASSWORD,
 
-  // Resident User
-  RESIDENT_EMAIL: process.env.TEST_RESIDENT_EMAIL || 'resident@example.com',
-  RESIDENT_PASSWORD: process.env.TEST_RESIDENT_PASSWORD || '',
+  RESIDENT_EMAIL: process.env.TEST_RESIDENT_EMAIL || DEMO_RESIDENT_EMAIL,
+  RESIDENT_PASSWORD: process.env.TEST_RESIDENT_PASSWORD || DEMO_RESIDENT_PASSWORD,
 };
 
-// Optional: Validate configuration
+// Validate configuration
 if (!TEST_CONFIG.ADMIN_PASSWORD || !TEST_CONFIG.RESIDENT_PASSWORD) {
   console.warn('WARNING: TEST_ADMIN_PASSWORD or TEST_RESIDENT_PASSWORD are not set. E2E tests may fail.');
 }
