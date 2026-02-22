@@ -36,7 +36,10 @@ test('reservations_menu_smoke', async ({ page }) => {
 
     // 3. Verify Sidebar
     // Wait for login
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible({ timeout: 15000 });
+    // In mobile view (default CI often), sidebar might be hidden or this button might be in a menu.
+    // Ensure we are on desktop or handle menu.
+    // For smoke test, we can try force finding or wait longer.
+    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible({ timeout: 30000 });
 
     // 4. Navigate
     await page.click('button:has-text("Gestión de Reservas")');

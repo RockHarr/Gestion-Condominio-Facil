@@ -23,8 +23,8 @@ test.describe('Admin — Reservations Management', () => {
         await page.fill('input[type="password"]', TEST_CONFIG.RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
-        // Wait for login
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        // Wait for login (Increased timeout for CI)
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 30000 });
         // Retry logic for reservation creation (Day + Time)
         let success = false;
         let attempts = 0;

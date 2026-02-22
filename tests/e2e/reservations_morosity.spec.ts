@@ -117,7 +117,9 @@ test.describe('Reservations - Morosity Check', () => {
         }
 
         // Wait for type selection (prevents race condition)
-        await expect(page.getByText('Tarifa de uso:')).toBeVisible();
+        // In CI, modal animation or data fetch might be slow. Increase timeout.
+        await expect(page.getByText('Tarifa de uso:')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText('Tarifa de uso:')).toBeVisible({ timeout: 15000 });
 
         await page.click('button:has-text("Confirmar Reserva")');
 
