@@ -1,14 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { TEST_CONFIG } from '../test-config';
 
-// Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
-const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
+// Credentials from test config (loaded from env vars)
+const supabase = createClient(TEST_CONFIG.SUPABASE_URL, TEST_CONFIG.SUPABASE_KEY);
 
 test.describe('Reservations - Morosity Check', () => {
     let moroseUnitId: number;
@@ -18,8 +13,8 @@ test.describe('Reservations - Morosity Check', () => {
         // 1. Get the Resident User ID
         // Login as Resident first to get their own ID
         const { data: residentAuth, error: residentError } = await supabase.auth.signInWithPassword({
-            email: RESIDENT_EMAIL,
-            password: RESIDENT_PASSWORD
+            email: TEST_CONFIG.RESIDENT_EMAIL,
+            password: TEST_CONFIG.RESIDENT_PASSWORD
         });
 
         if (residentError || !residentAuth.user) {
@@ -46,8 +41,8 @@ test.describe('Reservations - Morosity Check', () => {
 
         // 2. Login as Admin to Insert Debt
         const { error: adminError } = await supabase.auth.signInWithPassword({
-            email: 'rockwell.harrison@gmail.com',
-            password: '270386'
+            email: TEST_CONFIG.ADMIN_EMAIL,
+            password: TEST_CONFIG.ADMIN_PASSWORD
         });
 
         if (adminError) {
@@ -87,9 +82,9 @@ test.describe('Reservations - Morosity Check', () => {
     test('should block reservation for morose user', async ({ page }) => {
         // 1. Login
         await page.goto('/');
-        await page.fill('input[type="email"]', RESIDENT_EMAIL);
+        await page.fill('input[type="email"]', TEST_CONFIG.RESIDENT_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', RESIDENT_PASSWORD);
+        await page.fill('input[type="password"]', TEST_CONFIG.RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for dashboard
@@ -106,8 +101,8 @@ test.describe('Reservations - Morosity Check', () => {
 
         // Wait for calendar
         // The custom calendar renders buttons for days. We wait for a day to be visible.
-        // We pick the 15th day of the current month.
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
+        // Select the first available (enabled) day
+        const dayButton = page.locator('button.aspect-square:not([disabled])').first();
         await expect(dayButton).toBeVisible({ timeout: 10000 });
 
         // 4. Select a day
@@ -154,16 +149,16 @@ test.describe('Reservations - Morosity Check', () => {
         // 2. Retry Reservation
         // We need to login again because each test has a fresh context
         await page.goto('/');
-        await page.fill('input[type="email"]', RESIDENT_EMAIL);
+        await page.fill('input[type="email"]', TEST_CONFIG.RESIDENT_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', RESIDENT_PASSWORD);
+        await page.fill('input[type="password"]', TEST_CONFIG.RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
         await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
 
         await page.click('text=Reservar');
         await page.click('text=Quincho');
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
+        const dayButton = page.locator('button.aspect-square:not([disabled])').first();
         await expect(dayButton).toBeVisible({ timeout: 10000 });
         await dayButton.click();
 

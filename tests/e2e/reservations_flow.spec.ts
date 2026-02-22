@@ -1,10 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { TEST_CONFIG } from '../test-config';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
 // ==========================================
-const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMAIL
-const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
+// const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMAIL
+// const RESIDENT_PASSWORD = '...';       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
 test.describe('Resident — Reservations Flow', () => {
@@ -12,9 +13,9 @@ test.describe('Resident — Reservations Flow', () => {
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident
         await page.goto('/');
-        await page.fill('input[type="email"]', RESIDENT_EMAIL);
+        await page.fill('input[type="email"]', TEST_CONFIG.RESIDENT_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', RESIDENT_PASSWORD);
+        await page.fill('input[type="password"]', TEST_CONFIG.RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
         // Wait for a post-login element (e.g., the Home tab)
         await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
