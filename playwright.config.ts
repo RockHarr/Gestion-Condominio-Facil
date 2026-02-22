@@ -38,5 +38,9 @@ export default defineConfig({
     command: 'npx vite --port 3000 --strictPort',
     port: 3000,
     reuseExistingServer: !process.env.CI,
+    env: {
+      VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL || 'http://localhost:54321',
+      VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || 'eyJhO...',
+    },
   },
 });
