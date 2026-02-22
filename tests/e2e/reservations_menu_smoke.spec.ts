@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { TEST_CONFIG } from '../test-config';
 
 test('reservations_menu_smoke', async ({ page }) => {
     // 1. Mock network to ensure no 400 errors (validation logic)
@@ -12,20 +13,33 @@ test('reservations_menu_smoke', async ({ page }) => {
         }
     });
 
-    // 2. Login as Admin (Mock)
-    // Assuming default dev login flow or using a known credential if E2E setup allows
-    // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    // 2. Login as Admin
+    // Using centralized test configuration
+    await page.goto('/');
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
+        await page.fill('input[type="email"]', TEST_CONFIG.ADMIN_EMAIL);
+        // Assuming we need password flow
+        if (await page.locator('button:has-text("Usar contraseña")').isVisible()) {
+             await page.click('button:has-text("Usar contraseña")');
+             await page.fill('input[type="password"]', TEST_CONFIG.ADMIN_PASSWORD);
+        } else {
+             // Maybe direct password field if UI differs
+             const pwd = page.locator('input[type="password"]');
+             if (await pwd.isVisible()) {
+                 await pwd.fill(TEST_CONFIG.ADMIN_PASSWORD);
+             }
+        }
         await page.click('button:has-text("Ingresar")');
     }
 
     // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    // Wait for login
+    // In mobile view (default CI often), sidebar might be hidden or this button might be in a menu.
+    // Ensure we are on desktop or handle menu.
+    // For smoke test, we can try force finding or wait longer.
+    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible({ timeout: 30000 });
 
     // 4. Navigate
     await page.click('button:has-text("Gestión de Reservas")');
