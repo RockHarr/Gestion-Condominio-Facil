@@ -1,14 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { TEST_CONFIG } from '../test-config';
 
-// Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
-const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+const supabase = createClient(TEST_CONFIG.SUPABASE_URL, TEST_CONFIG.SUPABASE_KEY);
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
+const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL;
+const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;
 
 test.describe('Reservations - Morosity Check', () => {
     let moroseUnitId: number;
@@ -46,8 +43,8 @@ test.describe('Reservations - Morosity Check', () => {
 
         // 2. Login as Admin to Insert Debt
         const { error: adminError } = await supabase.auth.signInWithPassword({
-            email: 'rockwell.harrison@gmail.com',
-            password: '270386'
+            email: TEST_CONFIG.ADMIN_EMAIL,
+            password: TEST_CONFIG.ADMIN_PASSWORD
         });
 
         if (adminError) {
@@ -106,8 +103,8 @@ test.describe('Reservations - Morosity Check', () => {
 
         // Wait for calendar
         // The custom calendar renders buttons for days. We wait for a day to be visible.
-        // We pick the 15th day of the current month.
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
+        // Dynamically pick the first enabled day
+        const dayButton = page.locator('button:not([disabled]).aspect-square').first();
         await expect(dayButton).toBeVisible({ timeout: 10000 });
 
         // 4. Select a day
@@ -163,7 +160,7 @@ test.describe('Reservations - Morosity Check', () => {
 
         await page.click('text=Reservar');
         await page.click('text=Quincho');
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
+        const dayButton = page.locator('button:not([disabled]).aspect-square').first();
         await expect(dayButton).toBeVisible({ timeout: 10000 });
         await dayButton.click();
 

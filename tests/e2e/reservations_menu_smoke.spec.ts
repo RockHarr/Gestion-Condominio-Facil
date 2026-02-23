@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { TEST_CONFIG } from '../test-config';
 
 test('reservations_menu_smoke', async ({ page }) => {
     // 1. Mock network to ensure no 400 errors (validation logic)
@@ -19,9 +20,13 @@ test('reservations_menu_smoke', async ({ page }) => {
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+        await page.fill('input[type="email"]', TEST_CONFIG.ADMIN_EMAIL);
+        // Click "Usar contraseña" to reveal the password field if needed, matching logic in other tests
+        if (await page.getByText('Usar contraseña').isVisible()) {
+            await page.click('button:has-text("Usar contraseña")');
+        }
+        await page.fill('input[type="password"]', TEST_CONFIG.ADMIN_PASSWORD);
+        await page.click('button[type="submit"]');
     }
 
     // 3. Verify Sidebar

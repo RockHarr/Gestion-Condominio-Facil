@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-02-23 - [Hardcoded Credentials in Test Files]
+**Vulnerability:** Multiple E2E test files (`tests/e2e/*.spec.ts`, `tests/repro_rpc.ts`) contained hardcoded Supabase API keys and user credentials (including passwords). This exposed sensitive production/staging access tokens in the source code.
+**Learning:** Developers often hardcode credentials in tests for convenience, assuming test files are "safe" or "temporary", but they are often committed to the repository.
+**Prevention:** Centralize test configuration in a `tests/test-config.ts` file that loads credentials from environment variables. Use `dotenv` to load `.env` files locally. Never commit secrets to source control.
