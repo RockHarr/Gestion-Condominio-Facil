@@ -25,7 +25,6 @@ import { LoginScreen } from './components/LoginScreen';
 import { ResidentApp } from './components/ResidentApp';
 import { AdminApp } from './components/AdminApp';
 import { AdminReservationsInbox } from './components/AdminReservationsInbox';
-import { AdminPollsManager } from './components/AdminPollsManager';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -150,7 +149,10 @@ function App() {
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
 
     // Check Env Vars
-    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+    if (
+      (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) &&
+      import.meta.env.DEV
+    ) {
       showToast('Faltan credenciales de Supabase en .env.local', 'error');
     }
 
@@ -163,7 +165,7 @@ function App() {
         setIsLoading(false);
         showToast('La conexión está tardando mucho. Verifique su red o configuración.', 'info');
       }
-    }, 5000);
+    }, 15000);
 
     // Auth Subscription
     const { data: authListener } = authService.onAuthStateChange((user) => {
@@ -231,6 +233,7 @@ function App() {
       });
 
     return () => {
+      clearTimeout(safetyTimeout);
       authListener.subscription.unsubscribe();
     };
   }, []); // Removed loadData dependency to prevent re-runs on user update

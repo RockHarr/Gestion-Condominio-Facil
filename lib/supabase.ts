@@ -20,8 +20,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Missing Supabase environment variables. Please check .env.local');
 }
 
-// Fallback to dummy values to prevent crash if env vars are missing, allowing App to show proper error UI
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder', {
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
         persistSession: true,
         autoRefreshToken: true,

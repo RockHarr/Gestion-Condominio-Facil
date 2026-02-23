@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, SkeletonLoader } from './Shared';
+import { Button, Card, SkeletonLoader, EmptyState } from './Shared';
 import { dataService } from '../services/data';
 import Icons from './Icons';
 
@@ -22,6 +22,8 @@ export const AdminPollsManager: React.FC = () => {
     const [showCloseModal, setShowCloseModal] = useState(false);
     const [selectedPoll, setSelectedPoll] = useState<Poll | null>(null);
     const [closeReason, setCloseReason] = useState('');
+    const [isCreating, setIsCreating] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
 
     // Create Form State
     const [newPoll, setNewPoll] = useState({
@@ -59,6 +61,7 @@ export const AdminPollsManager: React.FC = () => {
             return;
         }
 
+        setIsCreating(true);
         try {
             await dataService.createPoll(
                 newPoll.question,
@@ -82,6 +85,8 @@ export const AdminPollsManager: React.FC = () => {
         } catch (error) {
             console.error('Error creating poll:', error);
             alert('Error al crear encuesta.');
+        } finally {
+            setIsCreating(false);
         }
     };
 
@@ -93,6 +98,7 @@ export const AdminPollsManager: React.FC = () => {
 
         if (!window.confirm('¿Está seguro de cerrar esta encuesta anticipadamente? Esta acción es irreversible.')) return;
 
+        setIsClosing(true);
         try {
             await dataService.closePollEarly(selectedPoll.id, closeReason);
             alert('Encuesta cerrada exitosamente.');
@@ -103,6 +109,8 @@ export const AdminPollsManager: React.FC = () => {
         } catch (error) {
             console.error('Error closing poll:', error);
             alert('Error al cerrar encuesta.');
+        } finally {
+            setIsClosing(false);
         }
     };
 
@@ -129,14 +137,22 @@ export const AdminPollsManager: React.FC = () => {
                 </Button>
             </div>
 
-            <div className="grid gap-6">
-                {polls.map(poll => {
-                    const isActive = !poll.closed_at && new Date() >= new Date(poll.start_at) && new Date() < new Date(poll.end_at);
-                    const isClosed = poll.closed_at || new Date() >= new Date(poll.end_at);
-                    const isScheduled = !poll.closed_at && new Date() < new Date(poll.start_at);
+            {polls.length === 0 && !loading ? (
+                <EmptyState
+                    icon="chart-pie"
+                    title="No hay encuestas"
+                    description="Crea una nueva encuesta para que los residentes puedan votar."
+                    actionLabel="Crear Encuesta"
+                    onAction={() => setShowCreateModal(true)}
+                />
+            ) : (
+                <div className="grid gap-6">
+                    {polls.map(poll => {
+                        const isActive = !poll.closed_at && new Date() >= new Date(poll.start_at) && new Date() < new Date(poll.end_at);
+                        const isClosed = poll.closed_at || new Date() >= new Date(poll.end_at);
 
-                    return (
-                        <Card key={poll.id} className="p-4">
+                        return (
+                            <Card key={poll.id} className="p-4">
                             <div className="flex justify-between items-start">
                                 <div>
                                     <div className="flex items-center gap-2 mb-2">
@@ -173,10 +189,11 @@ export const AdminPollsManager: React.FC = () => {
                                     {/* Add View Results button logic later if needed, or rely on PollsScreen for results */}
                                 </div>
                             </div>
-                        </Card>
-                    );
-                })}
-            </div>
+                            </Card>
+                        );
+                    })}
+                </div>
+            )}
 
             {/* Create Modal */}
             {showCreateModal && (
@@ -243,21 +260,29 @@ export const AdminPollsManager: React.FC = () => {
                                     <div key={idx} className="flex gap-2 mb-2">
                                         <input
                                             type="text"
+                                            aria-label={`Opción ${idx + 1}`}
                                             className="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                             value={opt}
                                             onChange={e => updateOption(idx, e.target.value)}
                                             placeholder={`Opción ${idx + 1}`}
                                         />
                                         {newPoll.options.length > 2 && (
-                                            <Button variant="secondary" onClick={() => removeOption(idx)}>X</Button>
+                                            <Button
+                                                variant="ghost"
+                                                onClick={() => removeOption(idx)}
+                                                aria-label={`Eliminar opción ${idx + 1}`}
+                                                className="w-auto px-2"
+                                            >
+                                                <Icons name="trash" className="w-5 h-5 text-red-500" />
+                                            </Button>
                                         )}
                                     </div>
                                 ))}
                                 <Button variant="secondary" onClick={addOption} className="w-full mt-2">+ Agregar Opción</Button>
                             </div>
                             <div className="flex justify-end gap-2 mt-6">
-                                <Button variant="secondary" onClick={() => setShowCreateModal(false)}>Cancelar</Button>
-                                <Button variant="primary" onClick={handleCreatePoll}>Crear Encuesta</Button>
+                                <Button variant="secondary" onClick={() => setShowCreateModal(false)} disabled={isCreating}>Cancelar</Button>
+                                <Button variant="primary" onClick={handleCreatePoll} isLoading={isCreating}>Crear Encuesta</Button>
                             </div>
                         </div>
                     </div>
@@ -280,8 +305,8 @@ export const AdminPollsManager: React.FC = () => {
                             placeholder="Motivo del cierre..."
                         />
                         <div className="flex justify-end gap-2">
-                            <Button variant="secondary" onClick={() => setShowCloseModal(false)}>Cancelar</Button>
-                            <Button variant="danger" onClick={handleCloseEarly}>Confirmar Cierre</Button>
+                            <Button variant="secondary" onClick={() => setShowCloseModal(false)} disabled={isClosing}>Cancelar</Button>
+                            <Button variant="danger" onClick={handleCloseEarly} isLoading={isClosing}>Confirmar Cierre</Button>
                         </div>
                     </div>
                 </div>

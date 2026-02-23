@@ -83,6 +83,7 @@ export const FinancialCharts: React.FC<FinancialChartsProps> = ({ expenses, paym
                                 outerRadius={80}
                                 paddingAngle={5}
                                 dataKey="value"
+                                isAnimationActive={false}
                             >
                                 {pieData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -123,8 +124,18 @@ export const FinancialCharts: React.FC<FinancialChartsProps> = ({ expenses, paym
                                 itemStyle={{ color: textColor }}
                             />
                             <Legend />
-                            <Bar dataKey="Ingresos" fill="#10b981" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="Gastos" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                            <Bar
+                                dataKey="Ingresos"
+                                fill="#10b981"
+                                radius={[4, 4, 0, 0]}
+                                isAnimationActive={false}
+                            />
+                            <Bar
+                                dataKey="Gastos"
+                                fill="#ef4444"
+                                radius={[4, 4, 0, 0]}
+                                isAnimationActive={false}
+                            />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
