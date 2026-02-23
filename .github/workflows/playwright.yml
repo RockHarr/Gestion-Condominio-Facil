@@ -38,12 +38,28 @@ jobs:
         run: npx playwright test --list
         env:
           CI: true
+          # Supabase
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # Test Users
+          TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+          TEST_RESIDENT_EMAIL: ${{ secrets.TEST_RESIDENT_EMAIL }}
+          TEST_RESIDENT_PASSWORD: ${{ secrets.TEST_RESIDENT_PASSWORD }}
 
       # 2) 🚀 Ejecuta los tests
       - name: Run E2E
         run: npx playwright test --reporter=line
         env:
           CI: true
+          # Supabase
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # Test Users
+          TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+          TEST_RESIDENT_EMAIL: ${{ secrets.TEST_RESIDENT_EMAIL }}
+          TEST_RESIDENT_PASSWORD: ${{ secrets.TEST_RESIDENT_PASSWORD }}
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
