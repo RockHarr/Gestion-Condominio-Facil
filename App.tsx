@@ -25,7 +25,6 @@ import { LoginScreen } from './components/LoginScreen';
 import { ResidentApp } from './components/ResidentApp';
 import { AdminApp } from './components/AdminApp';
 import { AdminReservationsInbox } from './components/AdminReservationsInbox';
-import { AdminPollsManager } from './components/AdminPollsManager';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
