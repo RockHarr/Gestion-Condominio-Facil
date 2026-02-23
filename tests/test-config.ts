@@ -11,8 +11,9 @@ dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 export const TEST_CONFIG = {
-  SUPABASE_URL: process.env.VITE_SUPABASE_URL || '',
-  SUPABASE_KEY: process.env.VITE_SUPABASE_ANON_KEY || '',
+  // Provide a valid URL format as fallback to prevent createClient from throwing during test discovery
+  SUPABASE_URL: process.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co',
+  SUPABASE_KEY: process.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key',
   ADMIN_EMAIL: process.env.TEST_ADMIN_EMAIL || '',
   ADMIN_PASSWORD: process.env.TEST_ADMIN_PASSWORD || '',
   RESIDENT_EMAIL: process.env.TEST_RESIDENT_EMAIL || '',
