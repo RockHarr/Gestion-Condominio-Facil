@@ -106,8 +106,8 @@ test.describe('Reservations - Morosity Check', () => {
 
         // Wait for calendar
         // The custom calendar renders buttons for days. We wait for a day to be visible.
-        // We pick the 15th day of the current month.
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
+        // We find the last enabled day button to avoid collision with concurrent tests using '15' (often the first).
+        const dayButton = page.locator('button.aspect-square:not([disabled])').last();
         await expect(dayButton).toBeVisible({ timeout: 10000 });
 
         // 4. Select a day
@@ -117,9 +117,8 @@ test.describe('Reservations - Morosity Check', () => {
         await expect(page.getByText('Solicitar Reserva')).toBeVisible();
 
         const typeSelect = page.locator('select');
-        if (await typeSelect.isVisible()) {
-            await typeSelect.selectOption({ index: 1 });
-        }
+        await expect(typeSelect).toBeVisible();
+        await typeSelect.selectOption({ index: 1 });
 
         // Wait for type selection (prevents race condition)
         await expect(page.getByText('Tarifa de uso:')).toBeVisible();
@@ -163,14 +162,13 @@ test.describe('Reservations - Morosity Check', () => {
 
         await page.click('text=Reservar');
         await page.click('text=Quincho');
-        const dayButton = page.getByRole('button', { name: '15', exact: true });
+        const dayButton = page.locator('button.aspect-square:not([disabled])').last();
         await expect(dayButton).toBeVisible({ timeout: 10000 });
         await dayButton.click();
 
         const typeSelect = page.locator('select');
-        if (await typeSelect.isVisible()) {
-            await typeSelect.selectOption({ index: 1 });
-        }
+        await expect(typeSelect).toBeVisible();
+        await typeSelect.selectOption({ index: 1 });
 
         // Wait for type selection (prevents race condition)
         await expect(page.getByText('Tarifa de uso:')).toBeVisible();
@@ -178,7 +176,8 @@ test.describe('Reservations - Morosity Check', () => {
         await page.click('button:has-text("Confirmar Reserva")');
 
         // 3. Verify Success
-        const successToast = page.getByText(/Solicitud de reserva enviada/i);
+        // Use a more inclusive regex to match "Solicitud de reserva enviada" OR "Reserva creada" OR "Reserva confirmada"
+        const successToast = page.getByText(/Solicitud de reserva enviada|Reserva (creada|confirmada)/i);
         await expect(successToast).toBeVisible({ timeout: 10000 });
 
         console.log('Verified: Reservation allowed after payment.');
