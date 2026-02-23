@@ -150,7 +150,6 @@ export const AdminPollsManager: React.FC = () => {
                     {polls.map(poll => {
                         const isActive = !poll.closed_at && new Date() >= new Date(poll.start_at) && new Date() < new Date(poll.end_at);
                         const isClosed = poll.closed_at || new Date() >= new Date(poll.end_at);
-                        const isScheduled = !poll.closed_at && new Date() < new Date(poll.start_at);
 
                         return (
                             <Card key={poll.id} className="p-4">
@@ -272,7 +271,7 @@ export const AdminPollsManager: React.FC = () => {
                                                 variant="ghost"
                                                 onClick={() => removeOption(idx)}
                                                 aria-label={`Eliminar opción ${idx + 1}`}
-                                                className="px-2"
+                                                className="w-auto px-2"
                                             >
                                                 <Icons name="trash" className="w-5 h-5 text-red-500" />
                                             </Button>
