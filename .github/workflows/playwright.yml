@@ -16,11 +16,18 @@ jobs:
         with:
           node-version: 22
 
-      - run: npm ci
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
 
-      - run: npm run build
+      - run: pnpm install
 
-      - run: npx playwright install --with-deps
+      - run: pnpm build
+        env:
+          VITE_SUPABASE_URL: "https://example.supabase.co"
+          VITE_SUPABASE_ANON_KEY: "example-key"
+
+      - run: pnpm exec playwright install --with-deps
 
       # 🔎 DEBUG: ver árbol de tests y config (útil mientras afinamos)
       - name: Debug – listar árbol de tests y config
@@ -35,15 +42,17 @@ jobs:
 
       # 1) Lista los tests que detecta Playwright
       - name: Lista de tests detectados
-        run: npx playwright test --list
+        run: pnpm exec playwright test --list
         env:
           CI: true
 
       # 2) 🚀 Ejecuta los tests
       - name: Run E2E
-        run: npx playwright test --reporter=line
+        run: pnpm exec playwright test --reporter=line
         env:
           CI: true
+          VITE_SUPABASE_URL: "https://example.supabase.co"
+          VITE_SUPABASE_ANON_KEY: "example-key"
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
