@@ -136,16 +136,21 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
     const selectedType = types.find(t => t.id === selectedTypeId);
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+        >
             <Card className="w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200">
                 <div className="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-4 mb-4">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Solicitar Reserva</h2>
+                        <h2 id="modal-title" className="text-xl font-bold text-gray-900 dark:text-white">Solicitar Reserva</h2>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                             {amenity.name} - {selectedDate.toLocaleDateString()}
                         </p>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500" aria-label="Cerrar modal">
                         <Icons name="xmark" className="w-6 h-6" />
                     </button>
                 </div>
@@ -159,8 +164,9 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
                         <>
                             {types.length > 1 && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de Evento</label>
+                                    <label htmlFor="reservation-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de Evento</label>
                                     <select
+                                        id="reservation-type"
                                         value={selectedTypeId || ''}
                                         onChange={e => setSelectedTypeId(Number(e.target.value))}
                                         className="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-2.5 px-3"
@@ -178,8 +184,9 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Inicio</label>
+                            <label htmlFor="start-time" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Inicio</label>
                             <input
+                                id="start-time"
                                 type="time"
                                 value={startTime}
                                 onChange={e => setStartTime(e.target.value)}
@@ -188,8 +195,9 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Término</label>
+                            <label htmlFor="end-time" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Término</label>
                             <input
+                                id="end-time"
                                 type="time"
                                 value={endTime}
                                 onChange={e => setEndTime(e.target.value)}
