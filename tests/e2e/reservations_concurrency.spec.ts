@@ -11,6 +11,13 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381';
 
 test.describe('Reservations - Concurrency Check', () => {
+    // Skip if running with dummy CI credentials
+    test.beforeAll(() => {
+        if (process.env.VITE_SUPABASE_URL === 'https://example.supabase.co') {
+            test.skip(true, 'Skipping due to dummy credentials in CI');
+        }
+    });
+
     let amenityId: number;
     let typeId: number;
     let unitId: number;

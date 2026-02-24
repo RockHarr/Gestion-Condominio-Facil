@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-24 - Modal Accessibility Verification
+**Learning:** Custom modals like `ReservationRequestModal` were visually functional but completely inaccessible (missing `role`, `aria-modal`, `aria-labelledby`, and `aria-label` on close buttons).
+**Action:** Always add standard ARIA attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`, `aria-label`) to custom modal implementations, and verify their presence using a targeted E2E test script (`tests/e2e/ux_verification.spec.ts`) that mocks necessary backend data.
