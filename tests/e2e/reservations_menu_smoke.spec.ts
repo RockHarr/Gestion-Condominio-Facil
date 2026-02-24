@@ -30,7 +30,7 @@ test('reservations_menu_smoke', async ({ page }) => {
                 created_at: new Date().toISOString(),
             }
         };
-        await route.fulfill({ json });
+        await route.fulfill({ json, contentType: 'application/json' });
     });
 
     await page.route('**/auth/v1/user', async route => {
@@ -45,7 +45,7 @@ test('reservations_menu_smoke', async ({ page }) => {
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
         };
-        await route.fulfill({ json });
+        await route.fulfill({ json, contentType: 'application/json' });
     });
 
     // Also mock the profile request which happens after login
@@ -61,30 +61,30 @@ test('reservations_menu_smoke', async ({ page }) => {
         };
         // Distinguish between single profile fetch (auth) and list fetch (admin units)
         if (route.request().url().includes('id=eq')) {
-             await route.fulfill({ json });
+             await route.fulfill({ json, contentType: 'application/json' });
         } else {
-             await route.fulfill({ json: [json] });
+             await route.fulfill({ json: [json], contentType: 'application/json' });
         }
     });
 
     // Mock other endpoints to prevent crashes/timeouts
-    await page.route('**/rest/v1/notices*', async route => route.fulfill({ json: [] }));
-    await page.route('**/rest/v1/amenities*', async route => route.fulfill({ json: [] }));
-    await page.route('**/rest/v1/reservations*', async route => route.fulfill({ json: [] }));
-    await page.route('**/rest/v1/expenses*', async route => route.fulfill({ json: [] }));
-    await page.route('**/rest/v1/tickets*', async route => route.fulfill({ json: [] }));
-    await page.route('**/rest/v1/users*', async route => route.fulfill({ json: [] }));
-    await page.route('**/rest/v1/payments*', async route => route.fulfill({ json: [] }));
-    await page.route('**/rest/v1/common_expense_debts*', async route => route.fulfill({ json: [] }));
-    await page.route('**/rest/v1/parking_debts*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/notices*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/amenities*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/reservations*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/expenses*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/tickets*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/users*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/payments*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/common_expense_debts*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/parking_debts*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
 
     // Settings mock (returns object, not array)
     await page.route('**/rest/v1/community_settings*', async route => {
         const json = { commonExpense: 50000, parkingCost: 10000, id: 1 };
          if (route.request().url().includes('select')) {
-             await route.fulfill({ json: [json] }); // Supabase returns array even for single if not limited
+             await route.fulfill({ json: [json], contentType: 'application/json' });
         } else {
-             await route.fulfill({ json });
+             await route.fulfill({ json, contentType: 'application/json' });
         }
     });
 
