@@ -11,6 +11,13 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
 
 test.describe('Reservations - Morosity Check', () => {
+    // Skip if running with dummy CI credentials
+    test.beforeAll(() => {
+        if (process.env.VITE_SUPABASE_URL === 'https://example.supabase.co') {
+            test.skip(true, 'Skipping due to dummy credentials in CI');
+        }
+    });
+
     let moroseUnitId: number;
     let moroseUserId: string;
 

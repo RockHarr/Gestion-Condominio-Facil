@@ -8,6 +8,13 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
 test.describe('Resident — Reservations Flow', () => {
+    // Skip if running with dummy CI credentials
+    test.beforeAll(() => {
+        if (process.env.VITE_SUPABASE_URL === 'https://example.supabase.co') {
+            test.skip(true, 'Skipping due to dummy credentials in CI');
+        }
+    });
+
 
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident

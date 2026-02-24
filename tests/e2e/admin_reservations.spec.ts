@@ -10,6 +10,13 @@ const ADMIN_PASSWORD = '270386';
 // ==========================================
 
 test.describe('Admin — Reservations Management', () => {
+    // Skip if running with dummy CI credentials
+    test.beforeAll(() => {
+        if (process.env.VITE_SUPABASE_URL === 'https://example.supabase.co') {
+            test.skip(true, 'Skipping due to dummy credentials in CI');
+        }
+    });
+
 
     test.beforeEach(async ({ page }) => {
         // Enable console logging from browser

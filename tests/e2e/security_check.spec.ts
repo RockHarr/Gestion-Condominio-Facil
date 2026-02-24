@@ -10,6 +10,13 @@ const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 // ==========================================
 
 test.describe('Security Policy Verification', () => {
+    // Skip if running with dummy CI credentials
+    test.beforeAll(() => {
+        if (process.env.VITE_SUPABASE_URL === 'https://example.supabase.co') {
+            test.skip(true, 'Skipping due to dummy credentials in CI');
+        }
+    });
+
 
     test('Resident should only see own data and public notices', async ({ page }) => {
         // 1. Login as Resident

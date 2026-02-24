@@ -4,6 +4,13 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
 test.describe('System Setup', () => {
+    // Skip if running with dummy CI credentials
+    test.beforeAll(() => {
+        if (process.env.VITE_SUPABASE_URL === 'https://example.supabase.co') {
+            test.skip(true, 'Skipping due to dummy credentials in CI');
+        }
+    });
+
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
         // 1. Login as Admin
         await page.goto('/');
