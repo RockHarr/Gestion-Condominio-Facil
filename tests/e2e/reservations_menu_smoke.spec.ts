@@ -13,16 +13,103 @@ test('reservations_menu_smoke', async ({ page }) => {
     });
 
     // 2. Login as Admin (Mock)
-    // Assuming default dev login flow or using a known credential if E2E setup allows
-    // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    // Mock Supabase Auth to succeed without real backend
+    await page.route('**/auth/v1/token?grant_type=password', async route => {
+        const json = {
+            access_token: 'fake-jwt-token',
+            token_type: 'bearer',
+            expires_in: 3600,
+            refresh_token: 'fake-refresh-token',
+            user: {
+                id: 'admin-user-id',
+                aud: 'authenticated',
+                role: 'authenticated',
+                email: 'admin@condominio.com',
+                app_metadata: { provider: 'email' },
+                user_metadata: {},
+                created_at: new Date().toISOString(),
+            }
+        };
+        await route.fulfill({ json, contentType: 'application/json' });
+    });
 
-    // Fill login if redirected to login
-    if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
-    }
+    await page.route('**/auth/v1/user', async route => {
+         const json = {
+            id: 'admin-user-id',
+            aud: 'authenticated',
+            role: 'authenticated',
+            email: 'admin@condominio.com',
+            email_confirmed_at: new Date().toISOString(),
+            app_metadata: { provider: 'email', providers: ['email'] },
+            user_metadata: {},
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+        };
+        await route.fulfill({ json, contentType: 'application/json' });
+    });
+
+    // Also mock the profile request which happens after login
+    await page.route('**/rest/v1/profiles*', async route => {
+        const json = {
+            id: 'admin-user-id',
+            nombre: 'Admin User',
+            unidad: 'Admin Office',
+            role: 'admin', // Crucial for admin menu access
+            has_parking: false,
+            email: 'admin@condominio.com',
+            alicuota: 0
+        };
+        // Distinguish between single profile fetch (auth) and list fetch (admin units)
+        if (route.request().url().includes('id=eq')) {
+             await route.fulfill({ json, contentType: 'application/json' });
+        } else {
+             await route.fulfill({ json: [json], contentType: 'application/json' });
+        }
+    });
+
+    // Mock other endpoints to prevent crashes/timeouts
+    await page.route('**/rest/v1/notices*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/amenities*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/reservations*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/expenses*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/tickets*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/users*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/payments*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/common_expense_debts*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+    await page.route('**/rest/v1/parking_debts*', async route => route.fulfill({ json: [], contentType: 'application/json' }));
+
+    // Settings mock (returns object, not array)
+    await page.route('**/rest/v1/community_settings*', async route => {
+        const json = { commonExpense: 50000, parkingCost: 10000, id: 1 };
+         if (route.request().url().includes('select')) {
+             await route.fulfill({ json: [json], contentType: 'application/json' });
+        } else {
+             await route.fulfill({ json, contentType: 'application/json' });
+        }
+    });
+
+    // Inject Session directly into LocalStorage to bypass login flow
+    await page.addInitScript(() => {
+        const session = {
+            access_token: 'fake-jwt-token',
+            token_type: 'bearer',
+            expires_in: 3600,
+            expires_at: Math.floor(Date.now() / 1000) + 3600,
+            refresh_token: 'fake-refresh-token',
+            user: {
+                id: 'admin-user-id',
+                aud: 'authenticated',
+                role: 'authenticated',
+                email: 'admin@condominio.com',
+                app_metadata: { provider: 'email' },
+                user_metadata: {},
+                created_at: new Date().toISOString(),
+            }
+        };
+        window.localStorage.setItem('supabase.auth.token', JSON.stringify(session));
+    });
+
+    await page.goto('/');
 
     // 3. Verify Sidebar
     await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();

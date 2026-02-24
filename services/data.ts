@@ -567,23 +567,17 @@ export const dataService = {
   },
 
   async updateUser(id: string | number, updates: Partial<User>) {
-    const dbUpdates: Record<string, unknown> = { ...updates };
-    if ('hasParking' in updates) {
-      dbUpdates.has_parking = updates.hasParking;
-      delete dbUpdates.hasParking;
-    }
+    // Explicitly allow-list fields to prevent Mass Assignment / Privilege Escalation
+    const dbUpdates: Record<string, unknown> = {};
 
-    // Email is in auth.users, not profiles (usually).
-    // We cannot update it directly here without Admin API.
-    if ('email' in dbUpdates) {
-      delete dbUpdates.email;
-    }
+    if (updates.nombre !== undefined) dbUpdates.nombre = updates.nombre;
+    if (updates.unidad !== undefined) dbUpdates.unidad = updates.unidad;
+    if (updates.hasParking !== undefined) dbUpdates.has_parking = updates.hasParking;
 
-    // TEMPORARY FIX: The 'alicuota' column does not exist in the DB yet.
-    // We remove it to allow updating other fields (Name, Unit, Parking).
-    if ('alicuota' in dbUpdates) {
-      delete dbUpdates.alicuota;
-    }
+    // Explicitly ignoring 'email' (auth only), 'role' (sensitive), and 'alicuota' (schema pending)
+    // if (updates.alicuota !== undefined) dbUpdates.alicuota = updates.alicuota;
+
+    if (Object.keys(dbUpdates).length === 0) return;
 
     const { error } = await withTimeout(supabase.from('profiles').update(dbUpdates).eq('id', id));
 
