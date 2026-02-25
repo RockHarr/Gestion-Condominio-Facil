@@ -10,6 +10,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
 
+import { mockSupabaseAuth } from './mocks';
+
 test.describe('Reservations - Morosity Check', () => {
     let moroseUnitId: number;
     let moroseUserId: string;
@@ -85,6 +87,8 @@ test.describe('Reservations - Morosity Check', () => {
     });
 
     test('should block reservation for morose user', async ({ page }) => {
+        await mockSupabaseAuth(page);
+
         // 1. Login
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
