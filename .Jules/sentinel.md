@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-02-23 - [Financial Integrity & Role Escalation via Profile Updates]
+**Vulnerability:** Regular users could potentially update sensitive profile fields like `role`, `has_parking`, and `unidad` via API calls because the RLS policy allowed them to update their own row without column-level restrictions. This could lead to privilege escalation (becoming admin) or financial fraud (avoiding parking fees or changing unit assignment).
+**Learning:** Database triggers are essential for enforcing business rules and security constraints on `UPDATE` operations when RLS policies grant row-level access but column-level restrictions are needed.
+**Prevention:** Implemented a `BEFORE UPDATE` trigger (`prevent_sensitive_profile_updates`) that strictly forbids non-admin users from modifying `role`, `has_parking`, and `unidad` columns, raising an exception if attempted.
