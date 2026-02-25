@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { mockSupabaseAuth } from './mocks';
 
 test('reservations_menu_smoke', async ({ page }) => {
     // 1. Mock network to ensure no 400 errors (validation logic)
@@ -13,61 +14,7 @@ test('reservations_menu_smoke', async ({ page }) => {
     });
 
     // 2. Mock Login and Initial Data
-    await page.route('**/auth/v1/token?grant_type=password', async route => {
-        await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify({
-                access_token: 'fake-jwt-token',
-                token_type: 'bearer',
-                expires_in: 3600,
-                refresh_token: 'fake-refresh-token',
-                user: {
-                    id: 'test-admin-id',
-                    aud: 'authenticated',
-                    role: 'authenticated',
-                    email: 'admin@condominio.com',
-                    email_confirmed_at: new Date().toISOString(),
-                    phone: '',
-                    app_metadata: { provider: 'email', providers: ['email'] },
-                    user_metadata: {},
-                    identities: [],
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString(),
-                }
-            })
-        });
-    });
-
-    await page.route('**/auth/v1/user', async route => {
-        await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify({
-                id: 'test-admin-id',
-                aud: 'authenticated',
-                role: 'authenticated',
-                email: 'admin@condominio.com',
-                app_metadata: { provider: 'email', providers: ['email'] },
-                user_metadata: {}
-            })
-        });
-    });
-
-    await page.route('**/rest/v1/profiles*', async route => {
-        await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify([{
-                id: 'test-admin-id',
-                nombre: 'Administrador Test',
-                unidad: 'Admin',
-                role: 'admin', // Critical for admin access
-                has_parking: false,
-                email: 'admin@condominio.com'
-            }])
-        });
-    });
+    await mockSupabaseAuth(page);
 
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
