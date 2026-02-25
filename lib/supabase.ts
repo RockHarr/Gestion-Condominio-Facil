@@ -21,7 +21,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Fallback to dummy values to prevent crash if env vars are missing, allowing App to show proper error UI
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder', {
+// Using example.supabase.co (which resolves) instead of placeholder.supabase.co to avoid DNS errors (ERR_NAME_NOT_RESOLVED) in tests
+export const supabase = createClient(supabaseUrl || 'https://example.supabase.co', supabaseAnonKey || 'placeholder', {
     auth: {
         persistSession: true,
         autoRefreshToken: true,
