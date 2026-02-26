@@ -9,7 +9,6 @@
     "preview": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "test:ci": "playwright test --reporter=line",
     "test:report": "playwright show-report",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
     "lint:strict": "eslint App.tsx components services types.ts --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --rule '{\"@typescript-eslint/no-explicit-any\": \"off\", \"@typescript-eslint/no-unused-vars\": \"off\", \"react-hooks/exhaustive-deps\": \"error\"}'",
