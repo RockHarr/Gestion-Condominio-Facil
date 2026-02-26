@@ -8,6 +8,14 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 5500,
       host: '0.0.0.0',
+      proxy: {
+        '/supabase-proxy': {
+          target: 'https://tqshoddiisfgfjqlkntv.supabase.co',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/supabase-proxy/, ''),
+        },
+      },
     },
     plugins: [react()],
     define: {
