@@ -21,7 +21,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Fallback to dummy values to prevent crash if env vars are missing, allowing App to show proper error UI
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder', {
+// Use localhost:3000 to prevent CORS errors in CI/Test when mocking requests
+export const supabase = createClient(supabaseUrl || 'http://localhost:3000', supabaseAnonKey || 'placeholder', {
     auth: {
         persistSession: true,
         autoRefreshToken: true,

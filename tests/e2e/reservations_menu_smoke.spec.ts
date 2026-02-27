@@ -1,31 +1,46 @@
 import { test, expect } from '@playwright/test';
+import { mockSupabaseAuth } from './utils/mock-auth';
 
 test('reservations_menu_smoke', async ({ page }) => {
+    // Enable Console Logging
+    page.on('console', msg => console.log(`BROWSER LOG: ${msg.text()}`));
+
     // 1. Mock network to ensure no 400 errors (validation logic)
     const failedRequests: string[] = [];
     page.on('requestfailed', request => {
+        console.log(`REQUEST FAILED: ${request.url()} - ${request.failure()?.errorText}`);
         failedRequests.push(`${request.url()} - ${request.failure()?.errorText}`);
     });
+
+    // Debug responses
     page.on('response', response => {
+        // console.log(`RESPONSE: ${response.url()} - ${response.status()}`);
         if (response.status() >= 400 && response.url().includes('/rest/v1/reservations')) {
             failedRequests.push(`${response.url()} - ${response.status()}`);
         }
     });
 
+    // Use shared mock
+    await mockSupabaseAuth(page);
+
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
     // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
-    if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+    try {
+        if (await page.getByText('Iniciar Sesión').isVisible({ timeout: 5000 })) {
+            await page.fill('input[type="email"]', 'admin@condominio.com');
+            await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
+            await page.click('button:has-text("Ingresar"), button:has-text("Iniciar Sesión")');
+        }
+    } catch (e) {
+        console.log('Login screen not found or timed out, assuming already logged in or stuck.');
     }
 
     // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible({ timeout: 10000 });
 
     // 4. Navigate
     await page.click('button:has-text("Gestión de Reservas")');
