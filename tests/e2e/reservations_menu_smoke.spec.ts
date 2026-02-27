@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { mockSupabaseAuth } from './utils/mock-auth';
 
 test('reservations_menu_smoke', async ({ page }) => {
     // Enable Console Logging
@@ -19,76 +20,8 @@ test('reservations_menu_smoke', async ({ page }) => {
         }
     });
 
-    // Mock Supabase Auth to bypass backend dependency in CI
-    await page.route('**/auth/v1/token?*', async route => {
-        console.log('MOCK: Intercepted Auth Token Request');
-        const json = {
-            access_token: 'mock-access-token',
-            token_type: 'bearer',
-            expires_in: 3600,
-            refresh_token: 'mock-refresh-token',
-            user: {
-                id: 'mock-user-id',
-                aud: 'authenticated',
-                role: 'authenticated',
-                email: 'admin@condominio.com',
-                app_metadata: { provider: 'email' },
-                user_metadata: {},
-                created_at: new Date().toISOString(),
-            }
-        };
-        await route.fulfill({ json });
-    });
-
-    // Mock Profile data to ensure role is Admin
-    // Handling potential "single" vs "array" expectations
-    await page.route('**/rest/v1/profiles*', async route => {
-        console.log('MOCK: Intercepted Profile Request');
-        // Supabase .single() expects a single object in body if Accept header is correct,
-        // but robust mocks often return array if not sure.
-        // Let's check headers.
-        const headers = route.request().headers();
-        if (headers['accept'] && headers['accept'].includes('application/vnd.pgrst.object+json')) {
-             await route.fulfill({
-                json: {
-                    id: 'mock-user-id',
-                    nombre: 'Admin Mock',
-                    unidad: '101',
-                    role: 'admin',
-                    has_parking: true
-                }
-            });
-        } else {
-            await route.fulfill({
-                json: [{
-                    id: 'mock-user-id',
-                    nombre: 'Admin Mock',
-                    unidad: '101',
-                    role: 'admin',
-                    has_parking: true
-                }]
-            });
-        }
-    });
-
-    // Mock other potential blocking requests (Notices, etc)
-    await page.route('**/rest/v1/notices*', async route => {
-        await route.fulfill({ json: [] });
-    });
-    await page.route('**/rest/v1/amenities*', async route => {
-        await route.fulfill({ json: [] });
-    });
-    await page.route('**/rest/v1/reservations*', async route => {
-        await route.fulfill({ json: [] });
-    });
-    await page.route('**/rest/v1/expenses*', async route => {
-        await route.fulfill({ json: [] });
-    });
-    await page.route('**/rest/v1/community_settings*', async route => {
-        await route.fulfill({
-            json: { commonExpense: 50000, parkingCost: 10000, id: 1 }
-        });
-    });
+    // Use shared mock
+    await mockSupabaseAuth(page);
 
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
