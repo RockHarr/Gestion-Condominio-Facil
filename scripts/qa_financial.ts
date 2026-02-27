@@ -21,8 +21,13 @@ try {
     console.warn('Error loading .env.local', e);
 }
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+    console.error('Error: VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY not set in .env.local or environment.');
+    process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -41,7 +46,7 @@ async function testFinancials() {
     if (payError) {
         console.error('❌ Error fetching payments:', payError);
     } else {
-        const totalIncome = payments.reduce((sum, p) => sum + p.monto, 0);
+        const totalIncome = payments ? payments.reduce((sum: any, p: any) => sum + p.monto, 0) : 0;
         console.log(`💰 Manual Calculation - Total Income (All Time): $${totalIncome}`);
     }
 
@@ -54,7 +59,7 @@ async function testFinancials() {
     if (expError) {
         console.error('❌ Error fetching expenses:', expError);
     } else {
-        const totalExpenses = expenses.reduce((sum, e) => sum + e.monto, 0);
+        const totalExpenses = expenses ? expenses.reduce((sum: any, e: any) => sum + e.monto, 0) : 0;
         console.log(`💸 Manual Calculation - Total Expenses (Approved): $${totalExpenses}`);
     }
 
@@ -89,7 +94,7 @@ async function testFinancials() {
         const mockTotalExpense = 1000000;
         console.log(`Simulating with Total Expenses: $${mockTotalExpense}`);
 
-        residents.slice(0, 3).forEach(r => {
+        residents.slice(0, 3).forEach((r: any) => {
             const alicuota = r.alicuota || 0;
             const debt = Math.round((mockTotalExpense * alicuota) / 100);
             console.log(` - User ${r.id.slice(0, 8)}... | Alicuota: ${alicuota}% | Calc Debt: $${debt} | Parking: ${r.has_parking ? '$' + parkingCost : '$0'}`);
