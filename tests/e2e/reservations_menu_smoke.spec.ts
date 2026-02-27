@@ -52,33 +52,45 @@ test('reservations_menu_smoke', async ({ page }) => {
     await page.route('**/rest/v1/tickets?*', async route => route.fulfill({ json: [] }));
     await page.route('**/rest/v1/notices?*', async route => route.fulfill({ json: [] }));
     await page.route('**/rest/v1/amenities?*', async route => route.fulfill({ json: [] }));
+    await page.route('**/rest/v1/common_expenses?*', async route => route.fulfill({ json: [] }));
 
     // 2. Navigate
     await page.goto('/');
 
-    // 3. Login Flow Handling
-    const loginButton = page.getByRole('button', { name: /Iniciar Sesión|Enviar enlace/i });
+    // 3. Login Flow Handling - HIGH ROBUSTNESS
+    // Check if we are on the login page by looking for email input
+    const emailInput = page.locator('input[type="email"]');
+    if (await emailInput.isVisible()) {
+        await emailInput.fill('rockwell.harrison@gmail.com');
 
-    if (await loginButton.isVisible()) {
-        await page.fill('input[type="email"]', 'rockwell.harrison@gmail.com');
-
-        const passwordToggle = page.locator('button:has-text("Usar contraseña")');
+        // Explicitly click "Usar contraseña"
+        const passwordToggle = page.locator('button', { hasText: 'Usar contraseña' });
         if (await passwordToggle.isVisible()) {
             await passwordToggle.click();
         }
 
-        await page.fill('input[type="password"]', '270386');
-        await page.click('button:has-text("Iniciar Sesión")');
+        // Wait for password input to be visible
+        const passwordInput = page.locator('input[type="password"]');
+        await expect(passwordInput).toBeVisible();
+        await passwordInput.fill('270386');
 
-        // Wait for navigation/login to complete
-        await expect(page.getByRole('heading', { name: /Panel de Control|Inicio/i })).toBeVisible({ timeout: 15000 });
+        // Submit
+        await page.click('button:has-text("Iniciar Sesión")');
     }
 
+    // Wait for navigation/login to complete
+    // Strict mode safety: match specific heading if possible, or relax regex
+    await expect(page.getByRole('heading', { name: /Panel de Control|Inicio/i }).first()).toBeVisible({ timeout: 15000 });
+
     // 4. Verify Sidebar (Admin) or Tab Bar (Resident)
+    // Try to find the admin menu item.
+    // NOTE: If we are in mobile view in the test runner, sidebar might be hidden or different.
+
     const adminMenu = page.getByRole('button', { name: /Gestión de Reservas/i });
+    const mobileMenu = page.getByRole('button', { name: 'Más' });
 
     if (await adminMenu.isVisible()) {
-        // Admin Flow
+        // Desktop Admin Flow
         await adminMenu.click();
         await expect(page.getByText('Gestión de Reservas', { exact: true })).toBeVisible();
 
@@ -88,11 +100,17 @@ test('reservations_menu_smoke', async ({ page }) => {
         expect(hasCards || hasEmptyState).toBeTruthy();
 
         await expect(page.getByText('Pendientes')).toBeVisible();
+    } else if (await mobileMenu.isVisible()) {
+        // Mobile Flow (Admin or Resident)
+        // Just verify we can navigate
+        await mobileMenu.click();
+        // Check if "Gestión de Reservas" is in the more menu?
+        // Or just assume success if we logged in.
+        // Let's check for "Reservar" or "Votaciones"
+        // This is a smoke test, ensuring we don't crash is main goal.
+        await expect(page.getByText(/Perfil|Cerrar Sesión/i).first()).toBeVisible();
     } else {
-        // Resident Flow
-        const reserveTab = page.getByText('Reservar');
-        if (await reserveTab.isVisible()) {
-             // We are good, menu loaded
-        }
+        // Fallback: Check for any main navigation element
+         await expect(page.getByText('Inicio')).toBeVisible();
     }
 });
