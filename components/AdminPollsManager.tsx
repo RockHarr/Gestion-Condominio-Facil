@@ -240,16 +240,26 @@ export const AdminPollsManager: React.FC = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Opciones</label>
                                 {newPoll.options.map((opt, idx) => (
-                                    <div key={idx} className="flex gap-2 mb-2">
+                                    <div key={idx} className="flex gap-2 mb-2 items-center">
                                         <input
+                                            id={`poll-option-${idx}`}
+                                            aria-label={`Opción ${idx + 1}`}
                                             type="text"
-                                            className="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                            className="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2"
                                             value={opt}
                                             onChange={e => updateOption(idx, e.target.value)}
                                             placeholder={`Opción ${idx + 1}`}
                                         />
                                         {newPoll.options.length > 2 && (
-                                            <Button variant="secondary" onClick={() => removeOption(idx)}>X</Button>
+                                            <Button
+                                                variant="ghost"
+                                                onClick={() => removeOption(idx)}
+                                                className="w-auto px-2 py-2 text-red-500 hover:bg-red-50 hover:text-red-600"
+                                                aria-label={`Eliminar opción ${idx + 1}`}
+                                                title="Eliminar opción"
+                                            >
+                                                <Icons name="trash" className="w-5 h-5" />
+                                            </Button>
                                         )}
                                     </div>
                                 ))}

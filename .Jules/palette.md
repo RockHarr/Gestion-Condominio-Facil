@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-24 - Accessible Dynamic Lists
+**Learning:** Dynamic lists of inputs (like poll options) often lack specific labels, making them inaccessible to screen readers.
+**Action:** Always add unique `id` and `aria-label` attributes to dynamically generated inputs (e.g., `aria-label="Opción 1"`), and ensure delete buttons have descriptive labels (e.g., `aria-label="Eliminar opción 1"`).
