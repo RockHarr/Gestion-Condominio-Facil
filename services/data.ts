@@ -181,7 +181,9 @@ export const dataService = {
   // --- Debts & Payments ---
   async getCommonExpenseDebts(userId?: string | number) {
     let query = supabase.from('common_expense_debts').select('*');
-    if (userId) query = query.eq('user_id', userId);
+    if (userId !== undefined && userId !== null) {
+      query = query.eq('user_id', userId);
+    }
 
     const { data, error } = await withTimeout(query.order('mes', { ascending: false }));
     if (error) throw error;
@@ -190,7 +192,9 @@ export const dataService = {
 
   async getParkingDebts(userId?: string | number) {
     let query = supabase.from('parking_debts').select('*');
-    if (userId) query = query.eq('user_id', userId);
+    if (userId !== undefined && userId !== null) {
+      query = query.eq('user_id', userId);
+    }
 
     const { data, error } = await withTimeout(query.order('mes', { ascending: false }));
     if (error) throw error;
@@ -199,7 +203,9 @@ export const dataService = {
 
   async getPaymentHistory(userId?: string | number) {
     let query = supabase.from('payments').select('*');
-    if (userId) query = query.eq('user_id', userId);
+    if (userId !== undefined && userId !== null) {
+      query = query.eq('user_id', userId);
+    }
 
     const { data, error } = await withTimeout(query.order('fecha_pago', { ascending: false }));
     if (error) throw error;
