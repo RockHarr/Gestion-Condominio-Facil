@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-01-27 - [Unbounded Input Length in Ticket Creation]
+**Vulnerability:** The `createTicket` function in `services/data.ts` accepted unlimited string lengths for `titulo`, `descripcion`, and `foto`. This could allow a malicious user to cause a Denial of Service (DoS) by sending massive payloads to the database, or exhaust storage with large Base64 strings.
+**Learning:** Client-side validation is insufficient as it can be easily bypassed. The service layer (backend logic) must enforce strict limits before interacting with the database.
+**Prevention:** Added explicit length validation in `services/data.ts` to reject requests exceeding defined limits (100 chars for title, 2000 chars for description, ~5MB for photos).
