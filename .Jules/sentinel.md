@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-01-28 - [Financial Integrity Bypass via Profile Updates]
+**Vulnerability:** Users could update their own `has_parking` status to `false` via the API, bypassing parking fees calculated by the backend which relied on this flag. The existing RLS policy allowed full updates to the user's profile row.
+**Learning:** Protecting `role` is not enough; any field that drives business logic (like billing) must be protected from user modification.
+**Prevention:** Expand the `BEFORE UPDATE` trigger to whitelist updatable columns or blacklist sensitive ones like `has_parking`, `unit_id`, and `alicuota`.
