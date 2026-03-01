@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - Form Accessibility & Toast Roles
+**Learning:** `aria-describedby` is crucial for linking character counters and error messages to their inputs, as screen readers don't automatically announce nearby text. Also, `Toast` components need `role="alert"` (for errors) or `role="status"` to be announced without focus change.
+**Action:** When creating forms with helpers or custom validation, always use `aria-describedby`. Ensure transient notifications use appropriate ARIA roles.
