@@ -12,6 +12,7 @@ const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 test.describe('Security Policy Verification', () => {
 
     test('Resident should only see own data and public notices', async ({ page }) => {
+        test.skip(process.env.VITE_SUPABASE_URL === 'https://example.supabase.co' || !process.env.VITE_SUPABASE_URL, 'Skipping test with dummy Supabase URL');
         // 1. Login as Resident
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
@@ -44,6 +45,7 @@ test.describe('Security Policy Verification', () => {
     });
 
     test('Admin should see all data', async ({ page }) => {
+        test.skip(process.env.VITE_SUPABASE_URL === 'https://example.supabase.co' || !process.env.VITE_SUPABASE_URL, 'Skipping test with dummy Supabase URL');
         // 1. Login as Admin
         await page.goto('/');
         await page.fill('input[type="email"]', ADMIN_EMAIL);
