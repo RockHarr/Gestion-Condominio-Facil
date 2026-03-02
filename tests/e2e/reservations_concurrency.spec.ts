@@ -17,6 +17,7 @@ test.describe('Reservations - Concurrency Check', () => {
     let userId: string;
 
     test.beforeAll(async () => {
+        if (SUPABASE_URL === 'https://example.supabase.co') return;
         // 1. Get User/Unit Info
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email: RESIDENT_EMAIL,
@@ -49,6 +50,7 @@ test.describe('Reservations - Concurrency Check', () => {
     });
 
     test('should prevent double booking on simultaneous requests', async () => {
+        test.skip(SUPABASE_URL === 'https://example.supabase.co', 'Skipping test with dummy Supabase URL');
         // Define a slot for testing
         const startAt = new Date();
         startAt.setDate(startAt.getDate() + 20); // 20 days in future

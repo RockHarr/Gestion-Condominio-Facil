@@ -13,6 +13,7 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
 test('repro rpc hang with debt', async () => {
+    test.skip(SUPABASE_URL === 'https://example.supabase.co', 'Skipping test with dummy Supabase URL');
     // 1. Login as Resident to get ID
     console.log('1. Logging in as Resident...');
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({

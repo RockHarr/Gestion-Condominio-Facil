@@ -10,6 +10,10 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381';
 
 async function main() {
+    if (SUPABASE_URL === 'https://example.supabase.co') {
+        console.log('Skipping repro_rpc execution because using dummy Supabase URL.');
+        return;
+    }
     console.log('1. Logging in...');
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: RESIDENT_EMAIL,

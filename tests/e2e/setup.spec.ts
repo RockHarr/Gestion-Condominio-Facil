@@ -5,6 +5,7 @@ const ADMIN_PASSWORD = '270386';
 
 test.describe('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
+        test.skip(process.env.VITE_SUPABASE_URL === 'https://example.supabase.co' || !process.env.VITE_SUPABASE_URL, 'Skipping test with dummy Supabase URL');
         // 1. Login as Admin
         await page.goto('/');
 
