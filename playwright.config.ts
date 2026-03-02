@@ -43,6 +43,3 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
   },
 });
-
-  // Retries to prevent flaky test failures in CI
-  retries: process.env.CI ? 2 : 0,
