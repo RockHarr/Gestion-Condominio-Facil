@@ -39,7 +39,7 @@ export const Header: React.FC<{ title: string; onBack?: () => void; onLogout?: (
     <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
         <div className="flex items-center min-w-0">
             {onBack && (
-                <button onClick={onBack} className="mr-3 p-2 -ml-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-shrink-0" aria-label="Volver">
+                <button onClick={onBack} className="mr-3 p-2 -ml-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 flex-shrink-0" aria-label="Volver">
                     <Icons name="chevronLeft" className="w-6 h-6" />
                 </button>
             )}
@@ -48,7 +48,7 @@ export const Header: React.FC<{ title: string; onBack?: () => void; onLogout?: (
         <div className="flex items-center space-x-2 flex-shrink-0">
             {children}
             {onLogout && (
-                <button onClick={onLogout} className="p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Cerrar sesión">
+                <button onClick={onLogout} className="p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900" aria-label="Cerrar sesión">
                     <Icons name="logout" className="w-6 h-6" />
                 </button>
             )}
@@ -71,7 +71,7 @@ export const Toast: React.FC<{ message: string; type: 'success' | 'error' | 'inf
         <div className={`fixed top-4 right-4 z-50 p-4 rounded-md text-white shadow-lg animate-fade-in-down ${typeClasses[type]}`}>
             <div className="flex items-center justify-between">
                 <span>{message}</span>
-                <button onClick={onClose} className="ml-4 -mr-2 p-1 rounded-full hover:bg-white/20" aria-label="Cerrar notificación">
+                <button onClick={onClose} className="ml-4 -mr-2 p-1 rounded-full hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent" aria-label="Cerrar notificación">
                     <Icons name="xmark" className="w-5 h-5" />
                 </button>
             </div>
