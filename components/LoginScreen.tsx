@@ -136,7 +136,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 rounded-md"
                     aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   >
                     <Icons name={showPassword ? 'eye-slash' : 'eye'} className="w-5 h-5" />
@@ -179,7 +179,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
                 setUsePassword(!usePassword);
                 setMessage(null);
               }}
-              className="w-full text-sm text-blue-600 dark:text-blue-400 hover:underline focus:outline-none"
+              className="w-full text-sm text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 rounded"
             >
               {usePassword ? 'Usar enlace mágico (sin contraseña)' : 'Usar contraseña'}
             </button>

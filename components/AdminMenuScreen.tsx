@@ -73,7 +73,7 @@ export const AdminMenuScreen: React.FC<AdminMenuScreenProps & { onLogout?: () =>
                     <button
                         key={item.page}
                         onClick={() => onNavigate(item.page as Page)}
-                        className="text-left w-full group focus:outline-none"
+                        className="text-left w-full group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 rounded-xl"
                     >
                         <Card className="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border border-gray-100 dark:border-gray-700 shadow-sm">
                             <div className={`w-10 h-10 rounded-lg ${item.bg} flex items-center justify-center ${item.color} mr-4`}>
@@ -96,7 +96,7 @@ export const AdminMenuScreen: React.FC<AdminMenuScreenProps & { onLogout?: () =>
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                 <button
                     onClick={handleLogout}
-                    className="w-full text-left group focus:outline-none"
+                    className="w-full text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 rounded-xl"
                 >
                     <Card className="flex items-center p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30">
                         <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-800/30 flex items-center justify-center text-red-600 dark:text-red-400 mr-4">
