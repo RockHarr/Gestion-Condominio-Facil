@@ -43,6 +43,7 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
                         <button
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
+                            data-testid={`tab-${item.page}`}
                             className={`flex flex-col items-center justify-center w-full pt-2 pb-1 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 rounded-xl transition-colors duration-200 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
                         >
                             <div className="relative">
