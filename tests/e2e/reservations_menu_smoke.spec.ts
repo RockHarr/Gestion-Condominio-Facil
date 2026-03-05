@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { shouldSkipE2E } from '../test-config';
 
 test('reservations_menu_smoke', async ({ page }) => {
+    test.skip(shouldSkipE2E(), 'Skipping E2E test without real backend');
     // 1. Mock network to ensure no 400 errors (validation logic)
     const failedRequests: string[] = [];
     page.on('requestfailed', request => {

@@ -1,5 +1,6 @@
 
 import { test } from '@playwright/test';
+import { shouldSkipE2E } from './test-config';
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
@@ -13,6 +14,7 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
 test('repro rpc hang with debt', async () => {
+    test.skip(shouldSkipE2E(), 'Skipping E2E test without real backend');
     // 1. Login as Resident to get ID
     console.log('1. Logging in as Resident...');
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({

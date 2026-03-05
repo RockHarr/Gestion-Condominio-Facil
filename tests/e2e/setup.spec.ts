@@ -1,9 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+import { TEST_CONFIG, shouldSkipE2E } from '../test-config';
+
+const ADMIN_EMAIL = TEST_CONFIG.ADMIN_EMAIL;
+const ADMIN_PASSWORD = TEST_CONFIG.ADMIN_PASSWORD;
 
 test.describe('System Setup', () => {
+    test.skip(shouldSkipE2E(), 'Skipping E2E test without real backend');
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
         // 1. Login as Admin
         await page.goto('/');
