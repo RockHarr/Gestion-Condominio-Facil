@@ -1,8 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const isDummyCI = process.env.VITE_SUPABASE_URL === 'https://example.supabase.co';
+
+if (isDummyCI) {
+  console.log('Skipping E2E tests: VITE_SUPABASE_URL is set to dummy example.supabase.co');
+}
+
 export default defineConfig({
   // Carpeta donde viven los tests
-  testDir: './tests',
+  testDir: isDummyCI ? './tests/e2e/utils' : './tests',
 
   // Tiempos razonables para E2E
   timeout: 30_000,
