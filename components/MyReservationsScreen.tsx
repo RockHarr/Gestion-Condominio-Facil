@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Reservation, Amenity, Charge, ChargeStatus, User, ReservationStatus } from '../types';
-import { Card, Button } from './Shared';
+import { Card, Button, EmptyState } from './Shared';
 import Icons from './Icons';
 import { dataService } from '../services/data';
 
@@ -56,7 +56,11 @@ export const MyReservationsScreen: React.FC<MyReservationsScreenProps> = ({ rese
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Mis Reservas</h3>
 
             {myReservations.length === 0 ? (
-                <p className="text-gray-500 dark:text-gray-400 text-center py-4">No tienes reservas activas.</p>
+                <EmptyState
+                    icon="calendar-days"
+                    title="Sin reservas"
+                    description="No tienes reservas activas en este momento."
+                />
             ) : (
                 <div className="space-y-4">
                     {myReservations.map(reservation => {
