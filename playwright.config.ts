@@ -30,6 +30,10 @@ export default defineConfig({
     },
   ],
 
+  // Skip all tests if running in CI without valid backend credentials
+  // (e.g. from a fork PR where secrets are not exposed)
+  testIgnore: (!process.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL.includes('example.supabase.co') || process.env.VITE_SUPABASE_URL.includes('placeholder')) ? '**/*.spec.ts' : undefined,
+
   /**
    * Hace que Playwright levante la app antes de correr los tests.
    * Usamos el build de Vite (por eso en CI corremos `npm run build` antes).
