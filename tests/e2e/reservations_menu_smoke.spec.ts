@@ -15,23 +15,32 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
     // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
-    if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+    const emailInput = page.locator('input[type="email"]');
+    if (await emailInput.isVisible()) {
+        await emailInput.fill('rockwell.harrison@gmail.com');
+
+        // Ensure password field is visible
+        if (await page.locator('button:has-text("Usar contraseña")').isVisible()) {
+            await page.click('button:has-text("Usar contraseña")');
+        }
+
+        await page.fill('input[type="password"]', '270386'); // Test admin creds
+        await page.click('button:has-text("Iniciar Sesión")');
     }
 
-    // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    // Wait for the app to finish loading
+    await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible({ timeout: 15000 });
 
-    // 4. Navigate
-    await page.click('button:has-text("Gestión de Reservas")');
+    // 3. Navigate directly to admin-reservations
+    const navButton = page.locator('button').filter({ hasText: /^Reservas$|^Gestión de Reservas$/ }).first();
+    await expect(navButton).toBeVisible({ timeout: 15000 });
+    await navButton.click();
 
     // 5. Verify Page Content
-    await expect(page.getByText('Gestión de Reservas')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Gestión de Reservas' })).toBeVisible();
 
     // 6. Verify List or Empty State (Fallback UI)
     // Either we see cards OR the empty state message
