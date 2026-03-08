@@ -11,11 +11,11 @@
         - generic [ref=e11]: Correo Electrónico
         - textbox "Correo Electrónico" [ref=e12]:
           - /placeholder: tu@email.com
-          - text: contacto@rockcode.cl
+          - text: rockwell.harrison@gmail.com
       - generic [ref=e13]:
         - generic [ref=e14]: Contraseña
         - generic [ref=e15]:
-          - textbox "Contraseña" [ref=e16]: "180381"
+          - textbox "Contraseña" [ref=e16]: "270386"
           - button "Mostrar contraseña" [ref=e17] [cursor=pointer]:
             - img [ref=e18]
     - generic [ref=e21]: "Error al iniciar sesión: Failed to fetch"
