@@ -1,8 +1,16 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Read from default .env
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 export default defineConfig({
   // Carpeta donde viven los tests
   testDir: './tests',
+
+  // Skip all E2E tests if VITE_SUPABASE_URL points to the dummy example (no real backend to test against)
+  testIgnore: process.env.VITE_SUPABASE_URL === 'https://example.supabase.co' ? ['**/e2e/**/*.spec.ts', '**/repro_*.spec.ts'] : undefined,
 
   // Tiempos razonables para E2E
   timeout: 30_000,
