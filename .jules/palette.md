@@ -1,0 +1,3 @@
+## 2024-03-05 - Missing ARIA Labels and Focus States on Admin Action Icons
+**Learning:** Icon-only action buttons (e.g., Edit, Delete, Back, Close) inside map iterations (like in AmenitiesManager and ReservationTypesManager) were consistently missing `aria-label`, `title`, and keyboard focus visible states. This creates a pattern of screen-reader inaccessibility and poor keyboard usability for critical administrative tasks.
+**Action:** Always verify that mapped list items with icon-only actions inject item-specific context (e.g., `` aria-label={`Edit ${item.name}`} ``) and include focus rings (`focus:outline-none focus:ring-2 focus:ring-[color]-500`) to guarantee both screen reader clarity and keyboard navigability.
