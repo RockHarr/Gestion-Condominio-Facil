@@ -111,7 +111,9 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
           <div className="flex items-center gap-2 mb-1">
             <button
               onClick={() => onNavigate('admin-dashboard')}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1 -ml-1"
+              aria-label="Volver al panel de administración"
+              title="Volver al panel de administración"
             >
               <Icons name="arrow-left" className="w-5 h-5" />
             </button>
@@ -149,23 +151,28 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                     <Icons name="photo" className="w-12 h-12" />
                   </div>
                 )}
-                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                   <button
                     onClick={() => onNavigate('admin-reservation-types', { amenityId: amenity.id })}
-                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-green-50 text-green-600"
-                    title="Gestionar Tipos de Reserva"
+                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-green-50 text-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    title={`Gestionar tipos de reserva para ${amenity.name}`}
+                    aria-label={`Gestionar tipos de reserva para ${amenity.name}`}
                   >
                     <Icons name="clipboard-document-list" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleOpenModal(amenity)}
-                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600"
+                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    title={`Editar espacio ${amenity.name}`}
+                    aria-label={`Editar espacio ${amenity.name}`}
                   >
                     <Icons name="pencil" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(amenity.id)}
-                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600"
+                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    title={`Eliminar espacio ${amenity.name}`}
+                    aria-label={`Eliminar espacio ${amenity.name}`}
                   >
                     <Icons name="trash" className="w-4 h-4" />
                   </button>
@@ -211,7 +218,9 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
               </h2>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-gray-400 hover:text-gray-500"
+                className="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1"
+                aria-label="Cerrar modal"
+                title="Cerrar modal"
               >
                 <Icons name="xmark" className="w-6 h-6" />
               </button>
