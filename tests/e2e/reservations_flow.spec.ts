@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env" });
 import { test, expect } from '@playwright/test';
 
 // ==========================================
@@ -7,6 +9,7 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMA
 const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
+if (process.env.VITE_SUPABASE_URL === "https://example.supabase.co" || !process.env.VITE_SUPABASE_URL) { test.skip("Skipping tests in CI due to dummy Supabase URL"); }
 test.describe('Resident — Reservations Flow', () => {
 
     test.beforeEach(async ({ page }) => {

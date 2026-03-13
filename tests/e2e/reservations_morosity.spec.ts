@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env" });
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 
@@ -10,6 +12,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
 
+if (process.env.VITE_SUPABASE_URL === "https://example.supabase.co" || !process.env.VITE_SUPABASE_URL) { test.skip("Skipping tests in CI due to dummy Supabase URL"); }
 test.describe('Reservations - Morosity Check', () => {
     let moroseUnitId: number;
     let moroseUserId: string;

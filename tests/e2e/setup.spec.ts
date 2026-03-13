@@ -1,8 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env" });
 import { test, expect } from '@playwright/test';
 
 const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
+if (process.env.VITE_SUPABASE_URL === "https://example.supabase.co" || !process.env.VITE_SUPABASE_URL) { test.skip("Skipping tests in CI due to dummy Supabase URL"); }
 test.describe('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
         // 1. Login as Admin
