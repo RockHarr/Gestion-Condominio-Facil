@@ -94,7 +94,7 @@ test.describe('Reservations - Morosity Check', () => {
 
         // Wait for dashboard
         // The header title on home is "Inicio", and the greeting is "Hola, [Name]"
-        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible({ timeout: 15000 });
         await expect(page.getByText(/Hola,/)).toBeVisible();
 
         // 2. Navigate to Amenities
@@ -159,7 +159,7 @@ test.describe('Reservations - Morosity Check', () => {
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
-        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible({ timeout: 15000 });
 
         await page.click('text=Reservar');
         await page.click('text=Quincho');

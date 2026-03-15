@@ -44,6 +44,8 @@ jobs:
         run: npx playwright test --reporter=line
         env:
           CI: true
+          VITE_SUPABASE_URL: "https://example.supabase.co"
+          VITE_SUPABASE_ANON_KEY: "dummy-key"
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
