@@ -20,7 +20,7 @@ jobs:
 
       - run: npm run build
         env:
-          VITE_SUPABASE_URL: "https://placeholder.supabase.co"
+          VITE_SUPABASE_URL: "https://example.supabase.co"
           VITE_SUPABASE_ANON_KEY: "placeholder"
 
       - run: npx playwright install --with-deps
@@ -47,7 +47,7 @@ jobs:
         run: npx playwright test --reporter=line
         env:
           CI: true
-          VITE_SUPABASE_URL: "https://placeholder.supabase.co"
+          VITE_SUPABASE_URL: "https://example.supabase.co"
           VITE_SUPABASE_ANON_KEY: "placeholder"
 
       # 3) Sube el reporte HTML como artefacto
