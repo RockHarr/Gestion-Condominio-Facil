@@ -4,6 +4,9 @@ export default defineConfig({
   // Carpeta donde viven los tests
   testDir: './tests',
 
+  // Skip tests in CI if dummy URL is used because they require a real DB to not fail
+  // with AuthRetryableFetchError from placeholder.supabase.co
+
   // Tiempos razonables para E2E
   timeout: 30_000,
   expect: { timeout: 5_000 },
