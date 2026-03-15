@@ -10,6 +10,22 @@ import { FinancialCharts } from './FinancialCharts';
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount);
 
+// Helper for XSS prevention on user-supplied URLs
+const getSafeUrl = (url: string | undefined): string | undefined => {
+  if (!url) return undefined;
+  if (url === '#') return url;
+  try {
+    const parsed = new URL(url, 'http://dummy.com');
+    if (['http:', 'https:'].includes(parsed.protocol)) {
+      return url;
+    }
+  } catch (e) {
+    // If invalid or relative starting with / or #
+    if (url.startsWith('/') || url.startsWith('#')) return url;
+  }
+  return '#'; // Fallback for unsafe URLs like javascript:
+};
+
 interface AdminDashboardProps {
   expenses: Expense[];
   paymentHistory: PaymentRecord[];
@@ -756,7 +772,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </p>
                           {expense.evidenciaUrl ? (
                             <a
-                              href={expense.evidenciaUrl}
+                              href={getSafeUrl(expense.evidenciaUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline mt-1"
