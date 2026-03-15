@@ -82,8 +82,8 @@ export const IncidentModal: React.FC<IncidentModalProps> = ({ reservation, onClo
 
                     <div className="flex justify-end gap-2 mt-6">
                         <Button variant="secondary" onClick={onClose} disabled={loading}>Cancelar</Button>
-                        <Button variant="danger" onClick={handleSubmit} disabled={loading}>
-                            {loading ? 'Procesando...' : 'Generar Multa'}
+                        <Button variant="danger" onClick={handleSubmit} isLoading={loading}>
+                            Generar Multa
                         </Button>
                     </div>
                 </div>

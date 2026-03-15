@@ -94,8 +94,8 @@ export const DepositDecisionModal: React.FC<DepositDecisionModalProps> = ({ rese
 
                     <div className="flex justify-end gap-2 mt-6">
                         <Button variant="secondary" onClick={onClose} disabled={loading}>Cancelar</Button>
-                        <Button variant="primary" onClick={handleSubmit} disabled={loading}>
-                            {loading ? 'Procesando...' : 'Confirmar'}
+                        <Button variant="primary" onClick={handleSubmit} isLoading={loading}>
+                            Confirmar
                         </Button>
                     </div>
                 </div>

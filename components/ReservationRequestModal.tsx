@@ -145,7 +145,7 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
                             {amenity.name} - {selectedDate.toLocaleDateString()}
                         </p>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500" aria-label="Cerrar modal" title="Cerrar modal">
                         <Icons name="xmark" className="w-6 h-6" />
                     </button>
                 </div>
@@ -229,11 +229,11 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
                     )}
 
                     <div className="flex gap-3 pt-4">
-                        <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
+                        <Button type="button" variant="secondary" onClick={onClose} className="flex-1" disabled={loading}>
                             Cancelar
                         </Button>
-                        <Button type="submit" disabled={loading} className="flex-1">
-                            {loading ? 'Solicitando...' : 'Confirmar Reserva'}
+                        <Button type="submit" isLoading={loading} className="flex-1">
+                            Confirmar Reserva
                         </Button>
                     </div>
                 </form>

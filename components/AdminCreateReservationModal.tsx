@@ -78,7 +78,7 @@ export const AdminCreateReservationModal: React.FC<AdminCreateReservationModalPr
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                         Nueva Reserva (Admin)
                     </h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500" aria-label="Cerrar modal" title="Cerrar modal">
                         <Icons name="xmark" className="w-6 h-6" />
                     </button>
                 </div>
@@ -161,11 +161,11 @@ export const AdminCreateReservationModal: React.FC<AdminCreateReservationModalPr
                     </div>
 
                     <div className="flex gap-3 pt-4">
-                        <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
+                        <Button type="button" variant="secondary" onClick={onClose} className="flex-1" disabled={loading}>
                             Cancelar
                         </Button>
-                        <Button type="submit" className="flex-1" disabled={loading}>
-                            {loading ? 'Creando...' : 'Crear Reserva'}
+                        <Button type="submit" className="flex-1" isLoading={loading}>
+                            Crear Reserva
                         </Button>
                     </div>
                 </form>
