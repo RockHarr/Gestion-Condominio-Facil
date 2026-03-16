@@ -508,3 +508,28 @@ export function getErrorMessage(error: unknown): string {
   }
   return String(error);
 }
+
+// URL sanitization helper for security
+export function getSafeUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+
+  try {
+    // If it's a relative URL or anchor, consider it safe
+    if (url.startsWith('/') || url.startsWith('#')) {
+      return url;
+    }
+
+    const parsedUrl = new URL(url);
+    const protocol = parsedUrl.protocol.toLowerCase();
+
+    // Only allow safe protocols
+    if (protocol === 'http:' || protocol === 'https:' || protocol === 'mailto:') {
+      return url;
+    }
+
+    return undefined; // Unsafe protocol
+  } catch (e) {
+    // Invalid URL format
+    return undefined;
+  }
+}
