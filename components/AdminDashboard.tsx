@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useMemo } from 'react';
 import type { Expense, Page, PaymentRecord, User, Reservation, PageParams } from '../types';
-import { ExpenseStatus, ExpenseCategory } from '../types';
+import { ExpenseStatus, ExpenseCategory, getSafeUrl } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
 import { FinancialCharts } from './FinancialCharts';
@@ -754,9 +754,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <p className="font-bold text-xl text-gray-900 dark:text-white">
                             {formatCurrency(expense.monto)}
                           </p>
-                          {expense.evidenciaUrl ? (
+                          {expense.evidenciaUrl && getSafeUrl(expense.evidenciaUrl) ? (
                             <a
-                              href={expense.evidenciaUrl}
+                              href={getSafeUrl(expense.evidenciaUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline mt-1"
