@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - ARIA Labels for Icon-Heavy Navigation and Action Buttons
+**Learning:** Found several icon-heavy navigation and action buttons (e.g., in `ResidentTabBar`, `AdminNavigation`, and `HomeScreen`) lacking proper ARIA labels. The visual design relied on icons with secondary text or tooltips, but screen readers might not correctly interpret the action context without explicit labels.
+**Action:** Consistently add descriptive `aria-label` attributes to all interactive elements, especially those serving as primary navigation or key actions, even when paired with text, to ensure complete accessibility.

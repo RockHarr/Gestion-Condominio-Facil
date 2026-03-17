@@ -112,6 +112,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <button
               onClick={() => onNavigate('reservations')}
               className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
+              aria-label="Reservar espacios comunes"
             >
               <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                 <Icons name="calendar" className="w-5 h-5" />
@@ -123,6 +124,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <button
               onClick={() => onNavigate('ticket-create')}
               className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
+              aria-label="Crear nuevo ticket"
             >
               <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
                 <Icons name="plus" className="w-5 h-5" />
