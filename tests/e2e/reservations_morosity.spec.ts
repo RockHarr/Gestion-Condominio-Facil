@@ -1,14 +1,17 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { TEST_CONFIG } from '../test-config';
 
-// Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
-const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+// Credentials from environment or dummy fallbacks
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://tqshoddiisfgfjqlkntv.supabase.co';
+const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
+const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL;
+const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;
+const ADMIN_EMAIL = TEST_CONFIG.ADMIN_EMAIL;
+const ADMIN_PASSWORD = TEST_CONFIG.ADMIN_PASSWORD;
 
 test.describe('Reservations - Morosity Check', () => {
     let moroseUnitId: number;
@@ -46,8 +49,8 @@ test.describe('Reservations - Morosity Check', () => {
 
         // 2. Login as Admin to Insert Debt
         const { error: adminError } = await supabase.auth.signInWithPassword({
-            email: 'rockwell.harrison@gmail.com',
-            password: '270386'
+            email: ADMIN_EMAIL,
+            password: ADMIN_PASSWORD
         });
 
         if (adminError) {

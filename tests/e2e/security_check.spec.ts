@@ -1,13 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { TEST_CONFIG } from '../test-config';
 
-// ==========================================
-// CONFIGURATION: UPDATE THESE BEFORE RUNNING
-// ==========================================
-const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMAIL
-const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';       // REPLACE WITH REAL ADMIN EMAIL
-const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
-// ==========================================
+const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL;
+const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;
+const ADMIN_EMAIL = TEST_CONFIG.ADMIN_EMAIL;
+const ADMIN_PASSWORD = TEST_CONFIG.ADMIN_PASSWORD;
 
 test.describe('Security Policy Verification', () => {
 
