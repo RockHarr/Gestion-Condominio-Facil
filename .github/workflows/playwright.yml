@@ -9,7 +9,7 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     env:
-      VITE_SUPABASE_URL: 'https://example.supabase.co'
+      VITE_SUPABASE_URL: 'http://localhost:3000'
       VITE_SUPABASE_ANON_KEY: 'fake-key-for-ci-testing'
 
     steps:
