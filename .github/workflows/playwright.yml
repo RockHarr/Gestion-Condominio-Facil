@@ -12,15 +12,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: 'pnpm'
 
-      - run: npm ci
+      - run: pnpm install
 
-      - run: npm run build
+      - run: pnpm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://127.0.0.1:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'dummy_anon_key' }}
 
-      - run: npx playwright install --with-deps
+      - run: pnpm exec playwright install --with-deps
 
       # 🔎 DEBUG: ver árbol de tests y config (útil mientras afinamos)
       - name: Debug – listar árbol de tests y config
@@ -35,15 +43,19 @@ jobs:
 
       # 1) Lista los tests que detecta Playwright
       - name: Lista de tests detectados
-        run: npx playwright test --list
+        run: pnpm exec playwright test --list
         env:
           CI: true
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://127.0.0.1:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'dummy_anon_key' }}
 
       # 2) 🚀 Ejecuta los tests
       - name: Run E2E
-        run: npx playwright test --reporter=line
+        run: pnpm exec playwright test --reporter=line
         env:
           CI: true
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://127.0.0.1:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'dummy_anon_key' }}
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
