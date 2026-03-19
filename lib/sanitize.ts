@@ -8,9 +8,9 @@
 export function getSafeUrl(url: string | undefined | null): string {
   if (!url) return '#';
 
-  // Remove control characters and whitespace from the beginning of the URL
+  // Remove whitespace from the beginning of the URL
   // that might be used to bypass simple string matching
-  const cleanedUrl = url.replace(/^[\s\x00-\x1F]+/, '');
+  const cleanedUrl = url.trim();
 
   try {
     // Attempt to parse as an absolute URL first
@@ -20,7 +20,7 @@ export function getSafeUrl(url: string | undefined | null): string {
     }
     // If it's another protocol (e.g. javascript: data: file: vbscript:), reject
     return '#';
-  } catch (e) {
+  } catch {
     // If URL parsing fails, it might be a relative path.
     // Ensure it doesn't start with dangerous patterns
     if (/^(javascript|vbscript|data|file):/i.test(cleanedUrl)) {
