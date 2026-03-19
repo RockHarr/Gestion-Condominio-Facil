@@ -5,6 +5,7 @@ import { ExpenseStatus, ExpenseCategory } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
 import { FinancialCharts } from './FinancialCharts';
+import { getSafeUrl } from '../lib/sanitize';
 
 // Helper
 const formatCurrency = (amount: number) =>
@@ -756,7 +757,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </p>
                           {expense.evidenciaUrl ? (
                             <a
-                              href={expense.evidenciaUrl}
+                              href={getSafeUrl(expense.evidenciaUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline mt-1"
