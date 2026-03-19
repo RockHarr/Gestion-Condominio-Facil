@@ -18,7 +18,10 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build
+      - env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://127.0.0.1:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'dummy_key' }}
+        run: npm run build
 
       - run: npx playwright install --with-deps
 
@@ -43,6 +46,8 @@ jobs:
       - name: Run E2E
         run: npx playwright test --reporter=line
         env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://127.0.0.1:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'dummy_key' }}
           CI: true
 
       # 3) Sube el reporte HTML como artefacto
