@@ -27,13 +27,14 @@ test('reservations_menu_smoke', async ({ page }) => {
     }
 
     // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    const navButton = page.locator('button').filter({ hasText: /^Reservas$|^Gestión de Reservas$/ }).first();
+    await expect(navButton).toBeVisible();
 
     // 4. Navigate
-    await page.click('button:has-text("Gestión de Reservas")');
+    await navButton.click();
 
     // 5. Verify Page Content
-    await expect(page.getByText('Gestión de Reservas')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Gestión de Reservas' })).toBeVisible();
 
     // 6. Verify List or Empty State (Fallback UI)
     // Either we see cards OR the empty state message
