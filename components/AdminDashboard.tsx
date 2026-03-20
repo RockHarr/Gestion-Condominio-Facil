@@ -5,6 +5,7 @@ import { ExpenseStatus, ExpenseCategory } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';
 import { FinancialCharts } from './FinancialCharts';
+import { getSafeUrl } from '../lib/sanitize';
 
 // Helper
 const formatCurrency = (amount: number) =>
@@ -754,15 +755,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <p className="font-bold text-xl text-gray-900 dark:text-white">
                             {formatCurrency(expense.monto)}
                           </p>
-                          {expense.evidenciaUrl ? (
+                          {expense.evidenciaUrl && getSafeUrl(expense.evidenciaUrl) ? (
                             <a
-                              href={expense.evidenciaUrl}
+                              href={getSafeUrl(expense.evidenciaUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline mt-1"
                             >
                               <Icons name="paper-clip" className="w-3 h-3" /> Ver Evidencia
                             </a>
+                          ) : expense.evidenciaUrl ? (
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 dark:text-red-400 mt-1">
+                              <Icons name="exclamation-circle" className="w-3 h-3" /> URL Inválida
+                            </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-xs font-semibold text-yellow-600 dark:text-yellow-400 mt-1">
                               <Icons name="exclamation-triangle" className="w-3 h-3" /> Sin
