@@ -1,4 +1,4 @@
-export function getSafeUrl(url?: string): string | undefined {
+export function getSafeUrl(url?: string | null): string | undefined {
   if (!url) return undefined;
 
   // Strip control characters
