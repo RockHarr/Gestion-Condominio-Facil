@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2026-02-23 - [XSS via Unsanitized Link URL]
+**Vulnerability:** The `AdminDashboard.tsx` component directly rendered the `evidenciaUrl` property of an `Expense` object into the `href` attribute of an `<a>` tag without sanitization. An attacker who could submit an expense with a maliciously crafted URL (e.g., `javascript:alert(1)`) could execute arbitrary JavaScript in the context of the admin's session when they clicked "Ver Evidencia".
+**Learning:** All user-supplied data used in attributes that can execute code (like `href` or `src`) must be rigorously sanitized. Simple URL validation isn't enough; safe protocols must be enforced.
+**Prevention:** Implement a `getSafeUrl` utility that parses the URL and explicitly checks the protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`, `blob:`) and use it to wrap all dynamic URLs in `href` attributes.
