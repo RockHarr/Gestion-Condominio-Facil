@@ -2,7 +2,6 @@
 import { test } from '@playwright/test';
 import { TEST_CONFIG } from './test-config';
 import { createClient } from '@supabase/supabase-js';
-import { TEST_CONFIG } from './test-config';
 
 const SUPABASE_URL = TEST_CONFIG.SUPABASE_URL;
 const SUPABASE_KEY = TEST_CONFIG.SUPABASE_KEY;

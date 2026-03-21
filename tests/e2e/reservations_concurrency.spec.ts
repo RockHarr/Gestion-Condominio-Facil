@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { TEST_CONFIG } from '../test-config';
 import { createClient } from '@supabase/supabase-js';
-import { TEST_CONFIG } from '../test-config';
 
 // Credentials (hardcoded for test execution)
 const SUPABASE_URL = TEST_CONFIG.SUPABASE_URL;
