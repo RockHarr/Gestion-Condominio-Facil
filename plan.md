@@ -1,32 +1,12 @@
-1. **Analyze missing `aria-label` attributes on icon-only buttons**
-   I will find icon-only buttons (`<button>` tags containing only an `<Icons>` component and no text) without an `aria-label` attribute and add it to improve screen reader accessibility. I found several instances using `grep`, such as:
-   - `components/AmenitiesManager.tsx` (edit, delete, back buttons)
-   - `components/ReservationTypesManager.tsx` (edit, delete, back buttons)
-   - `components/AdminCreateReservationModal.tsx` (close button)
-   - `components/ReservationRequestModal.tsx` (close button)
-   - `components/AdminUnits.tsx` (edit, delete button)
-   - `components/TicketsScreen.tsx` (remove photo button)
+1. **Analyze Further Failures**
+   Even after applying the environment variables to the workflow, the CI is still failing with `net::ERR_CONNECTION_REFUSED` and `AuthRetryableFetchError: Failed to fetch`.
+   The dummy URL injected is `http://127.0.0.1:54321`. However, there is no actual Supabase backend running on port 54321 in the CI pipeline (there is no `supabase start` step).
+   The tests use Playwright and have hardcoded real credentials in them (`setup.spec.ts` has `rockwell.harrison@gmail.com`). This strongly suggests that the tests were designed to run against a real Supabase instance, but the GitHub CI is not configured with the real secrets.
+   Wait, if the original tests worked before, how were they working? The prompt says "CI failed", implying it might have been failing before my changes, or my changes broke it. My only changes were adding `aria-label` and editing `.github/workflows/playwright.yml`. Let's check `git log` and diffs.
 
-2. **Fix `components/AmenitiesManager.tsx`**
-   Add `aria-label` and `title` to the edit, delete, back, and create buttons to improve accessibility and provide tooltips.
+2. **Verify Previous State**
+   Ah! The `playwright.yml` did not have any `env` variables before I modified it. And memory states: "Frontend verification in CI without backend credentials is achieved by mocking Supabase network requests (`**/auth/v1/token`, `**/rest/v1/*`) using Playwright's `page.route` and the shared utility `tests/e2e/utils/mock-auth.ts`."
+   But wait, I checked `tests/e2e/utils/mock-auth.ts` and it didn't exist. Let me check the full `tests` tree.
 
-3. **Fix `components/ReservationTypesManager.tsx`**
-   Add `aria-label` and `title` to the edit, delete, back, and create buttons.
-
-4. **Fix `components/AdminCreateReservationModal.tsx`**
-   Add `aria-label="Cerrar modal"` to the close button.
-
-5. **Fix `components/ReservationRequestModal.tsx`**
-   Add `aria-label="Cerrar modal"` to the close button.
-
-6. **Fix `components/TicketsScreen.tsx`**
-   Add `aria-label="Eliminar foto"` to the remove photo button.
-
-7. **Record Critical Learning in Palette Journal**
-   Update `.Jules/palette.md` noting the common occurrence of icon-only buttons missing ARIA labels, and emphasizing the use of `aria-label` and `title` for accessibility and tooltips.
-
-8. **Run tests & verify**
-   Run `npm run lint` and `npm run test` (or `npx vitest`) to verify changes don't break functionality.
-
-9. **Pre-commit and Submit**
-   Get pre-commit instructions, complete them, and submit the changes with the `🎨 Palette:` prefix in the title.
+3. **Check `tests` structure**
+   `ls -la tests/e2e` and `ls -la tests`.

@@ -49,6 +49,10 @@ jobs:
           CI: true
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://127.0.0.1:54321' }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'dummy_anon_key' }}
+          TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL || 'admin@condominio.com' }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD || 'dummy_password' }}
+          TEST_RESIDENT_EMAIL: ${{ secrets.TEST_RESIDENT_EMAIL || 'resident@condominio.com' }}
+          TEST_RESIDENT_PASSWORD: ${{ secrets.TEST_RESIDENT_PASSWORD || 'dummy_password' }}
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
