@@ -12,3 +12,8 @@
 **Vulnerability:** The RLS policy for `tickets` was too restrictive (Admins could not see user tickets), which likely led developers to comment out the `user_id` filter in the backend service to "make it work", inadvertently creating a data leak vulnerability.
 **Learning:** When security controls (RLS) break functionality (Admin views), developers may bypass other security layers (Service filters). Security must enable business requirements, not block them.
 **Prevention:** Ensure RLS policies explicitly account for Admin privileges (e.g., `OR public.is_admin()`) so that correct application logic (filtering by user) can be safely enforced without workarounds.
+
+## 2024-03-22 - [XSS via Unsanitized `href` Attributes]
+**Vulnerability:** Found unsanitized usage of `expense.evidenciaUrl` in `components/AdminDashboard.tsx` where user-supplied URLs were passed directly into an `href` attribute. This could allow execution of XSS payloads like `javascript:alert(1)` if a malicious expense is submitted.
+**Learning:** Even internal-facing panels (like Admin Dashboards) are vulnerable to stored XSS if external data sources (like user-uploaded files or URLs) are not validated/sanitized before being rendered into the DOM.
+**Prevention:** Always use a helper like `getSafeUrl` to strip control characters and enforce a strict allow-list of safe protocols (`http:`, `https:`, `mailto:`, `tel:`, `blob:`, and relative paths) before setting any dynamic `href` value in React.
