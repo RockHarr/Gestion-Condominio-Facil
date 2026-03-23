@@ -21,7 +21,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Fallback to dummy values to prevent crash if env vars are missing, allowing App to show proper error UI
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder', {
+export const supabase = createClient(supabaseUrl || 'http://127.0.0.1:54321', supabaseAnonKey || 'placeholder', {
     auth: {
         persistSession: true,
         autoRefreshToken: true,
