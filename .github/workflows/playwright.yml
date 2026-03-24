@@ -48,6 +48,8 @@ jobs:
         run: npx playwright test --reporter=line
         env:
           CI: true
+          VITE_SUPABASE_URL: "http://127.0.0.1:54321"
+          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
