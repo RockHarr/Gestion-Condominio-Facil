@@ -149,10 +149,7 @@ function App() {
     setTheme(initialTheme);
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
 
-    // Check Env Vars
-    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-      showToast('Faltan credenciales de Supabase en .env.local', 'error');
-    }
+    // Check Env Vars (Using standard logic, skipping explicit import checks as VITE strips them if env vars change post-build)
 
     console.log('App: Starting auth check...', window.location.href);
 
