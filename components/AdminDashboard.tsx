@@ -387,6 +387,7 @@ export const AdminRejectExpenseModal: React.FC<{
 
 import { dataService } from '../services/data';
 import { FinancialKpis } from '../types';
+import { getSafeUrl } from '../lib/sanitize';
 
 // ... (imports remain the same)
 
@@ -756,7 +757,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </p>
                           {expense.evidenciaUrl ? (
                             <a
-                              href={expense.evidenciaUrl}
+                              href={getSafeUrl(expense.evidenciaUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline mt-1"
