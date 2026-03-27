@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { validateTicketInput, validatePollInput } from './validation';
 import type {
   Ticket,
   Notice,
@@ -48,6 +49,8 @@ export const dataService = {
   },
 
   async createTicket(ticket: Omit<Ticket, 'id' | 'fecha' | 'user' | 'estado'>, userId: string) {
+    validateTicketInput(ticket.titulo, ticket.descripcion, ticket.foto);
+
     const { data, error } = await withTimeout(
       supabase
         .from('tickets')
@@ -486,6 +489,8 @@ export const dataService = {
     strategy: 'UNIT' | 'ALICUOTA',
     showResultsWhen: 'LIVE' | 'CLOSED',
   ) {
+    validatePollInput(question, options, startAt, endAt);
+
     const { data, error } = await withTimeout(
       supabase.rpc('create_poll', {
         p_question: question,
