@@ -8,7 +8,7 @@ interface ResidentTabBarProps {
     unreadNotices: number;
 }
 
-export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onNavigate, unreadNotices }) => {
+export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onNavigate, unreadNotices = 0 }) => {
     const navItems = [
         { page: 'home', icon: 'home', label: 'Inicio' },
         { page: 'payments', icon: 'wallet', label: 'Pagos' },
@@ -43,12 +43,16 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
                         <button
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
+                            data-testid={`tab-${item.page}`}
+                            aria-current={isActive ? 'page' : undefined}
+                            aria-label={hasBadge ? `${item.label}, ${unreadNotices} avisos nuevos` : undefined}
                             className={`flex flex-col items-center justify-center w-full pt-2 pb-1 text-sm font-medium focus:outline-none transition-colors duration-200 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
                         >
                             <div className="relative">
                                 <Icons name={item.icon} className="w-7 h-7" />
                                 {hasBadge && (
-                                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full animate-pulse">
+                                    <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[1rem] h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full animate-pulse">
+                                        {unreadNotices > 9 ? '9+' : unreadNotices}
                                     </span>
                                 )}
                             </div>
