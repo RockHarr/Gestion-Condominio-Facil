@@ -48,6 +48,10 @@ export const dataService = {
   },
 
   async createTicket(ticket: Omit<Ticket, 'id' | 'fecha' | 'user' | 'estado'>, userId: string) {
+    if (ticket.titulo.length > 100) throw new Error('Title cannot exceed 100 characters');
+    if (ticket.descripcion.length > 2000)
+      throw new Error('Description cannot exceed 2000 characters');
+
     const { data, error } = await withTimeout(
       supabase
         .from('tickets')
@@ -82,6 +86,9 @@ export const dataService = {
   },
 
   async createNotice(notice: Omit<Notice, 'id' | 'fecha' | 'leido' | 'status'>) {
+    if (notice.titulo.length > 100) throw new Error('Title cannot exceed 100 characters');
+    if (notice.contenido.length > 5000) throw new Error('Content cannot exceed 5000 characters');
+
     const { data, error } = await withTimeout(
       supabase
         .from('notices')
@@ -486,6 +493,12 @@ export const dataService = {
     strategy: 'UNIT' | 'ALICUOTA',
     showResultsWhen: 'LIVE' | 'CLOSED',
   ) {
+    if (question.length > 200) throw new Error('Question cannot exceed 200 characters');
+    if (options.length < 2 || options.length > 20)
+      throw new Error('Poll must have between 2 and 20 options');
+    if (options.some((opt) => opt.length > 100))
+      throw new Error('Options cannot exceed 100 characters');
+
     const { data, error } = await withTimeout(
       supabase.rpc('create_poll', {
         p_question: question,
@@ -607,6 +620,10 @@ export const dataService = {
 
   // --- Admin: Expenses ---
   async addExpense(expense: Omit<Expense, 'id' | 'status' | 'fecha' | 'motivoRechazo'>) {
+    if (expense.descripcion.length > 200)
+      throw new Error('Description cannot exceed 200 characters');
+    if (expense.monto <= 0) throw new Error('Amount must be positive');
+
     const { data, error } = await withTimeout(
       supabase
         .from('expenses')
