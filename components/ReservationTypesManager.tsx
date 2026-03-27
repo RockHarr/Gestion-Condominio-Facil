@@ -51,7 +51,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
         // OR update Props to string. Ideally Props filter matching.
         // Assuming amenityId prop will also change to string or is used as filter.
         // But let's check Props definition.
-        fetchedTypes = fetchedTypes.filter((t) => t.amenity_id === String(amenityId));
+        fetchedTypes = fetchedTypes.filter((t) => String(t.amenity_id) === String(amenityId));
         setSelectedAmenityId(String(amenityId));
       }
 

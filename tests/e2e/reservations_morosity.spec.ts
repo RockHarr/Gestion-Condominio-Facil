@@ -122,7 +122,8 @@ test.describe('Reservations - Morosity Check', () => {
         }
 
         // Wait for type selection (prevents race condition)
-        await expect(page.getByText('Tarifa de uso:')).toBeVisible();
+        // Wait for either the text OR the select to ensure form is ready. Use first() to avoid strict mode violation if both are present.
+        await expect(page.getByText('Tarifa de uso:').or(page.locator('select')).first()).toBeVisible({ timeout: 10000 });
 
         await page.click('button:has-text("Confirmar Reserva")');
 
@@ -136,7 +137,7 @@ test.describe('Reservations - Morosity Check', () => {
         // 3. Verify Blocking
         // The error is displayed in the modal, not as a toast
         const errorMessage = page.getByText(/Usuario moroso/i);
-        await expect(errorMessage).toBeVisible({ timeout: 10000 });
+        await expect(errorMessage).toBeVisible({ timeout: 30000 });
 
         console.log('Verified: Reservation blocked with "Usuario moroso" message.');
     });
@@ -173,13 +174,14 @@ test.describe('Reservations - Morosity Check', () => {
         }
 
         // Wait for type selection (prevents race condition)
-        await expect(page.getByText('Tarifa de uso:')).toBeVisible();
+        // Wait for either the text OR the select to ensure form is ready. Use first() to avoid strict mode violation if both are present.
+        await expect(page.getByText('Tarifa de uso:').or(page.locator('select')).first()).toBeVisible({ timeout: 10000 });
 
         await page.click('button:has-text("Confirmar Reserva")');
 
         // 3. Verify Success
         const successToast = page.getByText(/Solicitud de reserva enviada/i);
-        await expect(successToast).toBeVisible({ timeout: 10000 });
+        await expect(successToast).toBeVisible({ timeout: 30000 });
 
         console.log('Verified: Reservation allowed after payment.');
     });

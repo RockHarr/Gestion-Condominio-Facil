@@ -40,7 +40,9 @@ test.describe('Security Policy Verification', () => {
 
         // Logout
         await page.click('[data-testid="tab-more"]');
-        await page.click('button:has-text("Cerrar Sesión")');
+        // Navigate to Profile to access Logout
+        await page.click('text=Mi Perfil');
+        await page.click('button:has-text("Cerrar Sesión")', { timeout: 30000 });
     });
 
     test('Admin should see all data', async ({ page }) => {

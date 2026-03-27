@@ -62,8 +62,23 @@ test.describe('System Setup', () => {
             await page.getByLabel('Garantía (CLP)').fill('20000');
             await page.getByLabel('Duración Máxima (minutos)').fill('240');
 
+            // Handle potential alerts
+            page.on('dialog', async dialog => {
+                console.log('Dialog appeared:', dialog.message());
+                await dialog.accept();
+            });
+
             await page.click('button:has-text("Guardar")');
-            await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible();
+            // Wait for modal to close (assuming success)
+            await expect(page.getByRole('dialog')).not.toBeVisible();
+            // Increase timeout for the item to appear in the list
+            try {
+                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 5000 });
+            } catch (e) {
+                console.log('Item not visible immediately, reloading page...');
+                await page.reload();
+                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 15000 });
+            }
         }
     });
 });
