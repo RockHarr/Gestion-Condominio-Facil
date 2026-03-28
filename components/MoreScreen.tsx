@@ -49,7 +49,7 @@ export const MoreScreen: React.FC<MoreScreenProps> = ({ onNavigate, unreadNotice
                     <button
                         key={item.page}
                         onClick={() => onNavigate(item.page as Page)}
-                        className="text-left w-full group focus:outline-none"
+                        className="text-left w-full group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 rounded-xl"
                     >
                         <Card className="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
                             <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 mr-4 group-hover:scale-110 transition-transform">

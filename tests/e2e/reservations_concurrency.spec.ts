@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { shouldSkipE2E } from '../test-config';
 import { createClient } from '@supabase/supabase-js';
 
 // Credentials (hardcoded for test execution)
@@ -11,6 +12,7 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381';
 
 test.describe('Reservations - Concurrency Check', () => {
+    test.skip(shouldSkipE2E(), 'Skipping E2E test without real backend');
     let amenityId: number;
     let typeId: number;
     let unitId: number;

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { shouldSkipE2E } from '../test-config';
 import { createClient } from '@supabase/supabase-js';
 
 // Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
@@ -11,6 +12,7 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
 
 test.describe('Reservations - Morosity Check', () => {
+    test.skip(shouldSkipE2E(), 'Skipping E2E test without real backend');
     let moroseUnitId: number;
     let moroseUserId: string;
 

@@ -47,6 +47,7 @@ export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigat
                         <button
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
+                            data-testid={`tab-${item.page.replace("admin-dashboard", "home").replace("admin-amenities", "amenities").replace("admin-menu", "more")}`}
                             className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-200 ${isActive
                                 ? 'text-blue-600 dark:text-blue-400'
                                 : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
@@ -113,6 +114,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
                         <button
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
+                            data-testid={`tab-${item.page.replace("admin-dashboard", "home").replace("admin-amenities", "amenities").replace("admin-menu", "more")}`}
                             className={`w-full flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-200 group ${isActive
                                 ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-sm'
                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'
