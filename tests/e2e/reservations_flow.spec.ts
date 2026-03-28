@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
@@ -8,6 +9,7 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
 test.describe('Resident — Reservations Flow', () => {
+    test.skip(!checkTestEnv());
 
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident

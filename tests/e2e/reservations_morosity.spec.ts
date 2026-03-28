@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv } from '../test-config';
 
 // Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
 const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
@@ -11,6 +12,7 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
 
 test.describe('Reservations - Morosity Check', () => {
+    test.skip(!checkTestEnv());
     let moroseUnitId: number;
     let moroseUserId: string;
 
