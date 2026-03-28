@@ -109,6 +109,7 @@ export const AdminUnitsScreen: React.FC<AdminUnitsScreenProps> = ({
                     <button
                       onClick={(e) => toggleMenu(e, resident.id)}
                       className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      title="Opciones de unidad"
                       aria-label="Opciones de unidad"
                     >
                       <Icons name="ellipsis-vertical" className="w-5 h-5" />
@@ -209,6 +210,7 @@ export const AdminUnitsScreen: React.FC<AdminUnitsScreenProps> = ({
         <button
           onClick={() => onNavigate('admin-unit-create')}
           className="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-transform hover:scale-105 active:scale-95"
+          title="Añadir nueva unidad"
           aria-label="Añadir nueva unidad"
         >
           <Icons name="plus" className="w-7 h-7" />
