@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv } from '../test-config';
 
 // Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
 const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
@@ -15,6 +16,7 @@ test.describe('Reservations - Morosity Check', () => {
     let moroseUserId: string;
 
     test.beforeAll(async () => {
+        test.skip(!checkTestEnv(), 'Skipping test due to missing environment variables');
         // 1. Get the Resident User ID
         // Login as Resident first to get their own ID
         const { data: residentAuth, error: residentError } = await supabase.auth.signInWithPassword({

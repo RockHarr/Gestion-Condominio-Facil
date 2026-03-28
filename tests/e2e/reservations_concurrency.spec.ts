@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv } from '../test-config';
 
 // Credentials (hardcoded for test execution)
 const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
@@ -17,6 +18,7 @@ test.describe('Reservations - Concurrency Check', () => {
     let userId: string;
 
     test.beforeAll(async () => {
+        test.skip(!checkTestEnv(), 'Skipping test due to missing environment variables');
         // 1. Get User/Unit Info
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email: RESIDENT_EMAIL,

@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../test-config';
 
 const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
 test.describe('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
+        test.skip(!checkTestEnv(), 'Skipping test due to missing environment variables');
         // 1. Login as Admin
         await page.goto('/');
 
