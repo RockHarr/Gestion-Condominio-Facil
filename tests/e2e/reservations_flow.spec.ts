@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { shouldSkipRealBackendTests } from '../test-utils';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
@@ -10,6 +11,11 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 test.describe('Resident — Reservations Flow', () => {
 
     test.beforeEach(async ({ page }) => {
+        if (shouldSkipRealBackendTests()) {
+            test.skip();
+            return;
+        }
+
         // 1. Login as Resident
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
@@ -21,6 +27,8 @@ test.describe('Resident — Reservations Flow', () => {
     });
 
     test('should allow a resident to create and cancel a reservation', async ({ page }) => {
+        if (shouldSkipRealBackendTests()) test.skip();
+
         // 2. Navigate to Amenities via Tab Bar
         await page.click('[data-testid="tab-amenities"]');
         await expect(page.getByRole('heading', { name: 'Espacios Comunes' }).first()).toBeVisible();

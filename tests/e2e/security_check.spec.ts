@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { shouldSkipRealBackendTests } from '../test-utils';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
@@ -12,6 +13,7 @@ const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 test.describe('Security Policy Verification', () => {
 
     test('Resident should only see own data and public notices', async ({ page }) => {
+        if (shouldSkipRealBackendTests()) test.skip();
         // 1. Login as Resident
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
@@ -44,6 +46,7 @@ test.describe('Security Policy Verification', () => {
     });
 
     test('Admin should see all data', async ({ page }) => {
+        if (shouldSkipRealBackendTests()) test.skip();
         // 1. Login as Admin
         await page.goto('/');
         await page.fill('input[type="email"]', ADMIN_EMAIL);

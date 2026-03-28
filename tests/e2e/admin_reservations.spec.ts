@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { shouldSkipRealBackendTests } from '../test-utils';
 
 // ==========================================
 // CONFIGURATION
@@ -12,6 +13,11 @@ const ADMIN_PASSWORD = '270386';
 test.describe('Admin — Reservations Management', () => {
 
     test.beforeEach(async ({ page }) => {
+        if (shouldSkipRealBackendTests()) {
+            test.skip();
+            return;
+        }
+
         // Enable console logging from browser
         page.on('console', msg => console.log(`BROWSER: ${msg.text()}`));
 
@@ -117,6 +123,8 @@ test.describe('Admin — Reservations Management', () => {
     });
 
     test('should allow admin to approve a pending reservation', async ({ page }) => {
+        if (shouldSkipRealBackendTests()) test.skip();
+
         console.log('Starting approve test...');
         // 2. Login as Admin
         // We are already at Login Screen due to beforeEach
@@ -164,6 +172,8 @@ test.describe('Admin — Reservations Management', () => {
     });
 
     test('should allow admin to reject a pending reservation', async ({ page }) => {
+        if (shouldSkipRealBackendTests()) test.skip();
+
         console.log('Starting reject test...');
         // 2. Login as Admin
         await page.fill('input[type="email"]', ADMIN_EMAIL);

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { shouldSkipRealBackendTests } from '../test-utils';
 
 // Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
 const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
@@ -15,6 +16,11 @@ test.describe('Reservations - Morosity Check', () => {
     let moroseUserId: string;
 
     test.beforeAll(async () => {
+        if (shouldSkipRealBackendTests()) {
+            test.skip();
+            return;
+        }
+
         // 1. Get the Resident User ID
         // Login as Resident first to get their own ID
         const { data: residentAuth, error: residentError } = await supabase.auth.signInWithPassword({
@@ -74,6 +80,7 @@ test.describe('Reservations - Morosity Check', () => {
     });
 
     test.afterAll(async () => {
+        if (shouldSkipRealBackendTests()) return;
         // Cleanup: Pay the debt
         if (moroseUserId) {
             await supabase
@@ -85,6 +92,7 @@ test.describe('Reservations - Morosity Check', () => {
     });
 
     test('should block reservation for morose user', async ({ page }) => {
+        if (shouldSkipRealBackendTests()) test.skip();
         // 1. Login
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
@@ -142,6 +150,7 @@ test.describe('Reservations - Morosity Check', () => {
     });
 
     test('should allow reservation after debt is paid', async ({ page }) => {
+        if (shouldSkipRealBackendTests()) test.skip();
         // 1. Pay Debt (Backend)
         await supabase
             .from('common_expense_debts')
