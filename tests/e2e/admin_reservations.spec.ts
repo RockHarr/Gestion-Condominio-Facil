@@ -155,7 +155,7 @@ test.describe('Admin — Reservations Management', () => {
             await dialog.accept();
         });
         console.log('Clicking Approve button');
-        await reservationCard.getByRole('button', { name: 'Aprobar' }).click();
+        await reservationCard.locator('button').filter({ hasText: 'Aprobar' }).click();
         console.log('Approve button clicked');
 
         // 7. Verify Status Change
@@ -189,7 +189,7 @@ test.describe('Admin — Reservations Management', () => {
             console.log('Dialog appeared:', dialog.message());
             await dialog.accept();
         });
-        await reservationCard.getByRole('button', { name: 'Rechazar' }).click();
+        await reservationCard.locator('button').filter({ hasText: 'Rechazar' }).click();
         console.log('Reject button clicked');
 
         // Verify it disappears from "Pendientes" or status changes to REJECTED
