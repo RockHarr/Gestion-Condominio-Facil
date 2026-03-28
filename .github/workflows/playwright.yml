@@ -18,6 +18,14 @@ jobs:
 
       - run: npm ci
 
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase
+        run: supabase start
+
       - name: Build project
         run: npm run build
         env:
