@@ -48,7 +48,11 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
                             <div className="relative">
                                 <Icons name={item.icon} className="w-7 h-7" />
                                 {hasBadge && (
-                                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full animate-pulse">
+                                    <span
+                                        className="absolute -top-1 -right-2 flex items-center justify-center min-w-[1rem] h-4 px-1 text-[0.65rem] font-bold leading-none text-white bg-red-500 rounded-full border border-white dark:border-gray-800"
+                                        aria-label={`${unreadNotices} notificaciones nuevas`}
+                                    >
+                                        {unreadNotices > 9 ? '9+' : unreadNotices}
                                     </span>
                                 )}
                             </div>
