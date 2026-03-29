@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, SkeletonLoader } from './Shared';
 import { dataService } from '../services/data';
+import { getErrorMessage } from '../types';
 import Icons from './Icons';
 
 interface Poll {
@@ -81,7 +82,7 @@ export const AdminPollsManager: React.FC = () => {
             loadPolls();
         } catch (error) {
             console.error('Error creating poll:', error);
-            alert('Error al crear encuesta.');
+            alert(getErrorMessage(error));
         }
     };
 
