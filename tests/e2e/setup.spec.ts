@@ -1,23 +1,25 @@
 import { test, expect } from '@playwright/test';
-
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+import { checkTestEnv, TEST_ADMIN_EMAIL, TEST_ADMIN_PASSWORD } from '../test-config';
 
 test.describe('System Setup', () => {
+    test.beforeEach(() => {
+        test.skip(!checkTestEnv(), 'Environment variables missing or invalid');
+    });
+
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
         // 1. Login as Admin
         await page.goto('/');
 
         const emailInput = page.locator('input[type="email"]');
         await expect(emailInput).toBeVisible();
-        await emailInput.fill(ADMIN_EMAIL);
+        await emailInput.fill(TEST_ADMIN_EMAIL);
 
         // Click "Usar contraseña" to reveal the password field
         await page.click('button:has-text("Usar contraseña")');
 
         const passwordInput = page.locator('input[type="password"]');
         await expect(passwordInput).toBeVisible();
-        await passwordInput.fill(ADMIN_PASSWORD);
+        await passwordInput.fill(TEST_ADMIN_PASSWORD);
 
         await page.click('button:has-text("Iniciar Sesión")');
         await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();

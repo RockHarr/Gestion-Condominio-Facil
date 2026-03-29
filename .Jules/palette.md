@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - Accessibility Verification in Fixed Layouts
+**Learning:** `ResidentTabBar` uses `fixed bottom-0` which makes verification difficult when multiple instances are rendered. The Playwright strict mode violation error was surprisingly helpful, confirming both `5` and `9+` badges were rendered correctly even though they visually overlapped.
+**Action:** When verifying fixed-position components, render one instance at a time or use distinct containers with `position: relative` overrides to inspect multiple states simultaneously.

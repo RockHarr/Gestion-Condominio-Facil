@@ -1,22 +1,18 @@
 import { test, expect } from '@playwright/test';
-
-// ==========================================
-// CONFIGURATION: UPDATE THESE BEFORE RUNNING
-// ==========================================
-const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMAIL
-const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';       // REPLACE WITH REAL ADMIN EMAIL
-const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
-// ==========================================
+import { checkTestEnv, TEST_RESIDENT_EMAIL, TEST_RESIDENT_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PASSWORD } from '../test-config';
 
 test.describe('Security Policy Verification', () => {
+
+    test.beforeEach(() => {
+        test.skip(!checkTestEnv(), 'Environment variables missing or invalid');
+    });
 
     test('Resident should only see own data and public notices', async ({ page }) => {
         // 1. Login as Resident
         await page.goto('/');
-        await page.fill('input[type="email"]', RESIDENT_EMAIL);
+        await page.fill('input[type="email"]', TEST_RESIDENT_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', RESIDENT_PASSWORD);
+        await page.fill('input[type="password"]', TEST_RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for login to complete (check for home page element)
@@ -46,9 +42,9 @@ test.describe('Security Policy Verification', () => {
     test('Admin should see all data', async ({ page }) => {
         // 1. Login as Admin
         await page.goto('/');
-        await page.fill('input[type="email"]', ADMIN_EMAIL);
+        await page.fill('input[type="email"]', TEST_ADMIN_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', ADMIN_PASSWORD);
+        await page.fill('input[type="password"]', TEST_ADMIN_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for dashboard

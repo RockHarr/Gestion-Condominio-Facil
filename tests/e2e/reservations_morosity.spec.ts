@@ -1,25 +1,28 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv, TEST_RESIDENT_EMAIL, TEST_RESIDENT_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PASSWORD } from '../test-config';
 
-// Credentials from .env.local (hardcoded for test execution since process.env might not load .env.local automatically in all setups)
-const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'placeholder';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
-
 test.describe('Reservations - Morosity Check', () => {
+    test.beforeEach(() => {
+        test.skip(!checkTestEnv(), 'Environment variables missing or invalid');
+    });
+
     let moroseUnitId: number;
     let moroseUserId: string;
 
     test.beforeAll(async () => {
+        if (!checkTestEnv()) return;
+
         // 1. Get the Resident User ID
         // Login as Resident first to get their own ID
         const { data: residentAuth, error: residentError } = await supabase.auth.signInWithPassword({
-            email: RESIDENT_EMAIL,
-            password: RESIDENT_PASSWORD
+            email: TEST_RESIDENT_EMAIL,
+            password: TEST_RESIDENT_PASSWORD
         });
 
         if (residentError || !residentAuth.user) {
@@ -46,8 +49,8 @@ test.describe('Reservations - Morosity Check', () => {
 
         // 2. Login as Admin to Insert Debt
         const { error: adminError } = await supabase.auth.signInWithPassword({
-            email: 'rockwell.harrison@gmail.com',
-            password: '270386'
+            email: TEST_ADMIN_EMAIL,
+            password: TEST_ADMIN_PASSWORD
         });
 
         if (adminError) {
@@ -87,9 +90,9 @@ test.describe('Reservations - Morosity Check', () => {
     test('should block reservation for morose user', async ({ page }) => {
         // 1. Login
         await page.goto('/');
-        await page.fill('input[type="email"]', RESIDENT_EMAIL);
+        await page.fill('input[type="email"]', TEST_RESIDENT_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', RESIDENT_PASSWORD);
+        await page.fill('input[type="password"]', TEST_RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for dashboard
@@ -154,9 +157,9 @@ test.describe('Reservations - Morosity Check', () => {
         // 2. Retry Reservation
         // We need to login again because each test has a fresh context
         await page.goto('/');
-        await page.fill('input[type="email"]', RESIDENT_EMAIL);
+        await page.fill('input[type="email"]', TEST_RESIDENT_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', RESIDENT_PASSWORD);
+        await page.fill('input[type="password"]', TEST_RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
         await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
