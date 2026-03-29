@@ -1,5 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env" });
 import { test, expect } from '@playwright/test';
 
+if (process.env.VITE_SUPABASE_URL === "https://example.supabase.co" || !process.env.VITE_SUPABASE_URL) { test.skip("Skipping tests in CI due to dummy Supabase URL"); }
 test('reservations_menu_smoke', async ({ page }) => {
     // 1. Mock network to ensure no 400 errors (validation logic)
     const failedRequests: string[] = [];
@@ -15,7 +18,7 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
     // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {

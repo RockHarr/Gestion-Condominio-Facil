@@ -39,7 +39,7 @@ export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigat
     const activeTab = getActiveTab();
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 md:hidden pb-safe">
+        <nav aria-label="Navegación móvil" className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 md:hidden pb-safe">
             <div className="flex justify-around items-center h-16">
                 {navItems.map(item => {
                     const isActive = activeTab === item.page;
@@ -47,6 +47,7 @@ export const AdminTabBar: React.FC<AdminTabBarProps> = ({ currentPage, onNavigat
                         <button
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
+                            aria-current={isActive ? 'page' : undefined}
                             className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-200 ${isActive
                                 ? 'text-blue-600 dark:text-blue-400'
                                 : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
@@ -105,7 +106,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
                 </div>
             </div>
 
-            <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <nav aria-label="Menú principal" className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
                 <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Menu Principal</p>
                 {navItems.map(item => {
                     const isActive = currentPage === item.page || (currentPage as string).startsWith(item.page);
@@ -113,6 +114,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, onNavig
                         <button
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
+                            aria-current={isActive ? 'page' : undefined}
                             className={`w-full flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-200 group ${isActive
                                 ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-sm'
                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'

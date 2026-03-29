@@ -33,7 +33,7 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
     if (!activeTab) return null;
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-20 max-w-lg mx-auto">
+        <nav aria-label="Navegación principal" className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-20 max-w-lg mx-auto">
             <div className="flex justify-around">
                 {navItems.map(item => {
                     const isActive = activeTab === item.page;
@@ -43,6 +43,7 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
                         <button
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
+                            aria-current={isActive ? 'page' : undefined}
                             className={`flex flex-col items-center justify-center w-full pt-2 pb-1 text-sm font-medium focus:outline-none transition-colors duration-200 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
                         >
                             <div className="relative">

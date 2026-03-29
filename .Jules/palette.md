@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-24 - Navigation Landmark Accessibility
+**Learning:** Missing `aria-label` attributes on `<nav>` elements and the absence of dynamic `aria-current="page"` on active navigation tabs create barriers for screen reader users, making it difficult to distinguish between different navigation regions (e.g., mobile vs main menu) and identifying the currently active view.
+**Action:** Always ensure that `<nav>` elements have descriptive `aria-label` attributes (like "Menú principal") and that active tab buttons correctly set `aria-current={isActive ? 'page' : undefined}`.

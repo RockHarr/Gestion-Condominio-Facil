@@ -12,6 +12,7 @@ const RESIDENT_PASSWORD = '180381';
 const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
+if (process.env.VITE_SUPABASE_URL === "https://example.supabase.co" || !process.env.VITE_SUPABASE_URL) { test.skip("Skipping tests in CI due to dummy Supabase URL"); }
 test('repro rpc hang with debt', async () => {
     // 1. Login as Resident to get ID
     console.log('1. Logging in as Resident...');

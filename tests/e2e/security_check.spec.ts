@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env" });
 import { test, expect } from '@playwright/test';
 
 // ==========================================
@@ -9,6 +11,7 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';       // REPLACE WITH REAL AD
 const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 // ==========================================
 
+if (process.env.VITE_SUPABASE_URL === "https://example.supabase.co" || !process.env.VITE_SUPABASE_URL) { test.skip("Skipping tests in CI due to dummy Supabase URL"); }
 test.describe('Security Policy Verification', () => {
 
     test('Resident should only see own data and public notices', async ({ page }) => {
