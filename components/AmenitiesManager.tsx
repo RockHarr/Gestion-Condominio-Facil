@@ -160,12 +160,14 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                   <button
                     onClick={() => handleOpenModal(amenity)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600"
+                    aria-label="Editar espacio"
                   >
                     <Icons name="pencil" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(amenity.id)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600"
+                    aria-label="Eliminar espacio"
                   >
                     <Icons name="trash" className="w-4 h-4" />
                   </button>
@@ -212,6 +214,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
               <button
                 onClick={() => setModalOpen(false)}
                 className="text-gray-400 hover:text-gray-500"
+                aria-label="Cerrar"
               >
                 <Icons name="xmark" className="w-6 h-6" />
               </button>
