@@ -40,6 +40,7 @@ export const ReservationPaymentModal: React.FC<ReservationPaymentModalProps> = (
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                    aria-label="Cerrar"
                 >
                     <Icons name="x-mark" className="w-6 h-6" />
                 </button>
