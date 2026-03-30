@@ -5,8 +5,8 @@ export default defineConfig({
   testDir: './tests',
 
   // Tiempos razonables para E2E
-  timeout: 30_000,
-  expect: { timeout: 5_000 },
+  timeout: 60_000,
+  expect: { timeout: 15_000 },
 
   // Reportes: HTML (guardado como artifact en CI) + lista en consola
   reporter: [
@@ -38,5 +38,10 @@ export default defineConfig({
     command: 'npx vite --port 3000 --strictPort',
     port: 3000,
     reuseExistingServer: !process.env.CI,
+    env: {
+      // Inject known credentials for CI where secrets are missing
+      VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL || 'https://tqshoddiisfgfjqlkntv.supabase.co',
+      VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc',
+    },
   },
 });

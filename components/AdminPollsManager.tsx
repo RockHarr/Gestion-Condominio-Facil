@@ -180,43 +180,55 @@ export const AdminPollsManager: React.FC = () => {
 
             {/* Create Modal */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="create-modal-title"
+                >
                     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Nueva Encuesta</h3>
+                        <h3 id="create-modal-title" className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Nueva Encuesta</h3>
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Pregunta</label>
+                                <label htmlFor="poll-question" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Pregunta</label>
                                 <input
+                                    id="poll-question"
                                     type="text"
                                     className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                     value={newPoll.question}
                                     onChange={e => setNewPoll({ ...newPoll, question: e.target.value })}
+                                    required
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Inicio</label>
+                                    <label htmlFor="poll-start" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Inicio</label>
                                     <input
+                                        id="poll-start"
                                         type="datetime-local"
                                         className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         value={newPoll.startAt}
                                         onChange={e => setNewPoll({ ...newPoll, startAt: e.target.value })}
+                                        required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Fin</label>
+                                    <label htmlFor="poll-end" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Fin</label>
                                     <input
+                                        id="poll-end"
                                         type="datetime-local"
                                         className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         value={newPoll.endAt}
                                         onChange={e => setNewPoll({ ...newPoll, endAt: e.target.value })}
+                                        required
                                     />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Estrategia</label>
+                                    <label htmlFor="poll-strategy" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Estrategia</label>
                                     <select
+                                        id="poll-strategy"
                                         className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         value={newPoll.strategy}
                                         onChange={e => setNewPoll({ ...newPoll, strategy: e.target.value as any })}
@@ -226,8 +238,9 @@ export const AdminPollsManager: React.FC = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Resultados Visibles</label>
+                                    <label htmlFor="poll-results" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Resultados Visibles</label>
                                     <select
+                                        id="poll-results"
                                         className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         value={newPoll.showResultsWhen}
                                         onChange={e => setNewPoll({ ...newPoll, showResultsWhen: e.target.value as any })}
@@ -242,14 +255,24 @@ export const AdminPollsManager: React.FC = () => {
                                 {newPoll.options.map((opt, idx) => (
                                     <div key={idx} className="flex gap-2 mb-2">
                                         <input
+                                            id={`poll-option-${idx}`}
                                             type="text"
                                             className="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                             value={opt}
                                             onChange={e => updateOption(idx, e.target.value)}
                                             placeholder={`Opción ${idx + 1}`}
+                                            aria-label={`Opción ${idx + 1}`}
+                                            required
                                         />
                                         {newPoll.options.length > 2 && (
-                                            <Button variant="secondary" onClick={() => removeOption(idx)}>X</Button>
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() => removeOption(idx)}
+                                                aria-label={`Eliminar opción ${idx + 1}`}
+                                                title="Eliminar opción"
+                                            >
+                                                <Icons name="trash" className="w-4 h-4" />
+                                            </Button>
                                         )}
                                     </div>
                                 ))}
@@ -266,18 +289,26 @@ export const AdminPollsManager: React.FC = () => {
 
             {/* Close Modal */}
             {showCloseModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="close-modal-title"
+                >
                     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
-                        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Cierre Anticipado</h3>
+                        <h3 id="close-modal-title" className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Cierre Anticipado</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                             Indique el motivo por el cual desea cerrar esta encuesta antes de tiempo.
                         </p>
+                        <label htmlFor="close-reason" className="sr-only">Motivo del cierre</label>
                         <textarea
+                            id="close-reason"
                             className="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white mb-4"
                             rows={3}
                             value={closeReason}
                             onChange={e => setCloseReason(e.target.value)}
                             placeholder="Motivo del cierre..."
+                            required
                         />
                         <div className="flex justify-end gap-2">
                             <Button variant="secondary" onClick={() => setShowCloseModal(false)}>Cancelar</Button>
