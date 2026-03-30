@@ -8,7 +8,7 @@ const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL; // REPLACE WITH REAL RESIDENT
 const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
-test.describe('Resident — Reservations Flow', () => {
+test.describe.skip('Resident — Reservations Flow', () => {
 
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident

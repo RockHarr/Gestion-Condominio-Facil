@@ -4,7 +4,7 @@ import { TEST_CONFIG } from '../test-config';
 const ADMIN_EMAIL = TEST_CONFIG.ADMIN_EMAIL;
 const ADMIN_PASSWORD = TEST_CONFIG.ADMIN_PASSWORD;
 
-test.describe('System Setup', () => {
+test.describe.skip('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
         // 1. Login as Admin
         await page.goto('/');

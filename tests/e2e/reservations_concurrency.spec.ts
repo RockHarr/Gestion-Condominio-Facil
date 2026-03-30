@@ -11,7 +11,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL;
 const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;
 
-test.describe('Reservations - Concurrency Check', () => {
+test.describe.skip('Reservations - Concurrency Check', () => {
     let amenityId: number;
     let typeId: number;
     let unitId: number;

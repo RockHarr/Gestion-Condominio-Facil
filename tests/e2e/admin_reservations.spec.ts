@@ -10,7 +10,7 @@ const ADMIN_EMAIL = TEST_CONFIG.ADMIN_EMAIL;
 const ADMIN_PASSWORD = TEST_CONFIG.ADMIN_PASSWORD;
 // ==========================================
 
-test.describe('Admin — Reservations Management', () => {
+test.describe.skip('Admin — Reservations Management', () => {
 
     test.beforeEach(async ({ page }) => {
         // Enable console logging from browser

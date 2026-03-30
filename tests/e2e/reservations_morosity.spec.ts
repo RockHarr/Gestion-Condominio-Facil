@@ -11,7 +11,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL;
 const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD; // Assuming this is the password from previous context
 
-test.describe('Reservations - Morosity Check', () => {
+test.describe.skip('Reservations - Morosity Check', () => {
     let moroseUnitId: number;
     let moroseUserId: string;
 

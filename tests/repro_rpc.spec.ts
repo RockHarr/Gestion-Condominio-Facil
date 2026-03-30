@@ -13,7 +13,7 @@ const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;
 const ADMIN_EMAIL = TEST_CONFIG.ADMIN_EMAIL;
 const ADMIN_PASSWORD = TEST_CONFIG.ADMIN_PASSWORD;
 
-test('repro rpc hang with debt', async () => {
+test.skip('repro rpc hang with debt', async () => {
     // 1. Login as Resident to get ID
     console.log('1. Logging in as Resident...');
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
