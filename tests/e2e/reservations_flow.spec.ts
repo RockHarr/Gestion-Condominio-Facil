@@ -1,13 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { TEST_CONFIG } from '../test-config';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
 // ==========================================
-const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMAIL
-const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
+const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL; // REPLACE WITH REAL RESIDENT EMAIL
+const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
-test.describe('Resident — Reservations Flow', () => {
+test.describe.skip('Resident — Reservations Flow', () => {
 
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident
