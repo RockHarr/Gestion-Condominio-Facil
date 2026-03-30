@@ -44,6 +44,7 @@ export const ResidentTabBar: React.FC<ResidentTabBarProps> = ({ currentPage, onN
                             key={item.page}
                             onClick={() => onNavigate(item.page as Page)}
                             className={`flex flex-col items-center justify-center w-full pt-2 pb-1 text-sm font-medium focus:outline-none transition-colors duration-200 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
+                            aria-label={item.label}
                         >
                             <div className="relative">
                                 <Icons name={item.icon} className="w-7 h-7" />
