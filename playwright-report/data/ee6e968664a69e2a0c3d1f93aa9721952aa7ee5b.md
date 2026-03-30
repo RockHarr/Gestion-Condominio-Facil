@@ -1,0 +1,89 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: La conexión está tardando mucho. Verifique su red o configuración.
+      - button "Cerrar notificación" [ref=e6] [cursor=pointer]:
+        - img [ref=e7]
+    - generic [ref=e9]:
+      - banner [ref=e10]:
+        - heading "Inicio" [level=1] [ref=e12]
+      - main [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - heading "Hola, admin@condominio.com" [level=1] [ref=e16]
+            - paragraph [ref=e17]: Unidad
+          - generic [ref=e18]:
+            - generic [ref=e21]:
+              - img [ref=e23]
+              - paragraph [ref=e25]: ¡Estás al día!
+              - paragraph [ref=e26]: No tienes deudas pendientes
+            - generic [ref=e27]:
+              - heading "Accesos Rápidos" [level=2] [ref=e28]
+              - generic [ref=e29]:
+                - button "Reservar" [ref=e30] [cursor=pointer]:
+                  - img [ref=e32]
+                  - generic [ref=e34]: Reservar
+                - button "Nuevo Ticket" [ref=e35] [cursor=pointer]:
+                  - img [ref=e37]
+                  - generic [ref=e39]: Nuevo Ticket
+            - generic [ref=e40]:
+              - generic [ref=e41]:
+                - heading "Gastos por Categoría" [level=3] [ref=e42]
+                - application [ref=e46]
+              - generic [ref=e47]:
+                - generic [ref=e48]:
+                  - heading "Ingresos vs Gastos" [level=3] [ref=e49]
+                  - generic [ref=e50]: ⓘ
+                - generic [ref=e53]:
+                  - list [ref=e55]:
+                    - listitem [ref=e56]:
+                      - img "Gastos legend icon" [ref=e57]
+                      - text: Gastos
+                    - listitem [ref=e59]:
+                      - img "Ingresos legend icon" [ref=e60]
+                      - text: Ingresos
+                  - application [ref=e62]:
+                    - generic [ref=e74]:
+                      - generic [ref=e75]:
+                        - generic [ref=e77]: oct.
+                        - generic [ref=e79]: dic.
+                        - generic [ref=e81]: feb.
+                      - generic [ref=e82]:
+                        - generic [ref=e84]: $0k
+                        - generic [ref=e86]: $0.001k
+                        - generic [ref=e88]: $0.002k
+                        - generic [ref=e90]: $0.003k
+                        - generic [ref=e92]: $0.004k
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - generic [ref=e95]:
+                  - heading "Gastos Comunidad" [level=2] [ref=e96]
+                  - generic [ref=e97]: febrero de 2026
+                - paragraph [ref=e98]: $0
+                - paragraph [ref=e99]: Total aprobado este mes
+              - generic [ref=e100]:
+                - paragraph [ref=e102]: No hay gastos registrados aún.
+                - generic [ref=e103]:
+                  - button "Ver Detalle" [ref=e104] [cursor=pointer]
+                  - button "Descargar PDF" [ref=e105] [cursor=pointer]:
+                    - img [ref=e106]
+                    - text: Descargar PDF
+      - navigation [ref=e108]:
+        - generic [ref=e109]:
+          - button "Inicio" [ref=e110] [cursor=pointer]:
+            - img [ref=e112]
+            - generic [ref=e114]: Inicio
+          - button "Pagos" [ref=e115] [cursor=pointer]:
+            - img [ref=e117]
+            - generic [ref=e119]: Pagos
+          - button "Espacios" [ref=e120] [cursor=pointer]:
+            - img [ref=e122]
+            - generic [ref=e124]: Espacios
+          - button "Más" [ref=e125] [cursor=pointer]:
+            - img [ref=e127]
+            - generic [ref=e129]: Más
+  - generic [ref=e130]: $0k
+```
