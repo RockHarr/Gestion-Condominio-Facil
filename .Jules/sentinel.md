@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-03-30 - [XSS Vulnerability in Image Sources]
+**Vulnerability:** Several components (`AdminTickets`, `AmenitiesScreen`, `TicketsScreen`, `AmenitiesManager`) were directly rendering user-supplied or external URLs in `<img>` `src` attributes (e.g., `ticket.foto`, `amenity.photoUrl`) without sanitization. While less critical than `href` XSS, this could still lead to issues if a malicious URL is provided, especially in older browsers or if the application later parses the URL for other purposes.
+**Learning:** Consistent application of sanitization is crucial. If `getSafeUrl` is used for `href`, it should also be used for other URL attributes like `src` to maintain a robust defense-in-depth posture against all forms of injection.
+**Prevention:** Always use the `getSafeUrl` sanitization helper from `lib/sanitize.ts` when rendering user-supplied URLs in any attribute that accepts a URL, enforcing an allow-list of safe protocols.
