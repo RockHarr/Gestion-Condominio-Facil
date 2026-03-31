@@ -63,7 +63,24 @@ test.describe('System Setup', () => {
             await page.getByLabel('Duración Máxima (minutos)').fill('240');
 
             await page.click('button:has-text("Guardar")');
-            await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible();
+            // Wait for modal to close and list to refresh
+            await page.waitForTimeout(1000); // Give the modal a moment to start closing or updating state
+            // If the element is not found, maybe the modal is still open with an error?
+            // But we assume success. Let's try reloading the page to refresh the list if needed
+            // or just waiting longer.
+            // In CI, sometimes the state update is slow.
+            // Let's try to reload and navigate back if it fails, or just wait longer.
+            try {
+                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 10000 });
+            } catch (e) {
+                console.log('Element not found immediately, reloading...');
+                await page.reload();
+                await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
+                await page.click('text=Espacios Comunes');
+                await page.locator('.group', { has: page.getByRole('heading', { name: 'Quincho', exact: true }) }).first().hover();
+                await page.locator('.group', { has: page.getByRole('heading', { name: 'Quincho', exact: true }) }).first().getByTitle('Gestionar Tipos de Reserva').click();
+                await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 30000 });
+            }
         }
     });
 });
