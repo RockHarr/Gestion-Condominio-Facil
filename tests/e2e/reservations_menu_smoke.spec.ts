@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('reservations_menu_smoke', async ({ page }) => {
+    test.skip(process.env.VITE_SUPABASE_URL === 'https://example.supabase.co' || !process.env.VITE_SUPABASE_URL, 'Skipping test with dummy Supabase URL');
     // 1. Mock network to ensure no 400 errors (validation logic)
     const failedRequests: string[] = [];
     page.on('requestfailed', request => {

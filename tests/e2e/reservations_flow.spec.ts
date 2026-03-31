@@ -10,6 +10,7 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 test.describe('Resident — Reservations Flow', () => {
 
     test.beforeEach(async ({ page }) => {
+        test.skip(process.env.VITE_SUPABASE_URL === 'https://example.supabase.co' || !process.env.VITE_SUPABASE_URL, 'Skipping test with dummy Supabase URL');
         // 1. Login as Resident
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
