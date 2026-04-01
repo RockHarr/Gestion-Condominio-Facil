@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { checkTestEnv } from '../utils';
 
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
@@ -10,6 +11,12 @@ const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 // ==========================================
 
 test.describe('Security Policy Verification', () => {
+
+    test.beforeAll(() => {
+        if (!checkTestEnv()) {
+            test.skip(true, 'Skipping test because Supabase credentials are missing');
+        }
+    });
 
     test('Resident should only see own data and public notices', async ({ page }) => {
         // 1. Login as Resident
