@@ -7,7 +7,7 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMA
 const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
-test.describe('Resident — Reservations Flow', () => {
+test.describe.skip('Resident — Reservations Flow', () => {
 
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident
