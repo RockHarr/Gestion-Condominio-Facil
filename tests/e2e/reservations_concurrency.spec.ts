@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
+import { checkTestEnv } from '../test-config';
 
 // Credentials (hardcoded for test execution)
 const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
@@ -17,6 +18,10 @@ test.describe('Reservations - Concurrency Check', () => {
     let userId: string;
 
     test.beforeAll(async () => {
+        if (!checkTestEnv()) {
+            return;
+        }
+
         // 1. Get User/Unit Info
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email: RESIDENT_EMAIL,
@@ -49,6 +54,8 @@ test.describe('Reservations - Concurrency Check', () => {
     });
 
     test('should prevent double booking on simultaneous requests', async () => {
+        test.skip(!checkTestEnv(), 'Skipping test: Missing Supabase credentials');
+
         // Define a slot for testing
         const startAt = new Date();
         startAt.setDate(startAt.getDate() + 20); // 20 days in future
