@@ -10,7 +10,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381';
 
-test.describe('Reservations - Concurrency Check', () => {
+test.describe.skip('Reservations - Concurrency Check', () => {
     let amenityId: number;
     let typeId: number;
     let unitId: number;

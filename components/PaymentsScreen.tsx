@@ -357,7 +357,7 @@ export const PaymentConfirmScreen: React.FC<{
           <div className="flex justify-between">
             <span className="text-gray-600 dark:text-gray-400">Orden de Compra</span>
             <span className="font-mono text-gray-900 dark:text-white">
-              #{Math.floor(Math.random() * 1000000)}
+              #{Math.floor((crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1)) * 1000000)}
             </span>
           </div>
         </div>
@@ -463,7 +463,10 @@ export const PaymentReceiptScreen: React.FC<{
               <div className="flex justify-between">
                 <span className="text-gray-500">ID Transacción</span>
                 <span className="font-mono font-medium text-gray-900 dark:text-white">
-                  {Math.random().toString(36).substring(2, 10).toUpperCase()}
+                  {Array.from(crypto.getRandomValues(new Uint8Array(4)))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('')
+                    .toUpperCase()}
                 </span>
               </div>
               <div className="flex justify-between">
