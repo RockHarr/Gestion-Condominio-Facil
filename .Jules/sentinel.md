@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-04-01 - [Weak Random Number Generation in PaymentsScreen]
+**Vulnerability:** The `PaymentsScreen` used `Math.random` to generate order IDs and transaction IDs. `Math.random` is not a cryptographically secure pseudo-random number generator (CSPRNG), making the generated identifiers predictable. This could potentially allow an attacker to guess or enumerate transaction identifiers, leading to unauthorized access to payment details or other sensitive information if those identifiers are used in URLs or APIs without proper authorization checks.
+**Learning:** `Math.random` should never be used for generating sensitive identifiers, tokens, or passwords. Its output is predictable and not suitable for security purposes.
+**Prevention:** Always use a CSPRNG like `crypto.getRandomValues()` in the browser or `crypto.randomBytes()` in Node.js for generating any random data that requires security or unpredictability.
