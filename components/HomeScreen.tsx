@@ -64,9 +64,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* Header Section */}
       <div className="px-4 pt-6 pb-2">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-          Hola, {user.nombre.split(' ')[0]}
+          Hola, {user?.nombre ? user.nombre.split(' ')[0] : 'Residente'}
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 font-medium">Unidad {user.unidad}</p>
+        <p className="text-gray-500 dark:text-gray-400 font-medium">Unidad {user?.unidad || ''}</p>
       </div>
 
       <div className="px-4 space-y-6">
