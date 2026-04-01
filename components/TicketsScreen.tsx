@@ -105,7 +105,7 @@ export const TicketsScreen: React.FC<TicketsScreenProps> = ({ tickets, onNavigat
         <div className="fixed bottom-24 right-4 z-50">
           <button
             onClick={() => onNavigate('ticket-create')}
-            className="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-transform hover:scale-105 active:scale-95"
+            className="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 focus-visible:ring-blue-500 focus:ring-4 focus:ring-blue-500/30 transition-transform hover:scale-105 active:scale-95"
             aria-label="Crear nuevo ticket"
           >
             <Icons name="plus" className="w-7 h-7" />

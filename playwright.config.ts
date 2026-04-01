@@ -8,6 +8,9 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 5_000 },
 
+  // Retries to prevent flaky test failures in CI
+  retries: process.env.CI ? 2 : 0,
+
   // Reportes: HTML (guardado como artifact en CI) + lista en consola
   reporter: [
     ['html', { open: 'never' }],

@@ -19,7 +19,7 @@ export const AdminRequestsScreen: React.FC<AdminRequestsScreenProps> = ({ onNavi
                 {/* Reservations Card */}
                 <button
                     onClick={() => onNavigate('admin-reservations')}
-                    className="text-left w-full group focus:outline-none"
+                    className="text-left w-full group focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 rounded-xl"
                 >
                     <Card className="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-visible">
                         <div className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 mr-4 group-hover:scale-105 transition-transform shadow-inner">
@@ -46,7 +46,7 @@ export const AdminRequestsScreen: React.FC<AdminRequestsScreenProps> = ({ onNavi
                 {/* Tickets Card */}
                 <button
                     onClick={() => onNavigate('admin-tickets')}
-                    className="text-left w-full group focus:outline-none"
+                    className="text-left w-full group focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 rounded-xl"
                 >
                     <Card className="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-visible">
                         <div className="w-14 h-14 rounded-2xl bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 dark:text-orange-400 mr-4 group-hover:scale-105 transition-transform shadow-inner">
