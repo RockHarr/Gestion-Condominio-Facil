@@ -78,7 +78,7 @@ export const MyReservationsScreen: React.FC<MyReservationsScreenProps> = ({ rese
                                             {startDate.toLocaleDateString()} • {startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
                                         <div className="mt-2">
-                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
+                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
                                                 ${reservation.status === ReservationStatus.CONFIRMED ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
                                                     reservation.status === ReservationStatus.REQUESTED ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
                                                         reservation.status === ReservationStatus.APPROVED_PENDING_PAYMENT ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :

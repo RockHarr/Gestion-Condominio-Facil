@@ -21,7 +21,7 @@ const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
 // TO verify `is_admin`, we strictly need to call RPCs that use it or rely on RLS.
 // Since we don't have a login token here, we are "anon".
 // "Anon" should NOT catch admin errors, but should see public data if allowed.
-// Real QA requires a SIGNED IN user. 
+// Real QA requires a SIGNED IN user.
 // Since we cannot easily sign in without a password loop, we will assume "Anon" checks basic connectivity
 // AND we will assume the previous "visual confirmation" from the user covers the "Admin" part effectively.
 // HOWEVER, we can check if critical tables fail with "Permission denied" vs "Empty array".
@@ -67,7 +67,7 @@ async function checkSecurity() {
     // If we get error, it depends on the error.
 
     if (expError) {
-        // Some RLS setups throw error, others return empty. 
+        // Some RLS setups throw error, others return empty.
         console.log('ℹ️ Expenses query returned error:', expError.message);
     } else {
         if (expenses.length > 0) {

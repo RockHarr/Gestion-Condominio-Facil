@@ -18,7 +18,7 @@ export const ReservationAvailabilityScreen: React.FC<ReservationAvailabilityScre
     return (
         <div className="animate-page pb-24">
             <Header title={amenity.name} onBack={onBack} />
-            
+
             <div className="p-4 space-y-4">
                 <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800">
                     <div className="flex items-start gap-4">
@@ -34,9 +34,9 @@ export const ReservationAvailabilityScreen: React.FC<ReservationAvailabilityScre
                     </div>
                 </Card>
 
-                <AvailabilityCalendar 
-                    amenityId={amenity.id} 
-                    onSelectDate={setSelectedDate} 
+                <AvailabilityCalendar
+                    amenityId={amenity.id}
+                    onSelectDate={setSelectedDate}
                     refreshTrigger={refreshTrigger}
                 />
             </div>

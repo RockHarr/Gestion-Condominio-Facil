@@ -545,15 +545,8 @@ export const dataService = {
   },
 
   async payAllDebts(userId: string | number) {
-    const { error: error1 } = await withTimeout(
-      supabase.from('common_expense_debts').update({ pagado: true }).eq('user_id', userId),
-    );
-
-    const { error: error2 } = await withTimeout(
-      supabase.from('parking_debts').update({ pagado: true }).eq('user_id', userId),
-    );
-
-    if (error1 || error2) throw new Error('Error paying debts');
+    const { error } = await withTimeout(supabase.rpc("pay_my_debts", { p_user_id: userId }));
+    if (error) throw error;
   },
 
   // --- Admin: Users ---

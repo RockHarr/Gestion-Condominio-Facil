@@ -12,7 +12,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 async function run() {
     let output = '';
     const log = (msg) => {
-        // console.log(msg); 
+        // console.log(msg);
         output += typeof msg === 'string' ? msg : JSON.stringify(msg, null, 2);
         output += '\n';
     };

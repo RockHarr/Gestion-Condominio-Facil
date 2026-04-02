@@ -25,12 +25,12 @@ const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://tqshoddiisfgfjqlkn
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
 
 // Use service role key to bypass RLS for admin simulation if needed, or stick to anon with login
-// ideally we simulate the exact flow. But admin requires login. 
+// ideally we simulate the exact flow. But admin requires login.
 // For this quick test, let's use the anon key but we need to sign in as admin or mock RLS?
 // Actually dataService uses the authenticated client.
 // Let's assume we use the service_role key to simulate "Admin" privileges for this test script if available.
-// BUT I don't see service_role key in env. 
-// CHECK RLS: payments_admin_write relies on is_admin(). 
+// BUT I don't see service_role key in env.
+// CHECK RLS: payments_admin_write relies on is_admin().
 // is_admin() checks if auth.uid() has rol='admin' in profiles.
 // So to test this, I need to sign in as an admin user.
 

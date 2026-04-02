@@ -74,4 +74,3 @@
 
 ### Post-piloto (L)
 1.  **Dashboard Personalizable**: Permitir al admin elegir qué métricas ver.
-

@@ -90,7 +90,7 @@ async function verifyDepositLogic() {
 
     // 6. Test RELEASE
     console.log('Testing decision: RELEASE...');
-    // Create another reservation for RELEASE test? 
+    // Create another reservation for RELEASE test?
     // Actually, let's just test RELEASE on this one.
     const { error: decError } = await supabase.rpc('decide_deposit', {
         p_reservation_id: reservationId,

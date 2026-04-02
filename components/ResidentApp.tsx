@@ -187,13 +187,13 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
              <div className="bg-white dark:bg-gray-800 sticky top-0 z-10 shadow-sm">
                 <Header title="Reservas" onBack={() => handleNavigate('amenities')} />
                 <div className="flex px-4 pb-2 gap-2">
-                    <button 
+                    <button
                         onClick={() => setReservationTab('book')}
                         className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${reservationTab === 'book' ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'}`}
                     >
                         Reservar
                     </button>
-                    <button 
+                    <button
                          onClick={() => setReservationTab('my-reservations')}
                          className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${reservationTab === 'my-reservations' ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'}`}
                     >
@@ -248,8 +248,8 @@ export const ResidentApp: React.FC<ResidentAppProps> = (props) => {
       case 'reservation-availability': {
         const amenity = amenities.find(a => a.id === pageParams?.amenityId);
         return amenity ? (
-            <ReservationAvailabilityScreen 
-                amenity={amenity} 
+            <ReservationAvailabilityScreen
+                amenity={amenity}
                 onBack={() => handleNavigate('reservations')}
                 onSuccess={() => {
                      showToast('Reserva solicitada con éxito', 'success');

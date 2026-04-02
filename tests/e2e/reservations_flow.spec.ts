@@ -8,6 +8,7 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
 test.describe('Resident — Reservations Flow', () => {
+  test.skip(!process.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co', 'Skipping test because Supabase credentials are not set');
 
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident
@@ -58,7 +59,7 @@ test.describe('Resident — Reservations Flow', () => {
         if (await typeSelect.isVisible()) {
             await typeSelect.selectOption({ index: 1 });
         } else {
-            // If no select, it should be auto-selected (single type). 
+            // If no select, it should be auto-selected (single type).
             // Verify by checking if tariff info is visible (which depends on selectedType)
             await expect(modal.getByText(/Tarifa de uso:/i)).toBeVisible();
         }
