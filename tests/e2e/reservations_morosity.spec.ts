@@ -9,6 +9,8 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
 
 test.describe('Reservations - Morosity Check', () => {
+    test.skip(TEST_CONFIG.SUPABASE_URL.includes('127.0.0.1'), 'Skipping test in CI because it requires a live backend');
+
 
     let moroseUnitId: number;
     let moroseUserId: string;

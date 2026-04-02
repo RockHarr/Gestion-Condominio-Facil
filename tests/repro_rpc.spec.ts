@@ -11,6 +11,8 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
 test('repro rpc hang with debt', async () => {
+    test.skip(TEST_CONFIG.SUPABASE_URL.includes('127.0.0.1'), 'Skipping test in CI because it requires a live backend');
+
 
     // 1. Login as Resident to get ID
     console.log('1. Logging in as Resident...');
