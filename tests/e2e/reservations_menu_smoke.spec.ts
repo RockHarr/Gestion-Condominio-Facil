@@ -15,14 +15,24 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
     // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
-    if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
-    }
+    // Ensure we are on the login page by looking for the email input
+    const emailInput = page.locator('input[type="email"]');
+    await expect(emailInput).toBeVisible();
+    await emailInput.fill('rockwell.harrison@gmail.com');
+
+    // The password field might be hidden behind a button
+    await page.click('button:has-text("Usar contraseña")');
+
+    const passwordInput = page.locator('input[type="password"]');
+    await expect(passwordInput).toBeVisible();
+    await passwordInput.fill('270386'); // Assuming test creds
+    await page.click('button:has-text("Iniciar Sesión")');
+
+    // Wait for dashboard to load
+    await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
 
     // 3. Verify Sidebar
     await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
