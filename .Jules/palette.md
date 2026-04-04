@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - Icon-only Buttons Accessibility
+**Learning:** Found several modal components (`AdminCreateReservationModal`, `ReservationPaymentModal`, `ReservationRequestModal`) and list managers (`AmenitiesManager`, `ReservationTypesManager`, `TicketsScreen`) using icon-only buttons for actions like "close", "edit", and "delete" without semantic text or ARIA attributes. This violates WCAG guidelines for screen readers and leaves visual users without hover tooltips.
+**Action:** Always ensure buttons containing only `<Icons />` components have descriptive `aria-label` attributes and ideally `title` attributes for native tooltips.
