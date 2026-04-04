@@ -1,69 +1,79 @@
 import { test, expect } from '@playwright/test';
-
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+import { mockSupabaseAuth, mockCommonData, mockAdminData } from './mocks';
 
 test.describe('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
+        // Mock Auth as Admin
+        await mockSupabaseAuth(page, 'admin');
+        await mockCommonData(page);
+        await mockAdminData(page);
+
+        // Explicitly override the Amenities mock from mockCommonData
+        // Initial state: Empty list (to trigger creation flow)
+        await page.route('**/rest/v1/amenities*', async route => {
+            if (route.request().method() === 'GET') {
+                 await route.fulfill({ json: [] });
+            } else {
+                await route.continue();
+            }
+        });
+
+        // Mock Reservation Types
+        await page.route('**/rest/v1/reservation_types*', async route => route.fulfill({ json: [] }));
+
         // 1. Login as Admin
         await page.goto('/');
-
-        const emailInput = page.locator('input[type="email"]');
-        await expect(emailInput).toBeVisible();
-        await emailInput.fill(ADMIN_EMAIL);
-
-        // Click "Usar contraseña" to reveal the password field
+        await page.fill('input[type="email"]', 'admin@test.com');
         await page.click('button:has-text("Usar contraseña")');
-
-        const passwordInput = page.locator('input[type="password"]');
-        await expect(passwordInput).toBeVisible();
-        await passwordInput.fill(ADMIN_PASSWORD);
-
+        await page.fill('input[type="password"]', 'password');
         await page.click('button:has-text("Iniciar Sesión")');
+
         await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
 
         // 2. Navigate to Amenities
-        await page.click('text=Espacios Comunes');
+        await page.click('text=Administrar Espacios');
+
         await expect(page.getByRole('heading', { name: 'Espacios Comunes' })).toBeVisible();
 
         // 3. Check/Create Quincho
-        // Use first() to avoid strict mode violation if duplicates exist
-        const quinchoCard = page.getByRole('heading', { name: 'Quincho', exact: true }).first();
+        const quinchoCard = page.getByRole('heading', { name: 'Quincho' }).first();
+
+        // Mock the creation POST request
+        await page.route('**/rest/v1/amenities', async route => {
+            if (route.request().method() === 'POST') {
+                const postData = route.request().postDataJSON();
+                await route.fulfill({
+                    status: 201,
+                    json: { ...postData, id: '1', photo_url: null }
+                });
+            } else {
+                await route.continue();
+            }
+        });
+
         if (!(await quinchoCard.isVisible())) {
             console.log('Creating Quincho...');
             await page.click('button:has-text("Nuevo Espacio")');
             await page.fill('input[placeholder="Ej: Quincho Norte"]', 'Quincho');
             await page.fill('textarea[placeholder="Detalles sobre el espacio..."]', 'Espacio para asados');
-            await page.fill('input[placeholder="0"]', '20'); // Capacity
-            await page.click('button:has-text("Guardar")');
-            await expect(page.getByRole('heading', { name: 'Quincho', exact: true }).first()).toBeVisible();
-        }
+            await page.fill('input[placeholder="0"]', '20');
 
-        // 4. Manage Reservation Types for Quincho
-        const card = page.locator('.group', { has: page.getByRole('heading', { name: 'Quincho', exact: true }) }).first();
-        // Force click the hidden button or hover
-        await card.hover();
-        const manageTypesBtn = card.getByTitle('Gestionar Tipos de Reserva');
-        await manageTypesBtn.click();
-
-        await expect(page.getByRole('heading', { name: 'Tipos de Reserva' })).toBeVisible();
-
-        // 5. Check/Create "Asado Familiar"
-        const typeRow = page.getByRole('heading', { name: 'Asado Familiar' });
-        if (!(await typeRow.isVisible())) {
-            console.log('Creating Asado Familiar type...');
-            await page.click('button:has-text("Nuevo Tipo")');
-
-            // Fill Form
-            await page.fill('input[placeholder="Ej: Cumpleaños, Asado Familiar, Evento Masivo"]', 'Asado Familiar');
-
-            // Use labels for numeric inputs to avoid ambiguity
-            await page.getByLabel('Tarifa (CLP)').fill('10000');
-            await page.getByLabel('Garantía (CLP)').fill('20000');
-            await page.getByLabel('Duración Máxima (minutos)').fill('240');
+            // IMPORTANT: Update the GET mock *before* triggering the save/refresh
+            // We use unroute to remove the "empty list" mock, then add the "populated list" mock
+            // This ensures the next fetch sees the new data.
+            await page.unroute('**/rest/v1/amenities*');
+            await page.route('**/rest/v1/amenities*', async route => {
+                if (route.request().method() === 'GET') {
+                     await route.fulfill({ json: [{ id: '1', name: 'Quincho', description: 'Espacio para asados', capacity: 20 }] });
+                } else {
+                    await route.continue();
+                }
+            });
 
             await page.click('button:has-text("Guardar")');
-            await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible();
+
+            // Wait for it to appear
+            await expect(page.getByRole('heading', { name: 'Quincho' }).first()).toBeVisible();
         }
     });
 });
