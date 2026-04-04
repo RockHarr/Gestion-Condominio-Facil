@@ -1,12 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { TEST_CONFIG } from '../test-config';
 
 // ==========================================
-// CONFIGURATION
+// CONFIGURATION (Loaded from Test Config)
 // ==========================================
-const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381';
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+// const RESIDENT_EMAIL = 'contacto@rockcode.cl';
+// const RESIDENT_PASSWORD = '...';
+// const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
+// const ADMIN_PASSWORD = '...';
 // ==========================================
 
 test.describe('Admin — Reservations Management', () => {
@@ -17,13 +18,13 @@ test.describe('Admin — Reservations Management', () => {
 
         // 1. Create a Reservation as Resident to ensure we have data to test
         await page.goto('/');
-        await page.fill('input[type="email"]', RESIDENT_EMAIL);
+        await page.fill('input[type="email"]', TEST_CONFIG.RESIDENT_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', RESIDENT_PASSWORD);
+        await page.fill('input[type="password"]', TEST_CONFIG.RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
-        // Wait for login
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        // Wait for login (Increased timeout for CI)
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 30000 });
         // Retry logic for reservation creation (Day + Time)
         let success = false;
         let attempts = 0;
@@ -120,9 +121,9 @@ test.describe('Admin — Reservations Management', () => {
         console.log('Starting approve test...');
         // 2. Login as Admin
         // We are already at Login Screen due to beforeEach
-        await page.fill('input[type="email"]', ADMIN_EMAIL);
+        await page.fill('input[type="email"]', TEST_CONFIG.ADMIN_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', ADMIN_PASSWORD);
+        await page.fill('input[type="password"]', TEST_CONFIG.ADMIN_PASSWORD);
         await page.click('button[type="submit"]');
         console.log('Admin login submitted');
 
@@ -166,9 +167,9 @@ test.describe('Admin — Reservations Management', () => {
     test('should allow admin to reject a pending reservation', async ({ page }) => {
         console.log('Starting reject test...');
         // 2. Login as Admin
-        await page.fill('input[type="email"]', ADMIN_EMAIL);
+        await page.fill('input[type="email"]', TEST_CONFIG.ADMIN_EMAIL);
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="password"]', ADMIN_PASSWORD);
+        await page.fill('input[type="password"]', TEST_CONFIG.ADMIN_PASSWORD);
         await page.click('button[type="submit"]');
 
         // Wait for loading to finish
