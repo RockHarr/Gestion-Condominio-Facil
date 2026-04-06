@@ -21,10 +21,8 @@ try {
     console.warn('Error loading .env.local', e);
 }
 
-if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) throw new Error('Missing Supabase credentials');
-const supabaseUrl = process.env.VITE_SUPABASE_URL!;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY!;
-
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
 // To test RLS failure for admin action, we really need the service_role key to bypass, 
 // OR we need to sign in as an admin user.
 // However, the user said "me salio error", presumably from the UI.

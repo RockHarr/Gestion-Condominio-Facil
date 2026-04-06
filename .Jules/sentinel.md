@@ -17,7 +17,3 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
-## 2024-04-06 - Fixing dummy URLs for Supabase Clients
-**Vulnerability:** Supabase JS SDK client requires a valid HTTP/HTTPS URL and crashes if an arbitrary string (e.g. `dummy_url`) is used, breaking scripts and test setup logic.
-**Learning:** When mocking credentials or injecting fallbacks for client initialization, ensure the URL structure strictly adheres to valid formats (like `http://127.0.0.1:54321`) instead of arbitrary fallback strings. Fail-fast error throwing logic for scripts ensures they don’t silently fail.
-**Prevention:** Add fail-fast checks (`if(!process.env.VAR) throw Error()`) for critical scripts, and use valid loopback URIs as dummy fallbacks for SDKs.
