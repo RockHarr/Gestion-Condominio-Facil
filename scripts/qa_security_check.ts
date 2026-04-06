@@ -15,8 +15,8 @@ try {
     console.log('No .env.local found or error loading it');
 }
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.VITE_SUPABASE_URL!;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY!;
 // Note: We are testing with ANON key to simulate frontend/client access patterns (PostgREST)
 // TO verify `is_admin`, we strictly need to call RPCs that use it or rely on RLS.
 // Since we don't have a login token here, we are "anon".

@@ -17,3 +17,7 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2024-04-06 - Removing hardcoded API keys and URLs in scripts
+**Vulnerability:** Hardcoded environment credentials (like Supabase URLs and Anon keys) found in multiple files in the `scripts/` directory.
+**Learning:** Scripts relying on environment variables were using hardcoded fallback production credentials if `process.env` keys were missing, leaking secrets into source control and bypassing injected variables.
+**Prevention:** Use non-null assertion or fail-fast logic for environment credentials in scripts rather than hardcoding production secrets as fallbacks.
