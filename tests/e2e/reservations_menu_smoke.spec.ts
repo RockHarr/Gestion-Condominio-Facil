@@ -12,18 +12,52 @@ test('reservations_menu_smoke', async ({ page }) => {
         }
     });
 
-    // 2. Login as Admin (Mock)
+    // 2. Mock Supabase Auth & Profile
+    await page.route('**/auth/v1/token?*', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                access_token: 'mock-token',
+                token_type: 'bearer',
+                expires_in: 3600,
+                refresh_token: 'mock-refresh-token',
+                user: { id: 'admin-123' }
+            })
+        });
+    });
+
+    await page.route('**/rest/v1/profiles?*', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify([{
+                id: 'admin-123',
+                role: 'ADMIN',
+                nombre: 'Admin Mock',
+                unidad: 'Oficina Admin'
+            }])
+        });
+    });
+
+    await page.route('**/rest/v1/reservations?*', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify([])
+        });
+    });
+
+    // 3. Login as Admin
     await page.goto('/');
 
-    // Bypass login via localStorage
-    await page.evaluate(() => {
-        localStorage.setItem('gc_session', JSON.stringify({
-            user: { id: 'admin', role: 'ADMIN', nombre: 'Admin User', unidad: 'Oficina' },
-            token: 'mock-token'
-        }));
-    });
-    // Reload to pick up session
-    await page.reload();
+    // Check if we need to login
+    if (await page.getByText('Iniciar Sesión').isVisible()) {
+        await page.fill('input[type="email"]', 'admin@mock.com');
+        await page.click('button:has-text("Usar contraseña")');
+        await page.fill('input[type="password"]', 'mockpassword');
+        await page.click('button[type="submit"]');
+    }
 
     // 3. Verify Sidebar
     await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
