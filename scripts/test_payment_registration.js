@@ -21,8 +21,10 @@ try {
     console.warn('Error loading .env.local', e);
 }
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) throw new Error('Missing Supabase credentials');
+const supabaseUrl = process.env.VITE_SUPABASE_URL!;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY!;
+
 
 // Use service role key to bypass RLS for admin simulation if needed, or stick to anon with login
 // ideally we simulate the exact flow. But admin requires login. 

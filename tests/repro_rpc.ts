@@ -1,14 +1,13 @@
-import { TEST_CONFIG } from './test-config';
 
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'dummy_url';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'http://127.0.0.1:54321';
 const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'dummy_key';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL;
-const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;
+const RESIDENT_EMAIL = 'contacto@rockcode.cl';
+const RESIDENT_PASSWORD = '180381';
 
 async function main() {
     console.log('1. Logging in...');

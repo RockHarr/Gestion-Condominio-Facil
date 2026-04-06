@@ -25,8 +25,10 @@ try {
     console.warn('Error loading .env.local', e);
 }
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) throw new Error('Missing Supabase credentials');
+const supabaseUrl = process.env.VITE_SUPABASE_URL!;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY!;
+
 
 if (!supabaseUrl || !supabaseKey) {
     console.error('Error: VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY not set.');

@@ -20,8 +20,10 @@ if (fs.existsSync(envPath)) {
     });
 }
 
+if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) throw new Error('Missing Supabase credentials');
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY!;
+
 
 if (!supabaseUrl || !supabaseKey) {
     console.error('Missing Supabase credentials');

@@ -1,4 +1,3 @@
-import { TEST_CONFIG } from '../test-config';
 import { test, expect } from '@playwright/test';
 
 test('reservations_menu_smoke', async ({ page }) => {

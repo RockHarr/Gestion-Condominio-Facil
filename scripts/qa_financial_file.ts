@@ -4,8 +4,10 @@ import * as fs from 'fs';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) throw new Error('Missing Supabase credentials');
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY!;
+
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
