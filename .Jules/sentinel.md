@@ -21,3 +21,7 @@
 **Vulnerability:** Hardcoded environment credentials (like Supabase URLs and Anon keys) found in multiple files in the `scripts/` directory.
 **Learning:** Scripts relying on environment variables were using hardcoded fallback production credentials if `process.env` keys were missing, leaking secrets into source control and bypassing injected variables.
 **Prevention:** Use non-null assertion or fail-fast logic for environment credentials in scripts rather than hardcoding production secrets as fallbacks.
+## 2024-04-06 - Removing hardcoded API credentials in test files
+**Vulnerability:** Hardcoded environment credentials (emails and passwords) found in multiple files in the `tests/` directory.
+**Learning:** Test files relying on hardcoded emails and passwords violate the Sentinel directives, making it easier to commit real emails and passwords and to have them bypassed when mocked.
+**Prevention:** Create a safe `test-config.ts` config and use its variables in tests.

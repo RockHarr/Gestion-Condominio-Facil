@@ -1,3 +1,4 @@
+import { TEST_CONFIG } from '../test-config';
 import { test, expect } from '@playwright/test';
 
 test.describe.skip('Admin — Rechazo de Gasto', () => {
