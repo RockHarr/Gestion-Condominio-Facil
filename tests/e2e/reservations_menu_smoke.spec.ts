@@ -12,16 +12,51 @@ test('reservations_menu_smoke', async ({ page }) => {
         }
     });
 
-    // 2. Login as Admin (Mock)
-    // Assuming default dev login flow or using a known credential if E2E setup allows
-    // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    // 2. Mock Supabase Auth & Profile
+    await page.route('**/auth/v1/token?*', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                access_token: 'mock-token',
+                token_type: 'bearer',
+                expires_in: 3600,
+                refresh_token: 'mock-refresh-token',
+                user: { id: 'admin-123' }
+            })
+        });
+    });
 
-    // Fill login if redirected to login
+    await page.route('**/rest/v1/profiles?*', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify([{
+                id: 'admin-123',
+                role: 'ADMIN',
+                nombre: 'Admin Mock',
+                unidad: 'Oficina Admin'
+            }])
+        });
+    });
+
+    await page.route('**/rest/v1/reservations?*', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify([])
+        });
+    });
+
+    // 3. Login as Admin
+    await page.goto('/');
+
+    // Check if we need to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+        await page.fill('input[type="email"]', 'admin@mock.com');
+        await page.click('button:has-text("Usar contraseña")');
+        await page.fill('input[type="password"]', 'mockpassword');
+        await page.click('button[type="submit"]');
     }
 
     // 3. Verify Sidebar
