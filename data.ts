@@ -166,7 +166,7 @@ class DataManager {
   public getPaymentHistory(userId?: number): PaymentRecord[] {
     const paymentHistory = this.getData().paymentHistory
       .sort((a, b) => new Date(b.fechaPago).getTime() - new Date(a.fechaPago).getTime());
-    if (userId) {
+    if (userId !== undefined && userId !== null) {
       return paymentHistory.filter(p => p.userId === userId);
     }
     return paymentHistory;
