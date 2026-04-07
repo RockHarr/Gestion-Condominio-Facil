@@ -1,6 +1,7 @@
 # Diagnóstico express: Reservas
 
 ## A) ¿Hay datos?
+
 ```sql
 select id, amenity_id, status, start_at, user_id, unit_id
 from public.reservations
@@ -8,7 +9,7 @@ order by id desc
 limit 20;
 
 B) ¿Hay datos + joins sanos?
-select 
+select
   r.id, r.amenity_id, r.status, r.start_at,
   p.nombre as user_name,
   u.name as unit_name
@@ -29,3 +30,4 @@ D) Si el Frontend muestra 400 "relationship not found"
 Solución: crear FK o ajustar el .select().
 
 Créditos: Rockwell Harrison Hernández + Spark
+```
