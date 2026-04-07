@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-03-01 - [Zero-Value Bypass in User ID Filters]
+**Vulnerability:** Several backend service methods (`getCommonExpenseDebts`, `getParkingDebts`, `getPaymentHistory`) used a simple truthiness check `if (userId)` to apply data filters. Because `0` is a valid ID type but evaluates to false in JavaScript, querying these methods with `userId: 0` bypassed the filter entirely, resulting in all records being returned instead of just the records for ID 0. This creates an Insecure Direct Object Reference (IDOR) data leak vulnerability.
+**Learning:** Truthiness checks should never be used for numeric or potentially empty-string identifiers in security or filtering logic, as zero-values or empty strings will bypass the check.
+**Prevention:** Always use strict comparison checks against `undefined` and `null` (e.g., `if (userId !== undefined && userId !== null)`) when dealing with optional parameters that can hold valid falsy values like `0`.
