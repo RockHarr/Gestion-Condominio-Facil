@@ -56,7 +56,7 @@ test.describe('Admin — Reservations Management', () => {
 
             if (count === 0) throw new Error('No available days found to book.');
 
-            const randomIndex = Math.floor(Math.random() * count);
+            const randomIndex = crypto.randomUUID().charCodeAt(0) % count;
             console.log(`Selecting day index: ${randomIndex} of ${count}`);
             await availableDays.nth(randomIndex).click();
 
@@ -73,7 +73,7 @@ test.describe('Admin — Reservations Management', () => {
             }
 
             // 3. Pick Random Time
-            const randomHour = Math.floor(Math.random() * 10) + 10; // 10 to 19
+            const randomHour = (crypto.randomUUID().charCodeAt(0) % 10) + 10; // 10 to 19
             const startStr = `${randomHour}:00`;
             const endStr = `${randomHour + 2}:00`;
             console.log(`Selected time: ${startStr} - ${endStr}`);
