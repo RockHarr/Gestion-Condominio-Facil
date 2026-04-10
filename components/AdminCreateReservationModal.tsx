@@ -78,7 +78,7 @@ export const AdminCreateReservationModal: React.FC<AdminCreateReservationModalPr
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                         Nueva Reserva (Admin)
                     </h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500" aria-label="Cerrar modal" title="Cerrar modal">
                         <Icons name="xmark" className="w-6 h-6" />
                     </button>
                 </div>

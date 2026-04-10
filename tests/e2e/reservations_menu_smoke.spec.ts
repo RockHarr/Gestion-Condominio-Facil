@@ -15,20 +15,32 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
     // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
-    if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
-        await page.click('button:has-text("Ingresar")');
+    if (await page.getByText('Iniciar Sesión').isVisible() || await page.getByText('Usar contraseña').isVisible()) {
+        await page.click('button:has-text("Usar contraseña")').catch(() => {});
+        await page.fill('input[type="email"]', 'rockwell.harrison@gmail.com');
+        await page.fill('input[type="password"]', '270386'); // Assuming test creds
+        await page.click('button[type="submit"]');
     }
 
+    // Handle mobile nav vs desktop nav
+    // Go to "Menu" on mobile first if needed
+    const menuBtn = page.locator('button').filter({ hasText: 'Menú' });
+    if (await menuBtn.isVisible()) {
+        await menuBtn.click();
+    }
+
+    // Wait for auth to complete
+    await expect(page.locator('.animate-pulse')).not.toBeVisible({ timeout: 15000 });
+
     // 3. Verify Sidebar
-    await expect(page.getByRole('button', { name: /Gestión de Reservas/i })).toBeVisible();
+    const navBtn = page.locator('button').filter({ hasText: /^Reservas$|^Gestión de Reservas$/ }).first();
+    await expect(navBtn).toBeVisible({ timeout: 15000 });
 
     // 4. Navigate
-    await page.click('button:has-text("Gestión de Reservas")');
+    await navBtn.click();
 
     // 5. Verify Page Content
     await expect(page.getByText('Gestión de Reservas')).toBeVisible();

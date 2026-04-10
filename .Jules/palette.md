@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-10-24 - Modal Close Buttons Accessibility and Icon Silent Failures
+**Learning:** Several modal components (`AdminCreateReservationModal`, `ReservationPaymentModal`, `ReservationRequestModal`) used an `<Icons name="xmark" />` button without an `aria-label` or `title`, making it inaccessible to screen readers. Additionally, one of the components used an invalid icon name (`x-mark` instead of `xmark`), which failed silently and resulted in an invisible, unclickable button area without throwing errors.
+**Action:** Always add `aria-label` and `title` to icon-only buttons. Always verify icon names match the keys defined in `components/Icons.tsx` exactly, since TypeScript does not currently enforce strict string literals for the `name` prop.
