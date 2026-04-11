@@ -26,6 +26,9 @@ jobs:
 
       - run: npx playwright install --with-deps
 
+      - name: Start Supabase Local
+        run: npx supabase start
+
       # 🔎 DEBUG: ver árbol de tests y config (útil mientras afinamos)
       - name: Debug – listar árbol de tests y config
         run: |
