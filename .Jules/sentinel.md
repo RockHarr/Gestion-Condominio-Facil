@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2024-05-24 - Fix insecure random ID generation in PaymentsScreen
+**Vulnerability:** Weak random number generation (`Math.random()`) was used to generate Order and Transaction IDs, which are predictable.
+**Learning:** `Math.random()` should never be used for identifiers that require uniqueness and unpredictability, such as transaction/order numbers, as they can be predicted or collide. Further, generated IDs should be initialized in state (e.g. `useState(() => ...)`) to avoid regeneration on component re-render.
+**Prevention:** Always use cryptographically secure random generation like `crypto.randomUUID()` for unique identifiers on the client side, and ensure they are memoized or initialized in state correctly.
