@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { TEST_CONFIG } from '../test-config';
 
 test('reservations_menu_smoke', async ({ page }) => {
     // 1. Mock network to ensure no 400 errors (validation logic)
@@ -15,12 +16,12 @@ test('reservations_menu_smoke', async ({ page }) => {
     // 2. Login as Admin (Mock)
     // Assuming default dev login flow or using a known credential if E2E setup allows
     // For smoke test on existing session or quick login:
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
+        await page.fill('input[type="email"]', TEST_CONFIG.ADMIN_EMAIL);
+        await page.fill('input[type="password"]', TEST_CONFIG.ADMIN_PASSWORD); // Assuming test creds
         await page.click('button:has-text("Ingresar")');
     }
 

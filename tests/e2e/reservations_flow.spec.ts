@@ -3,8 +3,9 @@ import { test, expect } from '@playwright/test';
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
 // ==========================================
-const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMAIL
-const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
+import { TEST_CONFIG } from '../test-config';
+const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL; // REPLACE WITH REAL RESIDENT EMAIL
+const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
 test.describe('Resident — Reservations Flow', () => {
