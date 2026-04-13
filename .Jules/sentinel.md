@@ -17,3 +17,7 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2024-05-24 - [Medium] Insecure randomness in React renders
+**Vulnerability:** Usage of Math.random() inline in React render methods to generate secure identifiers.
+**Learning:** Math.random() is cryptographically insecure and predictable. Using it inline inside a React component's render body also leads to unintentional regeneration of identifiers upon component re-render.
+**Prevention:** Use the cryptographically secure Web Crypto API (e.g. crypto.randomUUID()) inside a useState lazy initializer function.
