@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2026-04-13 - Contextual ARIA Labels in Mapped Items
+**Learning:** When adding `aria-label` attributes to icon-only buttons within iterated lists or mapped elements, using static labels (e.g., 'Eliminar') creates ambiguity for screen reader users.
+**Action:** Utilize dynamic string interpolation (e.g., `aria-label={`Eliminar ${item.name}`}`) to provide context-specific descriptions, ensuring each button's purpose is uniquely identifiable.
