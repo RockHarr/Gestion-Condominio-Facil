@@ -1,8 +1,7 @@
-import { TEST_CONFIG } from '../test-config';
 import { test, expect } from '@playwright/test';
 
-const ADMIN_EMAIL = TEST_CONFIG.ADMIN_EMAIL;
-const ADMIN_PASSWORD = TEST_CONFIG.ADMIN_PASSWORD;
+const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
+const ADMIN_PASSWORD = '270386';
 
 test.describe('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
