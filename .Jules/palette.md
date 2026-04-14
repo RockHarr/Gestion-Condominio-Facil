@@ -13,3 +13,6 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+## 2026-04-14 - Dynamic ARIA labels for mapping components
+**Learning:** Added string interpolation to map iterations to add descriptive aria labels to repeated icon buttons. This provides better screen-reader accessibility for items like 'Edit <item name>' vs. just 'Edit' repeated multiple times.
+**Action:** When adding `aria-label` attributes to icon-only buttons within iterated lists or mapped elements, utilize dynamic string interpolation to provide context-specific descriptions.
