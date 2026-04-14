@@ -1,3 +1,4 @@
+import { TEST_CONFIG } from './test-config';
 
 import { test } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
@@ -7,10 +8,10 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381';
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+const RESIDENT_EMAIL = TEST_CONFIG.RESIDENT_EMAIL;
+const RESIDENT_PASSWORD = TEST_CONFIG.RESIDENT_PASSWORD;
+const ADMIN_EMAIL = TEST_CONFIG.ADMIN_EMAIL;
+const ADMIN_PASSWORD = TEST_CONFIG.ADMIN_PASSWORD;
 
 test('repro rpc hang with debt', async () => {
     // 1. Login as Resident to get ID
