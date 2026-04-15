@@ -8,6 +8,8 @@ on:
 jobs:
   e2e:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
@@ -24,26 +26,21 @@ jobs:
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
           VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
+      - name: Setup Supabase
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase local instance
+        run: supabase start
+
       - run: npx playwright install --with-deps
 
-      # 🔎 DEBUG: ver árbol de tests y config (útil mientras afinamos)
-      - name: Debug – listar árbol de tests y config
-        run: |
-          pwd
-          node -v
-          ls -la
-          echo "----- tests tree -----"
-          ls -R tests || true
-          echo "----- playwright.config.ts -----"
-          sed -n '1,200p' playwright.config.ts || true
-
-      # 1) Lista los tests que detecta Playwright
       - name: Lista de tests detectados
         run: npx playwright test --list
         env:
           CI: true
 
-      # 2) 🚀 Ejecuta los tests
       - name: Run E2E
         run: npx playwright test --reporter=line
         env:
@@ -51,7 +48,6 @@ jobs:
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
           VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
-      # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
         if: always()
         uses: actions/upload-artifact@v4
