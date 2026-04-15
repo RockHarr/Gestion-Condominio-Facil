@@ -2,7 +2,7 @@ name: E2E (Playwright)
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
 
 jobs:
@@ -23,8 +23,8 @@ jobs:
       - name: Build project
         run: npm run build
         env:
-          VITE_SUPABASE_URL: 'http://127.0.0.1:54321'
-          VITE_SUPABASE_ANON_KEY: 'dummy-key-for-build'
+          VITE_SUPABASE_URL: "http://127.0.0.1:54321"
+          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
       - name: Setup Supabase
         uses: supabase/setup-cli@v1
@@ -45,8 +45,8 @@ jobs:
         run: npx playwright test --reporter=line
         env:
           CI: true
-          VITE_SUPABASE_URL: 'http://127.0.0.1:54321'
-          VITE_SUPABASE_ANON_KEY: 'dummy-key-for-build'
+          VITE_SUPABASE_URL: "http://127.0.0.1:54321"
+          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
       - name: Upload HTML report
         if: always()
