@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2024-05-18 - Prevent Predictable Identifiers
+**Vulnerability:** Weak PRNG `Math.random()` used for generating transaction and order identifiers, posing an enumeration/predictability risk.
+**Learning:** Even frontend identifiers need cryptographic security if exposed to users.
+**Prevention:** Always use Web Crypto API (`crypto.randomUUID()`) for generating non-predictable UUIDs.
