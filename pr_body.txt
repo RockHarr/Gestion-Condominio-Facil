@@ -1,0 +1,5 @@
+Severity: MEDIUM
+Vulnerability: Insecure random number generation used for UI IDs
+Impact: The displayed order IDs and transaction IDs might be predictable, though they are just UI placeholders. A more severe impact is that Math.random calls are directly in the render body which means they recalculate on every re-render.
+Fix: Switched to `crypto.randomUUID()` lazily initialized in `useState` so IDs are secure and stable.
+Verification: Verified using Playwright and component tests.
