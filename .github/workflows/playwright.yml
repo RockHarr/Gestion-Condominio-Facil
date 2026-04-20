@@ -18,6 +18,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Start Supabase emulator
+        run: npx supabase start
+
       - name: Build project
         run: npm run build
         env:
