@@ -309,6 +309,7 @@ export const PaymentConfirmScreen: React.FC<{
   params: { totalAmount: number; itemsToPay: PayableItem[] };
 }> = ({ onConfirm, onNavigate, params }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [orderId] = useState(() => `#${crypto.randomUUID().split("-")[0].toUpperCase()}`);
 
   const handleConfirm = () => {
     setIsLoading(true);
@@ -357,7 +358,7 @@ export const PaymentConfirmScreen: React.FC<{
           <div className="flex justify-between">
             <span className="text-gray-600 dark:text-gray-400">Orden de Compra</span>
             <span className="font-mono text-gray-900 dark:text-white">
-              #{Math.floor(Math.random() * 1000000)}
+              {orderId}
             </span>
           </div>
         </div>
@@ -415,6 +416,7 @@ export const PaymentReceiptScreen: React.FC<{
   params: { totalAmount: number; itemsToPay: PayableItem[] };
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }> = ({ onNavigate, user, params, showToast }) => {
+  const [transactionId] = useState(() => crypto.randomUUID().split("-")[0].toUpperCase());
   return (
     <div className="p-4 space-y-6 animate-page">
       <Card className="relative overflow-hidden !p-0 border-0 shadow-2xl">
@@ -463,7 +465,7 @@ export const PaymentReceiptScreen: React.FC<{
               <div className="flex justify-between">
                 <span className="text-gray-500">ID Transacción</span>
                 <span className="font-mono font-medium text-gray-900 dark:text-white">
-                  {Math.random().toString(36).substring(2, 10).toUpperCase()}
+                  {transactionId}
                 </span>
               </div>
               <div className="flex justify-between">
