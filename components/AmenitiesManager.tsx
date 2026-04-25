@@ -111,7 +111,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
           <div className="flex items-center gap-2 mb-1">
             <button
               onClick={() => onNavigate('admin-dashboard')}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" aria-label="Volver"
             >
               <Icons name="arrow-left" className="w-5 h-5" />
             </button>
@@ -159,13 +159,13 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                   </button>
                   <button
                     onClick={() => handleOpenModal(amenity)}
-                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600"
+                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600" aria-label="Editar espacio"
                   >
                     <Icons name="pencil" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(amenity.id)}
-                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600"
+                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600" aria-label="Eliminar espacio"
                   >
                     <Icons name="trash" className="w-4 h-4" />
                   </button>
@@ -211,7 +211,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
               </h2>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-gray-400 hover:text-gray-500"
+                className="text-gray-400 hover:text-gray-500" aria-label="Cerrar modal"
               >
                 <Icons name="xmark" className="w-6 h-6" />
               </button>
