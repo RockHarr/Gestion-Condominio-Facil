@@ -1,8 +1,6 @@
-1. **Improve UX and Accessibility in Amenities and Reservation Types Managers**
-   - In `components/AmenitiesManager.tsx` and `components/ReservationTypesManager.tsx`, the icon-only buttons for actions like Edit, Delete, Back, and Close Modal lack `aria-label`, `type="button"`, `title`, and proper keyboard focus indicators. They also have an opacity transition that hides them from keyboard-only users.
-   - I will add `type="button"`, descriptive `aria-label`, `title`, and `focus:outline-none focus:ring-2` styles to these buttons.
-   - I will add `focus-within:opacity-100` to the action button container to ensure they become visible when a user tabs into them.
-2. **Complete pre-commit steps**
-   - Complete pre-commit steps to ensure proper testing, verification, review, and reflection are done.
-3. **Submit the change**
-   - Once formatting, linting, and tests pass, I will submit the pull request.
+1. **Fix Node 20 deprecation warning**
+   - Add `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` to the `env` block at the workflow or job level in `.github/workflows/playwright.yml`.
+2. **Fix Playwright tests failing due to missing emulator**
+   - The tests are failing because Supabase backend isn't responding. The `playwright.config.ts` runs tests against `http://localhost:3000` via `npx vite`, but the Supabase emulator isn't actually started in `.github/workflows/playwright.yml`. We need to start the Supabase emulator (`npx supabase start`) before running `npm run build` and running the tests. Let's add it to the workflow file. Also we should fix the `playwright.config.ts` command to use `npx vite preview --port 3000` instead of `npx vite` as specified in the rules, but since Vite 6 changes might require `npx vite preview`, let's just make sure Supabase starts so the fetch requests don't fail.
+3. **Submit the fix**
+   - Run verification and commit the fixes.
