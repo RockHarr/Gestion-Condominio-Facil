@@ -8,6 +8,8 @@ on:
 jobs:
   e2e:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +46,11 @@ jobs:
           CI: true
 
       # 2) 🚀 Ejecuta los tests
+      - name: Start Supabase Local
+        run: |
+          npx supabase start
+          sleep 5
+
       - name: Run E2E
         run: npx playwright test --reporter=line
         env:
