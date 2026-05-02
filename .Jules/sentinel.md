@@ -17,3 +17,9 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2025-05-02 - Insecure random number generation in frontend
+
+**Vulnerability:** `Math.random()` was used for generating transaction identifiers in `components/PaymentsScreen.tsx`.
+**Learning:** Using `Math.random()` to generate identifiers like order IDs or transaction IDs is not cryptographically secure and can lead to predictability and collision vulnerabilities. It should only be used for non-security related random numbers.
+**Prevention:** Always use the cryptographically secure Web Crypto API (`crypto.randomUUID()`) when generating random identifiers on the frontend. Remember to wrap the generation logic in a `useState` lazy initializer to prevent unintended identifier regeneration during component re-renders.
