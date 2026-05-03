@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-03-01 - Prevent Predictable Random Identifier Generation
+**Vulnerability:** Predictable random identifiers (using `Math.random()`) were being used for payment transaction IDs and order IDs, which poses a collision and predictability risk.
+**Learning:** For any client-side identifier generation (especially financial or transactional IDs), `Math.random()` should be strictly avoided. The Web Crypto API (`crypto.randomUUID()`) is natively available, secure, and built for this purpose.
+**Prevention:** Enforce the use of `crypto.randomUUID()` in a React lazy initial state (`useState(() => crypto.randomUUID()...)`) to prevent unintended identifier regeneration and maintain cryptographic security.

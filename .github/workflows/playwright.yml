@@ -2,12 +2,14 @@ name: E2E (Playwright)
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
 
 jobs:
   e2e:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
@@ -18,11 +20,14 @@ jobs:
 
       - run: npm ci
 
+      - name: Start Supabase local emulator
+        run: npx supabase start
+
       - name: Build project
         run: npm run build
         env:
-          VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
+          VITE_SUPABASE_URL: 'http://127.0.0.1:54321'
+          VITE_SUPABASE_ANON_KEY: 'dummy-key-for-build'
 
       - run: npx playwright install --with-deps
 
@@ -48,8 +53,8 @@ jobs:
         run: npx playwright test --reporter=line
         env:
           CI: true
-          VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
+          VITE_SUPABASE_URL: 'http://127.0.0.1:54321'
+          VITE_SUPABASE_ANON_KEY: 'dummy-key-for-build'
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
