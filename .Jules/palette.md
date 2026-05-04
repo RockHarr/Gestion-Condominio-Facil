@@ -13,3 +13,6 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+## 2024-05-04 - Adding ARIA labels and focus states to icon-only buttons
+**Learning:** Icon-only interactive elements lacking `aria-label`s fail basic accessibility checks, making them completely opaque to screen readers. Focus states inside absolute positioned/opacity hidden buttons (`group-hover:opacity-100`) also require `focus-within:opacity-100` to be reachable via keyboard navigation (Tab key).
+**Action:** Always ensure icon-only buttons include `aria-label`, `type="button"`, and keyboard focus visibility (`focus-visible:ring-2`). If hidden behind a hover state, add `focus-within:opacity-100` to the parent to make keyboard navigation work. Test outputs and artifact folders MUST be removed locally before creating commits to prevent repo bloat.
