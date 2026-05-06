@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-03-01 - [Insecure Math.random() Usage for ID Generation]
+**Vulnerability:** The application was using `Math.random()` to generate important identifiers, specifically the transaction ID ("ID Transacción") and the order ID ("Orden de Compra") in `PaymentsScreen.tsx`. `Math.random()` is not cryptographically secure, making the generated IDs predictable. Furthermore, calling it directly in the JSX render body causes these IDs to be regenerated on every component re-render.
+**Learning:** `Math.random()` is unsuitable for generating secure tokens, identifiers, or random strings. Additionally, stateful random values must be stored in `useState` or `useMemo` to persist across React renders.
+**Prevention:** Use the Web Crypto API (`crypto.randomUUID()`) for generating secure identifiers, and wrap the generation logic in a `useState` lazy initializer (e.g., `useState(() => crypto.randomUUID())`) to prevent unintended identifier regeneration during component re-renders.
