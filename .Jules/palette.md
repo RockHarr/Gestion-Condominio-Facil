@@ -13,3 +13,11 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - Icon-Only Button Accessibility Pattern
+**Learning:** Found multiple instances of icon-only action buttons (e.g., closing modals via `xmark`, editing/deleting via `pencil`/`trash` in manager components) lacking accessible text, meaning screen readers would only announce them generically as "button".
+**Action:** When implementing icon-only buttons (`<button><Icons name="..." /></button>`), always include an explicit `aria-label` attribute in Spanish matching the app's localization (e.g., `aria-label="Cerrar modal"` or `aria-label="Editar espacio"`) to ensure the intent is accessible to all users.
+
+## 2025-05-25 - Playwright BaseURL and Relative Paths
+**Learning:** Found an E2E test (`reservations_menu_smoke.spec.ts`) that explicitly navigated to a hardcoded development URL (`http://localhost:5173`), causing CI failures when the test environment ran on a different port (3000).
+**Action:** Never hardcode absolute `localhost` URLs in Playwright tests. Always use relative paths like `await page.goto('/')` so they correctly pick up the dynamically assigned `baseURL` specified in `playwright.config.ts`.
