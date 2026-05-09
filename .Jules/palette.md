@@ -17,3 +17,7 @@
 ## 2025-06-01 - Keyboard Accessibility for Hover-only Actions
 **Learning:** Actions hidden via hover states (`opacity-0 group-hover:opacity-100`) are inaccessible to keyboard users, leading to a critical accessibility blocker in management lists (e.g. `AmenitiesManager`).
 **Action:** Always append `focus-within:opacity-100` alongside `group-hover:opacity-100` to container elements that hide child buttons, and ensure the child buttons have `focus:outline-none focus-visible:ring-2` to guarantee visual focus cues during keyboard navigation.
+
+## 2025-06-01 - Fixing Playwright Local Dev URLs
+**Learning:** Hardcoding `http://localhost:5173` in E2E tests causes intermittent connection refused errors and fails when Vite starts on alternative ports or during CI preview server runs.
+**Action:** Never hardcode development URLs. Always use relative paths (`await page.goto('/')`) to let Playwright resolve against the configured `baseURL`, ensuring tests work reliably across all environments.
