@@ -13,3 +13,15 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-06-01 - Keyboard Accessibility for Hover-only Actions
+**Learning:** Actions hidden via hover states (`opacity-0 group-hover:opacity-100`) are inaccessible to keyboard users, leading to a critical accessibility blocker in management lists (e.g. `AmenitiesManager`).
+**Action:** Always append `focus-within:opacity-100` alongside `group-hover:opacity-100` to container elements that hide child buttons, and ensure the child buttons have `focus:outline-none focus-visible:ring-2` to guarantee visual focus cues during keyboard navigation.
+
+## 2025-06-01 - Fixing Playwright Local Dev URLs
+**Learning:** Hardcoding `http://localhost:5173` in E2E tests causes intermittent connection refused errors and fails when Vite starts on alternative ports or during CI preview server runs.
+**Action:** Never hardcode development URLs. Always use relative paths (`await page.goto('/')`) to let Playwright resolve against the configured `baseURL`, ensuring tests work reliably across all environments.
+
+## 2025-06-01 - Suppressing Node.js Action Warnings
+**Learning:** GitHub Actions using Node 20 are being deprecated, causing loud warnings in the CI console. To prevent these warnings and prepare for the Node 24 transition, explicitly opt-in/out via runner variables.
+**Action:** When updating CI configurations, set `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` and `ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true` in the workflow environment block to silence deprecation warnings and force node 24 usage in standard github actions (`actions/checkout`, `actions/setup-node`, `actions/upload-artifact`).

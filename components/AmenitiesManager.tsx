@@ -149,23 +149,28 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                     <Icons name="photo" className="w-12 h-12" />
                   </div>
                 )}
-                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                   <button
                     onClick={() => onNavigate('admin-reservation-types', { amenityId: amenity.id })}
-                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-green-50 text-green-600"
+                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-green-50 text-green-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
                     title="Gestionar Tipos de Reserva"
+                    aria-label="Gestionar Tipos de Reserva"
                   >
                     <Icons name="clipboard-document-list" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleOpenModal(amenity)}
-                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600"
+                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    title="Editar espacio"
+                    aria-label="Editar espacio"
                   >
                     <Icons name="pencil" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(amenity.id)}
-                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600"
+                    className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                    title="Eliminar espacio"
+                    aria-label="Eliminar espacio"
                   >
                     <Icons name="trash" className="w-4 h-4" />
                   </button>
