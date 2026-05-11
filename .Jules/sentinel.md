@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2025-05-11 - [XSS Vulnerability in Image Sources]
+**Vulnerability:** Unsanitized user inputs for image URLs (`src={ticket.foto}`, `src={amenity.photoUrl}`) allowing possible Cross-Site Scripting (XSS) via `javascript:` or `data:` payloads.
+**Learning:** Even within `<img>` tags, passing unsanitized, user-provided URLs as the `src` attribute could lead to XSS. This bypasses React's normal text escaping protections since it executes scripts when evaluating malicious URL schemes.
+**Prevention:** Always validate and sanitize user-provided URLs before rendering them as attributes (e.g. `src` or `href`), effectively restricting allowed protocols (like `http:` and `https:`) using functions like `getSafeUrl`.
