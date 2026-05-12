@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - Interactive Menus Accessibility
+**Learning:** Many interactive components like cards used as buttons had `focus:outline-none` set, which effectively removed the focus ring for keyboard users, causing accessibility issues. Adding `focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg` fixed it while preserving mouse usability.
+**Action:** When creating custom button-like elements, ensure that a visible focus state is maintained using `focus-visible` classes.

@@ -20,7 +20,7 @@ test.describe('System Setup', () => {
         await passwordInput.fill(ADMIN_PASSWORD);
 
         await page.click('button:has-text("Iniciar Sesión")');
-        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
 
         // 2. Navigate to Amenities
         await page.click('text=Espacios Comunes');

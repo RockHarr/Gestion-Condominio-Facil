@@ -52,7 +52,7 @@ test.describe('Security Policy Verification', () => {
         await page.click('button[type="submit"]');
 
         // Wait for dashboard
-        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
 
         // 2. Check Admin Access
         await expect(page.getByText('Cola de Aprobación')).toBeVisible();
