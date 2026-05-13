@@ -4,6 +4,7 @@ import type { Ticket, Page, PageParams } from '../types';
 import { TicketStatus } from '../types';
 import { Card, Button, Header } from './Shared';
 import Icons from './Icons';
+import { getSafeUrl } from '../lib/sanitize';
 
 // Helper
 const getStatusColors = (status: TicketStatus): string => {
@@ -161,7 +162,7 @@ export const TicketDetailScreen: React.FC<TicketDetailScreenProps> = ({ ticket, 
               </p>
               <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                 <img
-                  src={ticket.foto}
+                  src={getSafeUrl(ticket.foto)}
                   alt="Adjunto del ticket"
                   className="w-full h-auto object-cover max-h-96"
                 />
@@ -275,7 +276,7 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                     {photo ? (
                       <div className="relative">
                         <img
-                          src={photo}
+                          src={getSafeUrl(photo)}
                           alt="Preview"
                           className="mx-auto h-32 object-cover rounded-lg"
                         />
