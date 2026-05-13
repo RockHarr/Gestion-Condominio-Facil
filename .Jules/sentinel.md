@@ -22,3 +22,8 @@
 **Vulnerability:** XSS (Cross-Site Scripting) risk from unsanitized user-supplied image URLs mapped directly to `<img src="..." />` tags.
 **Learning:** `src` attributes are susceptible to `javascript:` and `data:` payload executions if unsanitized URLs are provided by the user (e.g., ticket photos, amenity photos). Even if a previous implementation added `getSafeUrl` and fixed `href` attributes, all `src` attributes mapping user content must also be sanitized.
 **Prevention:** Consistently use the utility `getSafeUrl` to sanitize any user-supplied URL strings before binding them to a `src` attribute (e.g., `<img src={getSafeUrl(user.photoUrl)} />`), just as required for `href` attributes.
+
+## 2024-05-13 - Hardcoded API Keys and URLs in Test Files
+**Vulnerability:** Live Supabase URLs and JWT authentication keys were hardcoded into Playwright E2E test scripts (`tests/e2e/reservations_concurrency.spec.ts`, `tests/e2e/reservations_morosity.spec.ts`).
+**Learning:** Hardcoding sensitive configuration in test files creates a security vulnerability by committing secrets to version control. Furthermore, doing so contaminates CI pipelines since tests will inadvertently execute against live infrastructure rather than using isolated environments or local test databases/mocks.
+**Prevention:** Never commit API keys or environment-specific URLs into the codebase. Tests must read from injected environment variables (e.g., `process.env.VITE_SUPABASE_URL`) and gracefully fall back to dummy/local values (e.g., `http://127.0.0.1:54321`) when running in isolated or CI environments.
