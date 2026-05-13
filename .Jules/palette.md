@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - Icon-only Buttons and Hover States Accessibility
+**Learning:** In list-based management views (like `AmenitiesManager.tsx`), action buttons (edit, delete) are often hidden until hovered (`opacity-0 group-hover:opacity-100`) to reduce visual clutter. However, this pattern completely breaks keyboard accessibility, as tabbing to the buttons leaves them invisible. Adding `focus-within:opacity-100` to the container fixes this elegantly without altering the mouse UX. Furthermore, missing `aria-label`s on icon-only buttons in these lists creates a terrible screen reader experience ("button, button, button").
+**Action:** When implementing "hover actions" in lists, ALWAYS include `focus-within:opacity-100` on the container. Ensure every icon-only `<button>` has a descriptive, context-aware `aria-label` (e.g., `aria-label={\`Editar \${item.name}\`}`).
