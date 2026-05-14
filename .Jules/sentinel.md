@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2024-05-14 - [Insecure Data Access via Truthy Checks]
+**Vulnerability:** The data fetching methods for debts and payments (`getCommonExpenseDebts`, `getParkingDebts`, `getPaymentHistory`) used a truthy check (`if (userId)`) to apply user filters. If a `userId` of `0` was passed, the check failed, causing the backend query to skip the filter and retrieve all users' financial records, potentially exposing sensitive data.
+**Learning:** When optional parameters are used for data filtering or security, especially numbers which can be `0` (a falsy value), strict undefined/null checks must be used instead of truthy checks to prevent unintended data exposure.
+**Prevention:** Always use `if (userId !== undefined && userId !== null)` instead of `if (userId)` when dynamically applying security filters based on function arguments.
