@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - Action Button Discovery via Keyboard
+**Learning:** Utilizing `opacity-0 group-hover:opacity-100` on list action buttons (like edit/delete) completely hides them from screen reader users and keyboard navigators. This makes core functionality unreachable without a mouse. Adding `focus-within:opacity-100` alongside the hover state safely resolves this, allowing the buttons to appear when the user tabs into the container.
+**Action:** Whenever using hover-to-reveal patterns for critical actions inside lists, always pair `group-hover:opacity-100` with `focus-within:opacity-100` on the parent container, and ensure the interactive elements within have `focus-visible:ring-2` to clearly highlight the currently focused action.
