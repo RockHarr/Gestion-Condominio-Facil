@@ -17,3 +17,7 @@
 ## 2025-05-25 - Action Button Discovery via Keyboard
 **Learning:** Utilizing `opacity-0 group-hover:opacity-100` on list action buttons (like edit/delete) completely hides them from screen reader users and keyboard navigators. This makes core functionality unreachable without a mouse. Adding `focus-within:opacity-100` alongside the hover state safely resolves this, allowing the buttons to appear when the user tabs into the container.
 **Action:** Whenever using hover-to-reveal patterns for critical actions inside lists, always pair `group-hover:opacity-100` with `focus-within:opacity-100` on the parent container, and ensure the interactive elements within have `focus-visible:ring-2` to clearly highlight the currently focused action.
+
+## 2025-05-25 - Playwright Base URL and Wait Timeouts
+**Learning:** CI was failing because Playwright tests used hardcoded `http://localhost:5173` instead of the configured `baseURL` (`/`), and used `npx vite` which drops env vars in CI unlike `npx vite preview`. Additionally, timeouts for page loads needed adjusting (from 5000ms to 10000ms/15000ms).
+**Action:** Use relative paths `await page.goto('/')`, update config to `npx vite preview`, and explicitly increase wait timeouts for large dashboards via `await expect(...).toBeVisible({ timeout: 15000 })`.
