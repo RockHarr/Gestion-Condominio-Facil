@@ -11,6 +11,7 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381';
 
 test.describe('Reservations - Concurrency Check', () => {
+    test.skip(!!process.env.CI, 'Skipping in CI without backend emulator');
     let amenityId: number;
     let typeId: number;
     let unitId: number;

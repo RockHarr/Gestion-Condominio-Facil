@@ -13,6 +13,7 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
 test('repro rpc hang with debt', async () => {
+    test.skip(!!process.env.CI, 'Skipping in CI without backend emulator');
     // 1. Login as Resident to get ID
     console.log('1. Logging in as Resident...');
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({

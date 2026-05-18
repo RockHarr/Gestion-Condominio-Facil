@@ -11,6 +11,7 @@ const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
 
 test.describe('Reservations - Morosity Check', () => {
+    test.skip(!!process.env.CI, 'Skipping in CI without backend emulator');
     let moroseUnitId: number;
     let moroseUserId: string;
 
