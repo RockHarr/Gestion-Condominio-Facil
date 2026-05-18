@@ -149,7 +149,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                     <Icons name="photo" className="w-12 h-12" />
                   </div>
                 )}
-                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 right-2 flex gap-2 opacity-0 focus-within:opacity-100 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => onNavigate('admin-reservation-types', { amenityId: amenity.id })}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-green-50 text-green-600"
