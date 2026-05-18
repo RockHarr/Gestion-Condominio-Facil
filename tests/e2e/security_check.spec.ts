@@ -10,6 +10,7 @@ const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 // ==========================================
 
 test.describe('Security Policy Verification', () => {
+    test.skip(!!process.env.CI, 'Skipping in CI without backend emulator');
 
     test('Resident should only see own data and public notices', async ({ page }) => {
         // 1. Login as Resident

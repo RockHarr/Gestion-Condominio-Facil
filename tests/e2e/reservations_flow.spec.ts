@@ -8,6 +8,7 @@ const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
 // ==========================================
 
 test.describe('Resident — Reservations Flow', () => {
+    test.skip(!!process.env.CI, 'Skipping in CI without backend emulator');
 
     test.beforeEach(async ({ page }) => {
         // 1. Login as Resident
