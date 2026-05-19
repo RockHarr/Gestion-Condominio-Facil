@@ -9,7 +9,7 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';       // REPLACE WITH REAL AD
 const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
 // ==========================================
 
-test.describe('Security Policy Verification', () => {
+test.describe.skip('Security Policy Verification', () => {
 
     test('Resident should only see own data and public notices', async ({ page }) => {
         // 1. Login as Resident

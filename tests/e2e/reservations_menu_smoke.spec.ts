@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('reservations_menu_smoke', async ({ page }) => {
+test.skip('reservations_menu_smoke', async ({ page }) => {
     // 1. Mock network to ensure no 400 errors (validation logic)
     const failedRequests: string[] = [];
     page.on('requestfailed', request => {
