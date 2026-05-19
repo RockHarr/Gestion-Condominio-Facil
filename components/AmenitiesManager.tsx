@@ -149,8 +149,10 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                     <Icons name="photo" className="w-12 h-12" />
                   </div>
                 )}
-                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                   <button
+                    type="button"
+                    aria-label={`Gestionar tipos de reserva para ${amenity.name}`}
                     onClick={() => onNavigate('admin-reservation-types', { amenityId: amenity.id })}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-green-50 text-green-600"
                     title="Gestionar Tipos de Reserva"
@@ -158,12 +160,16 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                     <Icons name="clipboard-document-list" className="w-4 h-4" />
                   </button>
                   <button
+                    type="button"
+                    aria-label={`Editar ${amenity.name}`}
                     onClick={() => handleOpenModal(amenity)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600"
                   >
                     <Icons name="pencil" className="w-4 h-4" />
                   </button>
                   <button
+                    type="button"
+                    aria-label={`Eliminar ${amenity.name}`}
                     onClick={() => handleDelete(amenity.id)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600"
                   >

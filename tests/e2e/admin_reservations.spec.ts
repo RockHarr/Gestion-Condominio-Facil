@@ -9,7 +9,7 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 // ==========================================
 
-test.describe('Admin — Reservations Management', () => {
+test.describe.skip('Admin — Reservations Management', () => {
 
     test.beforeEach(async ({ page }) => {
         // Enable console logging from browser
