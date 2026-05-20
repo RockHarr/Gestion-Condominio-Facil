@@ -176,7 +176,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
               key={type.id}
               className="group hover:shadow-lg transition-all duration-200 border border-gray-100 dark:border-gray-700 relative"
             >
-              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                 <button
                   onClick={() => handleOpenModal(type)}
                   className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-blue-600 hover:bg-blue-50"
