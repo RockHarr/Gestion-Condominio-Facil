@@ -21,3 +21,7 @@
 ## 2024-05-21 - Test Configuration Hardcoding Issue
 **Learning:** Hardcoding `http://localhost:5173` in E2E tests (like in `reservations_menu_smoke.spec.ts`) breaks the tests in CI when the build is served from a different port (e.g., port 3000 as configured in `playwright.config.ts`).
 **Action:** Always use relative paths like `await page.goto('/')` in Playwright tests to respect the `baseURL` configured in the project.
+
+## 2024-05-21 - Test Configuration Hardcoding Issue Part 2
+**Learning:** Hardcoding test credentials directly in the code (e.g. `admin@condominio.com` instead of the expected `rockwell.harrison@gmail.com`) causes the test to fail. Additionally, `npx vite preview` (which the test framework uses in CI depending on config) must correctly route the backend URL via env variables in `playwright.yml`.
+**Action:** Ensure E2E tests use `await page.goto('/')` rather than full URLs, and align credentials with those expected by the test environment (using `ROCKWELL_HARRISON_EMAIL` etc or the configured one). Also, ensure the test environment provides network access to Supabase via `VITE_SUPABASE_URL`.
