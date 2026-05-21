@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2024-05-21 - Modal Close Button ARIA Labels
+**Learning:** Found multiple instances where the custom `<Icons name="xmark" />` was used inside a `<button>` without any descriptive text. Screen readers would announce these as empty buttons. Additionally, the `ReservationPaymentModal.tsx` was calling an invalid icon name (`x-mark` instead of `xmark`), which caused the icon to silently fail and not render at all.
+**Action:** Always verify that icon-only buttons have an `aria-label` (e.g., `aria-label="Cerrar modal"`). Also, ensure that icon names passed to the custom `<Icons>` component strictly match the defined keys in `components/Icons.tsx` to prevent invisible interactive elements.
