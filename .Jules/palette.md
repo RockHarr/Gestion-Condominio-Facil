@@ -17,3 +17,7 @@
 ## 2024-05-21 - Modal Close Button ARIA Labels
 **Learning:** Found multiple instances where the custom `<Icons name="xmark" />` was used inside a `<button>` without any descriptive text. Screen readers would announce these as empty buttons. Additionally, the `ReservationPaymentModal.tsx` was calling an invalid icon name (`x-mark` instead of `xmark`), which caused the icon to silently fail and not render at all.
 **Action:** Always verify that icon-only buttons have an `aria-label` (e.g., `aria-label="Cerrar modal"`). Also, ensure that icon names passed to the custom `<Icons>` component strictly match the defined keys in `components/Icons.tsx` to prevent invisible interactive elements.
+
+## 2024-05-21 - Test Configuration Hardcoding Issue
+**Learning:** Hardcoding `http://localhost:5173` in E2E tests (like in `reservations_menu_smoke.spec.ts`) breaks the tests in CI when the build is served from a different port (e.g., port 3000 as configured in `playwright.config.ts`).
+**Action:** Always use relative paths like `await page.goto('/')` in Playwright tests to respect the `baseURL` configured in the project.
