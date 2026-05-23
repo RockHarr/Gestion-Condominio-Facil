@@ -21,6 +21,9 @@ jobs:
       - name: Build project
         run: npm run build
         env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+          TEST_RESIDENT_PASSWORD: "dummy_password"
+          TEST_ADMIN_PASSWORD: "dummy_password"
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
           VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
@@ -41,12 +44,18 @@ jobs:
       - name: Lista de tests detectados
         run: npx playwright test --list
         env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+          TEST_RESIDENT_PASSWORD: "dummy_password"
+          TEST_ADMIN_PASSWORD: "dummy_password"
           CI: true
 
       # 2) 🚀 Ejecuta los tests
       - name: Run E2E
         run: npx playwright test --reporter=line
         env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+          TEST_RESIDENT_PASSWORD: "dummy_password"
+          TEST_ADMIN_PASSWORD: "dummy_password"
           CI: true
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
           VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
