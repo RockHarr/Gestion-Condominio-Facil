@@ -23,7 +23,7 @@ test.describe('Admin — Reservations Management', () => {
         await page.click('button[type="submit"]');
 
         // Wait for login
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible({ timeout: 15000 });
         // Retry logic for reservation creation (Day + Time)
         let success = false;
         let attempts = 0;
@@ -39,7 +39,7 @@ test.describe('Admin — Reservations Management', () => {
                 await page.reload();
                 // Wait for app to re-initialize
                 await expect(page.locator('.animate-pulse')).not.toBeVisible({ timeout: 20000 });
-                await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 20000 });
+                await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible({ timeout: 20000 });
 
                 await page.click('[data-testid="tab-amenities"]');
                 await page.locator('button:has-text("Reservar")').first().click();
