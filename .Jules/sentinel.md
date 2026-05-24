@@ -17,3 +17,12 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2024-05-24 - Remove hardcoded secrets from scripts and tests
+**Vulnerability:** Hardcoded database URLs (`https://*.supabase.co`), API keys, and user/admin passwords were found in test files (`tests/e2e/*.spec.ts`) and utility scripts (`scripts/*`).
+**Learning:** Hardcoding secrets is a critical security vulnerability that can lead to unauthorized access, data breaches, and compromised environments if exposed. These values should always be read from environment variables to maintain operational security and allow testing against dummy environments without changing code.
+**Prevention:** Always use `process.env.TEST_RESIDENT_PASSWORD`, `process.env.VITE_SUPABASE_URL`, etc., and provide safe local fallbacks like `http://127.0.0.1:54321` or `dummy_key` rather than hardcoding production or specific project credentials.
+
+## 2024-05-24 - Missing Security Headers in Vercel Deployment
+**Vulnerability:** The deployment configuration (`vercel.json`) lacked standard security headers such as `Content-Security-Policy` (CSP), `X-Frame-Options`, `X-Content-Type-Options`, and `Referrer-Policy`.
+**Learning:** Modern web applications relying on Vercel or similar platforms must explicitly define security headers in their configuration files to protect against common web vulnerabilities like Clickjacking, MIME-type sniffing, and some forms of XSS. Relying solely on client-side React escaping is insufficient defense-in-depth.
+**Prevention:** Always include a robust `headers` block in `vercel.json` (or equivalent configuration) that enforces a strict `Content-Security-Policy` whitelisting only necessary domains (like Supabase API and WebSocket endpoints), `X-Frame-Options: DENY` to prevent framing, and `X-Content-Type-Options: nosniff`.

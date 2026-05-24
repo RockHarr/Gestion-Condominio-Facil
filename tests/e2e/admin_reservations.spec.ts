@@ -4,9 +4,9 @@ import { test, expect } from '@playwright/test';
 // CONFIGURATION
 // ==========================================
 const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381';
+const RESIDENT_PASSWORD = process.env.TEST_RESIDENT_PASSWORD || 'dummy_password';
 const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'dummy_admin_password';
 // ==========================================
 
 test.describe('Admin — Reservations Management', () => {
