@@ -773,17 +773,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </div>
                       </div>
 
-                      <div className="flex justify-end gap-3 pt-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                      <div className="flex justify-end gap-3 pt-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity">
                         <Button
                           onClick={() => setRejectModalOpen(expense)}
                           variant="danger"
-                          className="!w-auto !py-2 !px-4 !text-xs shadow-sm"
+                          className="!w-auto !py-2 !px-4 !text-xs shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                         >
                           <Icons name="xmark" className="w-3 h-3 mr-1.5" /> Rechazar
                         </Button>
                         <Button
                           onClick={() => onApproveExpense(expense.id)}
-                          className="!w-auto !py-2 !px-4 !text-xs shadow-sm bg-green-600 hover:bg-green-700 focus:ring-green-500"
+                          className="!w-auto !py-2 !px-4 !text-xs shadow-sm bg-green-600 hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
                         >
                           <Icons name="check" className="w-3 h-3 mr-1.5" /> Aprobar
                         </Button>
