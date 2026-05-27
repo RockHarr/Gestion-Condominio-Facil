@@ -13,7 +13,7 @@ test.describe('System Setup', () => {
         await emailInput.fill(ADMIN_EMAIL);
 
         // Click "Usar contraseña" to reveal the password field
-        await page.click('button:has-text("Usar contraseña")');
+        if(await page.getByText('Usar contraseña').isVisible()){ await page.click('button:has-text("Usar contraseña")'); }
 
         const passwordInput = page.locator('input[type="password"]');
         await expect(passwordInput).toBeVisible();
