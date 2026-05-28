@@ -51,13 +51,11 @@ test.describe('Reservations - Concurrency Check', () => {
     test('should prevent double booking on simultaneous requests', async () => {
         // Define a slot for testing
         const startAt = new Date();
-        const randomDay = Math.floor(Math.random() * 10) + 15; // 15-25 days
-        const randomHour = Math.floor(Math.random() * 8) + 10; // 10-17 hours
-        startAt.setDate(startAt.getDate() + randomDay);
-        startAt.setHours(randomHour, 0, 0, 0);
+        startAt.setDate(startAt.getDate() + Math.floor(Math.random() * 1000) + 50); // random future day to avoid orphaned test data overlap
+        startAt.setHours(10, 0, 0, 0);
 
         const endAt = new Date(startAt);
-        endAt.setHours(randomHour + 4, 0, 0, 0);
+        endAt.setHours(14, 0, 0, 0);
 
         const startIso = startAt.toISOString();
         const endIso = endAt.toISOString();
@@ -101,9 +99,9 @@ test.describe('Reservations - Concurrency Check', () => {
         }
 
         // Assertions
-        // expect(successful.length).toBeLessThanOrEqual(1);
-        expect(failed.length).toBeGreaterThanOrEqual(1);
-        //
+        // expect(successful.length).toBe(1);
+        expect(successful.length).toBeLessThanOrEqual(1);
+        expect(failed.length).toBe(1);
 
         // Verify the error message of the failed request
         const failure = failed[0] as any;
