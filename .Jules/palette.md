@@ -13,3 +13,6 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+## 2024-05-18 - Missing ARIA labels and type on icon-only close buttons in Modals
+**Learning:** Found a widespread pattern across modal components (`ReservationRequestModal`, `AdminCreateReservationModal`, `ReservationTypesManager`, `AmenitiesManager`) where icon-only close buttons lacked `aria-label` descriptions for screen readers, `type="button"` to prevent form submission side-effects, and `focus-visible` classes for keyboard navigation visibility.
+**Action:** Always verify that interactive elements containing only icons (like `<Icons name="xmark" />`) explicitly define `aria-label` and `type="button"`. Ensure they have `focus-visible:ring-*` classes rather than just `focus:outline-none` so keyboard users have a visible focus indicator.
