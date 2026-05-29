@@ -17,7 +17,7 @@ test.describe('System Setup', () => {
 
         const passwordInput = page.locator('input[type="password"]');
         await expect(passwordInput).toBeVisible();
-        await passwordInput.fill(ADMIN_PASSWORD);
+        await passwordInput.fill(process.env.TEST_ADMIN_PASSWORD || 'dummy_admin_pwd');
 
         await page.click('button:has-text("Iniciar Sesión")');
         await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
