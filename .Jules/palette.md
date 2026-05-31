@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-31 - Keyboard Accessibility for Hidden Hover Menus
+**Learning:** Actions hidden behind CSS `hover` states (like `opacity-0 group-hover:opacity-100`) are invisible to keyboard-only users who navigate via the `Tab` key, breaking accessibility.
+**Action:** Always combine `group-hover:opacity-100` with `focus-within:opacity-100` on the container so that hidden menus appear when interactive child elements receive focus. Additionally, ensure icon-only action buttons have descriptive `aria-label`s and clear focus rings (`focus-visible:ring-2`).
