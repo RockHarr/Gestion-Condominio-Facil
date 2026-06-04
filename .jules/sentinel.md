@@ -1,0 +1,4 @@
+## 2024-05-18 - [Hardcoded Secrets and Credentials Removal]
+**Vulnerability:** Found hardcoded test credentials (emails and passwords like '180381' and '270386') in E2E tests, and hardcoded production Supabase anon keys and URLs in multiple diagnostic scripts.
+**Learning:** Development scripts and tests often accumulate hardcoded secrets over time, which poses a significant security risk if committed to a public repository, even if they are just for tests, because test environments could share similarities with production or the secrets could leak valid keys.
+**Prevention:** Always read credentials and configuration URLs/keys from environment variables in tests and scripts, providing safe local dummy fallbacks (like `http://127.0.0.1:54321` and `dummy_key`) rather than actual valid strings.
