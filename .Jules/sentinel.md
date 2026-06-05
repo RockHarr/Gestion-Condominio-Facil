@@ -18,7 +18,7 @@
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
 
-## 2025-06-05 - Missing Vercel Security Headers
-**Vulnerability:** The application was deployed to Vercel without security headers (CSP, X-Frame-Options, X-Content-Type-Options, etc.), exposing it to XSS, Clickjacking, and MIME-sniffing attacks.
-**Learning:** Vercel requires security headers to be explicitly configured in `vercel.json`. When implementing CSP, all external domains used by the application (like `https://aistudiocdn.com` for React, `https://cdn.tailwindcss.com`, Google Fonts, and local dummy backends like `http://127.0.0.1:54321`) must be explicitly whitelisted to prevent breaking the application's UI and E2E tests.
-**Prevention:** Always implement a strict `Content-Security-Policy` and essential security headers in `vercel.json` for production deployments, ensuring all necessary third-party CDNs and local dummy endpoints are included in the directives.
+## 2026-06-05 - Hardcoded Credentials in Tests
+**Vulnerability:** E2E tests and CI workflows contained hardcoded live Supabase URLs and keys, and tests failed when run against a dummy local backend. Hardcoding sensitive credentials poses a severe security risk.
+**Learning:** Hardcoded credentials must never be committed to repository files. They must be replaced with environment variables falling back to dummy local values, while the CI workflow should inject the required variables via GitHub Secrets.
+**Prevention:** Enforce environment variable injection in CI using `${{ secrets.VAR_NAME != '' && secrets.VAR_NAME || 'fallback' }}`.
