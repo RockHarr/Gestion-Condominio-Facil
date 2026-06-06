@@ -281,13 +281,14 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                         />
                         <button
                           type="button"
+                          aria-label="Eliminar foto"
                           onClick={(e) => {
                             e.preventDefault();
                             setPhoto(undefined);
                             setPhotoName('');
                             setError(null);
                           }}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600"
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
                         >
                           <Icons name="xmark" className="w-4 h-4" />
                         </button>
