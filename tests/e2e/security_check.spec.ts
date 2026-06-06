@@ -3,10 +3,10 @@ import { test, expect } from '@playwright/test';
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
 // ==========================================
-const RESIDENT_EMAIL = 'contacto@rockcode.cl'; // REPLACE WITH REAL RESIDENT EMAIL
-const RESIDENT_PASSWORD = '180381';       // REPLACE WITH REAL RESIDENT PASSWORD
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';       // REPLACE WITH REAL ADMIN EMAIL
-const ADMIN_PASSWORD = '270386';          // REPLACE WITH REAL ADMIN PASSWORD
+const RESIDENT_EMAIL = process.env.TEST_RESIDENT_EMAIL || 'dummy_resident@example.com';
+const RESIDENT_PASSWORD = process.env.TEST_RESIDENT_PASSWORD || 'dummy_password';
+const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'dummy_admin@example.com';       // REPLACE WITH REAL ADMIN EMAIL
+const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'dummy_password';          // REPLACE WITH REAL ADMIN PASSWORD
 // ==========================================
 
 test.describe('Security Policy Verification', () => {
