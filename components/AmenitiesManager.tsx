@@ -210,8 +210,10 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                 {editingAmenity ? 'Editar Espacio' : 'Nuevo Espacio'}
               </h2>
               <button
+                type="button"
                 onClick={() => setModalOpen(false)}
-                className="text-gray-400 hover:text-gray-500"
+                aria-label="Cerrar modal"
+                className="text-gray-400 hover:text-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 rounded-full p-1"
               >
                 <Icons name="xmark" className="w-6 h-6" />
               </button>
