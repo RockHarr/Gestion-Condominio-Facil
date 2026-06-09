@@ -20,7 +20,7 @@ test.describe('Security Policy Verification', () => {
         await page.click('button[type="submit"]');
 
         // Wait for login to complete (check for home page element)
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByRole('heading', { name: 'Inicio', exact: true }).first()).toBeVisible({ timeout: 15000 });
 
         // 2. Check Notices (Should only see Published)
         await page.click('text=Avisos');
@@ -39,7 +39,7 @@ test.describe('Security Policy Verification', () => {
         await expect(adminMenu).not.toBeVisible();
 
         // Logout
-        await page.click('[data-testid="tab-more"]');
+        await page.click('button:has-text("Más")');
         await page.click('button:has-text("Cerrar Sesión")');
     });
 
