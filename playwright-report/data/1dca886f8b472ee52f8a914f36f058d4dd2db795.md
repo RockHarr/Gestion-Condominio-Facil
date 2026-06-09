@@ -72,7 +72,7 @@ Call log:
   19 |         await expect(passwordInput).toBeVisible();
   20 |         await passwordInput.fill(ADMIN_PASSWORD);
   21 |
-  22 |         await page.click('button:has-text("Iniciar Sesión")');
+  22 |         await page.click('button[type="submit"]');
 > 23 |         await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
      |                                                                               ^ Error: expect(locator).toBeVisible() failed
   24 |
