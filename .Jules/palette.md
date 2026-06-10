@@ -13,3 +13,11 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2026-06-10 - Button Accessibility and Focus States
+**Learning:** `focus:ring` classes make focus rings appear on mouse click, which is often distracting for users. Using `focus-visible:ring` is better because it shows rings only during keyboard navigation. Additionally, explicitly adding `aria-label` to buttons provides better screen reader support.
+**Action:** Replace `focus:` with `focus-visible:` on interactive elements to improve accessibility and visual polish. Ensure ARIA labels are present on core action buttons.
+
+## 2026-06-10 - Playwright E2E Configurations and Vite Server
+**Learning:** `npx vite preview` does not work in this repository for E2E tests because `npx` commands for Vite often fail to resolve properly with this project's dependency setup or node environment, leading to `Failed to fetch` errors in Playwright tests because the webserver doesn't start.
+**Action:** When configuring Playwright's `webServer.command`, always use `npm run preview` to leverage the locally installed Vite dependencies defined in `package.json`'s scripts. Also ensure to use relative URLs (like `/`) instead of hardcoding `http://localhost:5173` in tests to respect Playwright's `baseURL` configuration.
