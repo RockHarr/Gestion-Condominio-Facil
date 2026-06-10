@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2026-06-10 - Button Accessibility and Focus States
+**Learning:** `focus:ring` classes make focus rings appear on mouse click, which is often distracting for users. Using `focus-visible:ring` is better because it shows rings only during keyboard navigation. Additionally, explicitly adding `aria-label` to buttons provides better screen reader support.
+**Action:** Replace `focus:` with `focus-visible:` on interactive elements to improve accessibility and visual polish. Ensure ARIA labels are present on core action buttons.
