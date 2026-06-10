@@ -1,0 +1,6 @@
+
+> gestion-condominio-facil@0.0.0 preview
+> vite preview --port 3000 --strictPort
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://192.168.0.2:3000/
