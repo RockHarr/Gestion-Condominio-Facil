@@ -17,3 +17,18 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2024-05-30 - Add Security Headers to vercel.json
+**Vulnerability:** The Vercel deployment configuration (`vercel.json`) was missing essential security headers (CSP, X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy). This left the application vulnerable to various attacks such as XSS, clickjacking, and MIME-type sniffing.
+**Learning:** Security headers are not applied automatically by Vercel; they must be explicitly defined in `vercel.json`. The CSP must carefully whitelist external CDNs (React, Tailwind, Google Fonts) and backend connections (Supabase, local emulators).
+**Prevention:** Always ensure that deployment configurations include standard security headers and that any new external dependency is properly whitelisted in the CSP to maintain security without breaking functionality.
+
+## 2024-05-30 - Remove hardcoded live database URLs and keys from test files
+**Vulnerability:** Several E2E test files contained hardcoded live Supabase URLs and API keys (`https://tqshoddiisfgfjqlkntv.supabase.co` and the JWT key). This exposed the production database credentials directly in the source code.
+**Learning:** Hardcoding live credentials in test files or scripts is a critical security vulnerability and violates the principle of least privilege and secret management. Tests must use environment variables and mock local values.
+**Prevention:** Always use `process.env.VITE_SUPABASE_URL` and `process.env.VITE_SUPABASE_ANON_KEY` or an equivalent environment configuration for test setups, and default to mock values like `http://127.0.0.1:54321`.
+
+## 2024-05-30 - Remove hardcoded passwords from E2E test files
+**Vulnerability:** E2E test files contained hardcoded resident and admin passwords (`180381` and `270386`). This exposed the production database credentials directly in the source code.
+**Learning:** Hardcoding live passwords in test files or scripts is a critical security vulnerability and violates the principle of least privilege and secret management. Tests must use environment variables and mock local values.
+**Prevention:** Always use `process.env.TEST_RESIDENT_PASSWORD` and `process.env.TEST_ADMIN_PASSWORD` or an equivalent environment configuration for test setups, and explicitly add them to the CI workflow env block so that CI tests don't fail due to missing configuration.
