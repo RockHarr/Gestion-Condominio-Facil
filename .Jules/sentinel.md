@@ -22,3 +22,8 @@
 **Vulnerability:** The Vercel deployment configuration (`vercel.json`) was missing essential security headers (CSP, X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy). This left the application vulnerable to various attacks such as XSS, clickjacking, and MIME-type sniffing.
 **Learning:** Security headers are not applied automatically by Vercel; they must be explicitly defined in `vercel.json`. The CSP must carefully whitelist external CDNs (React, Tailwind, Google Fonts) and backend connections (Supabase, local emulators).
 **Prevention:** Always ensure that deployment configurations include standard security headers and that any new external dependency is properly whitelisted in the CSP to maintain security without breaking functionality.
+
+## 2024-05-30 - Remove hardcoded live database URLs and keys from test files
+**Vulnerability:** Several E2E test files contained hardcoded live Supabase URLs and API keys (`https://tqshoddiisfgfjqlkntv.supabase.co` and the JWT key). This exposed the production database credentials directly in the source code.
+**Learning:** Hardcoding live credentials in test files or scripts is a critical security vulnerability and violates the principle of least privilege and secret management. Tests must use environment variables and mock local values.
+**Prevention:** Always use `process.env.VITE_SUPABASE_URL` and `process.env.VITE_SUPABASE_ANON_KEY` or an equivalent environment configuration for test setups, and default to mock values like `http://127.0.0.1:54321`.
