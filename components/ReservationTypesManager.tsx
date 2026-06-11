@@ -147,8 +147,10 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
         <div>
           <div className="flex items-center gap-2 mb-1">
             <button
+              type="button"
+              aria-label="Volver a espacios comunes"
               onClick={() => onNavigate('admin-amenities')}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus-visible:ring-2 rounded-md"
             >
               <Icons name="arrow-left" className="w-5 h-5" />
             </button>
@@ -176,16 +178,20 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
               key={type.id}
               className="group hover:shadow-lg transition-all duration-200 border border-gray-100 dark:border-gray-700 relative"
             >
-              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                 <button
+                  type="button"
+                  aria-label={`Editar ${type.name}`}
                   onClick={() => handleOpenModal(type)}
-                  className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-blue-600 hover:bg-blue-50"
+                  className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-blue-600 hover:bg-blue-50 focus-visible:ring-2"
                 >
                   <Icons name="pencil" className="w-4 h-4" />
                 </button>
                 <button
+                  type="button"
+                  aria-label={`Eliminar ${type.name}`}
                   onClick={() => handleDelete(type.id)}
-                  className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-red-600 hover:bg-red-50"
+                  className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-red-600 hover:bg-red-50 focus-visible:ring-2"
                 >
                   <Icons name="trash" className="w-4 h-4" />
                 </button>
@@ -263,8 +269,10 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
                 {editingType ? 'Editar Tipo de Reserva' : 'Nuevo Tipo de Reserva'}
               </h2>
               <button
+                type="button"
+                aria-label="Cerrar modal"
                 onClick={() => setModalOpen(false)}
-                className="text-gray-400 hover:text-gray-500"
+                className="text-gray-400 hover:text-gray-500 focus-visible:ring-2 rounded-md"
               >
                 <Icons name="xmark" className="w-6 h-6" />
               </button>
