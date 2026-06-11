@@ -27,3 +27,8 @@
 **Vulnerability:** Several E2E test files contained hardcoded live Supabase URLs and API keys (`https://tqshoddiisfgfjqlkntv.supabase.co` and the JWT key). This exposed the production database credentials directly in the source code.
 **Learning:** Hardcoding live credentials in test files or scripts is a critical security vulnerability and violates the principle of least privilege and secret management. Tests must use environment variables and mock local values.
 **Prevention:** Always use `process.env.VITE_SUPABASE_URL` and `process.env.VITE_SUPABASE_ANON_KEY` or an equivalent environment configuration for test setups, and default to mock values like `http://127.0.0.1:54321`.
+
+## 2024-05-30 - Remove hardcoded passwords from E2E test files
+**Vulnerability:** E2E test files contained hardcoded resident and admin passwords (`180381` and `270386`). This exposed the production database credentials directly in the source code.
+**Learning:** Hardcoding live passwords in test files or scripts is a critical security vulnerability and violates the principle of least privilege and secret management. Tests must use environment variables and mock local values.
+**Prevention:** Always use `process.env.TEST_RESIDENT_PASSWORD` and `process.env.TEST_ADMIN_PASSWORD` or an equivalent environment configuration for test setups, and explicitly add them to the CI workflow env block so that CI tests don't fail due to missing configuration.

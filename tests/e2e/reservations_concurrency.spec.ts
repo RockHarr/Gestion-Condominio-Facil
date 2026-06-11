@@ -8,7 +8,7 @@ const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'dummy_key';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381';
+const RESIDENT_PASSWORD = process.env.TEST_RESIDENT_PASSWORD || 'dummy_password';
 
 test.describe('Reservations - Concurrency Check', () => {
     let amenityId: number;

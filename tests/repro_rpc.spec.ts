@@ -8,9 +8,9 @@ const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'dummy_key';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const RESIDENT_EMAIL = 'contacto@rockcode.cl';
-const RESIDENT_PASSWORD = '180381';
+const RESIDENT_PASSWORD = process.env.TEST_RESIDENT_PASSWORD || 'dummy_password';
 const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'dummy_password';
 
 test('repro rpc hang with debt', async () => {
     // 1. Login as Resident to get ID
