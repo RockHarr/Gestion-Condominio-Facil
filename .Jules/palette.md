@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-06-12 - Accessible Action Buttons in Iterated Lists
+**Learning:** Icon-only action buttons (edit, delete) inside mapped cards (like in `AmenitiesManager`) lacked `aria-label`s, making them invisible to screen readers. Furthermore, hiding these buttons with `opacity-0 group-hover:opacity-100` makes them inaccessible via keyboard unless `group-focus-within:opacity-100` or `focus-within:opacity-100` is also applied to the container.
+**Action:** Always add dynamic `aria-label`s (e.g., `aria-label={\`Editar \${item.name}\`}`) to icon buttons in lists. When using hover states to show actions, always include `focus-within` on the container so they appear when a user tabs into them.
