@@ -17,3 +17,7 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2025-03-05 - Missing Security Headers in Vercel Configuration
+**Vulnerability:** The Vercel deployment configuration lacked security headers such as Content-Security-Policy, X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, and Referrer-Policy, exposing the application to potential cross-site scripting (XSS), clickjacking, and mime-sniffing attacks.
+**Learning:** The application relies on external CDNs (Tailwind, React from aistudiocdn.com, Google Fonts) and local dummy backend URLs for CI tests, requiring a carefully constructed CSP to secure the app without breaking the UI or tests.
+**Prevention:** Always implement explicit security headers in deployment configurations (`vercel.json`) and carefully whitelist required domains for external resources and CI environments.
