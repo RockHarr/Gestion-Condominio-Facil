@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-06-18 - Missing ARIA Labels on Icon-only Buttons
+**Learning:** Icon-only buttons used for secondary actions (like edit, delete, or close modals) consistently lacked `aria-label` attributes across multiple manager components (`AmenitiesManager`, `ReservationTypesManager`, etc.). Screen reader users would hear these merely as "button" with no context. For buttons within iterative lists, using dynamic string interpolation (e.g., ``aria-label={`Eliminar espacio ${amenity.name}`}``) provides essential context.
+**Action:** Always ensure that `<Icons>` components used inside buttons are accompanied by explicit, descriptive `aria-label` attributes, especially when no visible text is present. Use dynamic strings inside loops to distinguish between similar actions.
