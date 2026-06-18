@@ -17,3 +17,13 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-06-18 - [Hardcoded Secrets in Source Code]
+**Vulnerability:** The codebase had multiple hardcoded API keys and credentials, including `SUPABASE_KEY` / `VITE_SUPABASE_ANON_KEY`, `SUPABASE_URL`, `RESIDENT_PASSWORD`, and `ADMIN_PASSWORD`, directly in `.spec.ts` test files and utility scripts.
+**Learning:** Hardcoding credentials in version control is a critical security vulnerability, as it exposes the infrastructure and accounts to anyone with read access to the repository, including potential malicious actors if the repo is public or compromised.
+**Prevention:** Always use environment variables for secrets, API keys, and configurations. Access them using `process.env.VARIABLE_NAME` in Node/scripts, or `import.meta.env.VARIABLE_NAME` in Vite/React. Never commit `.env` or similar files containing actual secrets. Provide dummy values or fail gracefully when secrets are missing in non-production environments.
+
+## 2026-06-18 - [Hardcoded Secrets in Source Code]
+**Vulnerability:** The codebase had multiple hardcoded API keys and credentials, including `SUPABASE_KEY` / `VITE_SUPABASE_ANON_KEY`, `SUPABASE_URL`, `RESIDENT_PASSWORD`, and `ADMIN_PASSWORD`, directly in `.spec.ts` test files and utility scripts.
+**Learning:** Hardcoding credentials in version control is a critical security vulnerability, as it exposes the infrastructure and accounts to anyone with read access to the repository, including potential malicious actors if the repo is public or compromised.
+**Prevention:** Always use environment variables for secrets, API keys, and configurations. Access them using `process.env.VARIABLE_NAME` in Node/scripts, or `import.meta.env.VARIABLE_NAME` in Vite/React. Never commit `.env` or similar files containing actual secrets. Provide dummy values or fail gracefully when secrets are missing in non-production environments.
