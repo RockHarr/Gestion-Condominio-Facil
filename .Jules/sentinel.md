@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-03-02 - [Hardcoded Credentials in Tests]
+**Vulnerability:** E2E test files contained hardcoded Supabase URLs, keys, and user/admin email/password combinations. These credentials could have been leaked in logs or public repositories.
+**Learning:** Hardcoded credentials should never be present in source code, even for testing environments.
+**Prevention:** Use environment variables (e.g., `process.env`) with safe, dummy fallback values in test files, and supply the actual secrets via CI/CD pipelines or local `.env` files.
