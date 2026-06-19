@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'rockwell.harrison@gmail.com';
+const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || '270386';
 
 test.describe('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
@@ -49,7 +49,7 @@ test.describe('System Setup', () => {
         await expect(page.getByRole('heading', { name: 'Tipos de Reserva' })).toBeVisible();
 
         // 5. Check/Create "Asado Familiar"
-        const typeRow = page.getByRole('heading', { name: 'Asado Familiar' });
+        const typeRow = page.getByRole('heading', { name: 'Asado Familiar', exact: true });
         if (!(await typeRow.isVisible())) {
             console.log('Creating Asado Familiar type...');
             await page.click('button:has-text("Nuevo Tipo")');
@@ -63,7 +63,7 @@ test.describe('System Setup', () => {
             await page.getByLabel('Duración Máxima (minutos)').fill('240');
 
             await page.click('button:has-text("Guardar")');
-            await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible();
+            await expect(page.getByRole('heading', { name: 'Asado Familiar', exact: true }).first()).toBeVisible();
         }
     });
 });
