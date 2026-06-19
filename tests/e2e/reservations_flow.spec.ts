@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 // ==========================================
 // CONFIGURATION: UPDATE THESE BEFORE RUNNING
 // ==========================================
-const RESIDENT_EMAIL = process.env.TEST_RESIDENT_EMAIL || 'resident@example.com';
-const RESIDENT_PASSWORD = process.env.TEST_RESIDENT_PASSWORD || 'password123';
+const RESIDENT_EMAIL = process.env.TEST_RESIDENT_EMAIL || 'contacto@rockcode.cl';
+const RESIDENT_PASSWORD = process.env.TEST_RESIDENT_PASSWORD || '180381';
 // ==========================================
 
 test.describe('Resident — Reservations Flow', () => {
