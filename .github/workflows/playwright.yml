@@ -50,10 +50,10 @@ jobs:
           CI: true
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
           VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
-          TEST_RESIDENT_EMAIL: "resident@example.com"
-          TEST_RESIDENT_PASSWORD: "password123"
-          TEST_ADMIN_EMAIL: "admin@example.com"
-          TEST_ADMIN_PASSWORD: "admin123"
+          TEST_RESIDENT_EMAIL: "${{ secrets.TEST_RESIDENT_EMAIL }}"
+          TEST_RESIDENT_PASSWORD: "${{ secrets.TEST_RESIDENT_PASSWORD }}"
+          TEST_ADMIN_EMAIL: "${{ secrets.TEST_ADMIN_EMAIL }}"
+          TEST_ADMIN_PASSWORD: "${{ secrets.TEST_ADMIN_PASSWORD }}"
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
