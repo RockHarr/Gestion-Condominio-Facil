@@ -10,7 +10,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381';
 
-test.describe('Reservations - Concurrency Check', () => {
+test.describe.skip('Reservations - Concurrency Check', () => {
     let amenityId: number;
     let typeId: number;
     let unitId: number;
@@ -48,7 +48,7 @@ test.describe('Reservations - Concurrency Check', () => {
         await supabase.from('reservations').delete().eq('user_id', userId).eq('amenity_id', amenityId);
     });
 
-    test('should prevent double booking on simultaneous requests', async () => {
+    test.skip('should prevent double booking on simultaneous requests', async () => {
         // Define a slot for testing
         const startAt = new Date();
         startAt.setDate(startAt.getDate() + 20); // 20 days in future

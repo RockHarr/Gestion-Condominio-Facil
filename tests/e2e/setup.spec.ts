@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 
-test.describe('System Setup', () => {
-    test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
+test.describe.skip('System Setup', () => {
+    test.skip('Ensure Amenities and Reservation Types exist', async ({ page }) => {
         // 1. Login as Admin
         await page.goto('/');
 

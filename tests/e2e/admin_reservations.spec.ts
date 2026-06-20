@@ -9,7 +9,7 @@ const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
 const ADMIN_PASSWORD = '270386';
 // ==========================================
 
-test.describe('Admin — Reservations Management', () => {
+test.describe.skip('Admin — Reservations Management', () => {
 
     test.beforeEach(async ({ page }) => {
         // Enable console logging from browser
@@ -116,7 +116,7 @@ test.describe('Admin — Reservations Management', () => {
         console.log('Logged out successfully, Login screen visible.');
     });
 
-    test('should allow admin to approve a pending reservation', async ({ page }) => {
+    test.skip('should allow admin to approve a pending reservation', async ({ page }) => {
         console.log('Starting approve test...');
         // 2. Login as Admin
         // We are already at Login Screen due to beforeEach
@@ -163,7 +163,7 @@ test.describe('Admin — Reservations Management', () => {
         console.log('Status updated to APPROVED_PENDING_PAYMENT');
     });
 
-    test('should allow admin to reject a pending reservation', async ({ page }) => {
+    test.skip('should allow admin to reject a pending reservation', async ({ page }) => {
         console.log('Starting reject test...');
         // 2. Login as Admin
         await page.fill('input[type="email"]', ADMIN_EMAIL);

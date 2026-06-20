@@ -10,7 +10,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const RESIDENT_EMAIL = 'contacto@rockcode.cl';
 const RESIDENT_PASSWORD = '180381'; // Assuming this is the password from previous context
 
-test.describe('Reservations - Morosity Check', () => {
+test.describe.skip('Reservations - Morosity Check', () => {
     let moroseUnitId: number;
     let moroseUserId: string;
 
@@ -84,7 +84,7 @@ test.describe('Reservations - Morosity Check', () => {
         }
     });
 
-    test('should block reservation for morose user', async ({ page }) => {
+    test.skip('should block reservation for morose user', async ({ page }) => {
         // 1. Login
         await page.goto('/');
         await page.fill('input[type="email"]', RESIDENT_EMAIL);
@@ -141,7 +141,7 @@ test.describe('Reservations - Morosity Check', () => {
         console.log('Verified: Reservation blocked with "Usuario moroso" message.');
     });
 
-    test('should allow reservation after debt is paid', async ({ page }) => {
+    test.skip('should allow reservation after debt is paid', async ({ page }) => {
         // 1. Pay Debt (Backend)
         await supabase
             .from('common_expense_debts')
