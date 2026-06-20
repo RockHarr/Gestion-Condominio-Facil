@@ -19,8 +19,8 @@ test('reservations_menu_smoke', async ({ page }) => {
 
     // Fill login if redirected to login
     if (await page.getByText('Iniciar Sesión').isVisible()) {
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
+        await page.fill('input[type="email"]', process.env.TEST_ADMIN_EMAIL || 'dummy_admin@example.com');
+        await page.fill('input[type="password"]', process.env.TEST_ADMIN_PASSWORD || 'dummy_admin_password');
         await page.click('button:has-text("Ingresar")');
     }
 

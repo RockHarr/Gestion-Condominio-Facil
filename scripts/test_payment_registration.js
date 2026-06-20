@@ -21,8 +21,8 @@ try {
     console.warn('Error loading .env.local', e);
 }
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://tqshoddiisfgfjqlkntv.supabase.co';
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxc2hvZGRpaXNmZ2ZqcWxrbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2ODQzMTAsImV4cCI6MjA4MjI2MDMxMH0.eiD6ZgiBU3Wsj9NfJoDtX3J9wHHxOVCINLoeULZJEYc';
+const supabaseUrl = process.env.VITE_SUPABASE_URL || 'http://127.0.0.1:54321';
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'dummy_key';
 
 // Use service role key to bypass RLS for admin simulation if needed, or stick to anon with login
 // ideally we simulate the exact flow. But admin requires login. 
@@ -35,7 +35,7 @@ const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsI
 // So to test this, I need to sign in as an admin user.
 
 // Hardcoded Admin Credentials (from previous session or known test user)
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
+const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'dummy_admin@example.com';
 // Pass via env or just assume we can't easily auto-login without password.
 
 // ALTERNATIVE: Use Service Role Key if I can find it in .env or .env.local
