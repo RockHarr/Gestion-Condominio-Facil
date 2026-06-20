@@ -17,3 +17,7 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2025-02-23 - [Critical: Hardcoded Secrets in E2E Tests]
+**Vulnerability:** Several hardcoded secrets (test user passwords, API keys, and test emails) were found in tests, and scripts. E.g. in `tests/e2e/admin_reservations.spec.ts` `RESIDENT_PASSWORD = '180381'`, and in `tests/repro_rpc.spec.ts` `SUPABASE_KEY` contained an actual JWT key.
+**Learning:** The development team was likely using hardcoded values to run tests locally, which inevitably ended up in the repository, posing a significant risk if the repository becomes public.
+**Prevention:** Implement strict pre-commit hooks to scan for known patterns of secrets (e.g. AWS Keys, Supabase Keys) and always utilize environment variables. Provide default fallback values if local variables are not set during CI environments.
