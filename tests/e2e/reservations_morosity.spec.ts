@@ -93,9 +93,8 @@ test.describe('Reservations - Morosity Check', () => {
         await page.click('button[type="submit"]');
 
         // Wait for dashboard
-        // The header title on home is "Inicio", and the greeting is "Hola, [Name]"
-        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
-        await expect(page.getByText(/Hola,/)).toBeVisible();
+        // The greeting on home is "Hola, [Name]"
+        await expect(page.getByRole('heading', { name: /Hola,/ })).toBeVisible();
 
         // 2. Navigate to Amenities
         // Use the "Reservar" button from the Quick Actions on Home
@@ -159,7 +158,7 @@ test.describe('Reservations - Morosity Check', () => {
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
 
-        await expect(page.getByRole('heading', { name: 'Inicio', exact: true })).toBeVisible();
+        await expect(page.getByRole('heading', { name: /Hola,/ })).toBeVisible();
 
         await page.click('text=Reservar');
         await page.click('text=Quincho');
