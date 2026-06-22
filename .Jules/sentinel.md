@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2025-10-24 - [Information Disclosure in Authentication Logs]
+**Vulnerability:** The application was logging password update results directly to the console (`console.log('AuthService: updatePassword result', result.data, result.error);`). This is an Information Disclosure vulnerability because any extension, background script, or user inspecting the console could potentially intercept error objects containing sensitive authentication context or inadvertently logged password traces if `result.data` or `error` contained them. It also violates the fail-secure principle by leaking backend error messages and stack traces.
+**Learning:** Never log sensitive operations (like authentication, password changes) or raw error objects from these operations to the client-side console.
+**Prevention:** Remove excessive logging in production, especially for authentication flows. Log generic error states to the UI and ensure server responses do not contain sensitive data or stack traces.

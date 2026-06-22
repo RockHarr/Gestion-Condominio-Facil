@@ -45,7 +45,6 @@ export const authService = {
   },
 
   async updatePassword(password: string) {
-    console.log('AuthService: updatePassword called');
     try {
       const result = await Promise.race([
         supabase.auth.updateUser({ password: password }),
@@ -56,10 +55,8 @@ export const authService = {
           ),
         ),
       ]);
-      console.log('AuthService: updatePassword result', result.data, result.error);
       return result;
     } catch (err) {
-      console.error('AuthService: updatePassword timeout or error', err);
       const error = err instanceof Error ? err : new Error('Unknown error');
       return { data: { user: null }, error };
     }
