@@ -82,10 +82,8 @@ const PasswordChangeSection: React.FC = () => {
       return;
     }
 
-    console.log('ProfileScreen: Attempting to update password...');
     try {
       const { error } = await authService.updatePassword(password);
-      console.log('ProfileScreen: Update password result', error);
 
       if (error) {
         const errMsg = error.message || JSON.stringify(error);
@@ -103,7 +101,6 @@ const PasswordChangeSection: React.FC = () => {
         setTimeout(() => setIsOpen(false), 2000);
       }
     } catch (err: unknown) {
-      console.error('ProfileScreen: Exception updating password', err);
       setMessage({ text: 'Error inesperado: ' + getErrorMessage(err), type: 'error' });
     } finally {
       setLoading(false);
