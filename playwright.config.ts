@@ -16,7 +16,7 @@ export default defineConfig({
 
   // Defaults para todos los tests
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4173',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -35,8 +35,8 @@ export default defineConfig({
    * Usamos el build de Vite (por eso en CI corremos `npm run build` antes).
    */
   webServer: {
-    command: 'npx vite preview --port 4173 --strictPort',
-    port: 4173,
+    command: 'npx vite --port 3000 --strictPort',
+    port: 3000,
     reuseExistingServer: !process.env.CI,
   },
 });
