@@ -47,7 +47,7 @@ test.describe('Reservations - Morosity Check', () => {
         // 2. Login as Admin to Insert Debt
         const { error: adminError } = await supabase.auth.signInWithPassword({
             email: 'rockwell.harrison@gmail.com',
-            password: '270386'
+            password: process.env.TEST_ADMIN_PASSWORD || 'dummy_password'
         });
 
         if (adminError) {
