@@ -25,7 +25,7 @@ jobs:
           VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
           TEST_RESIDENT_PASSWORD: "dummy_password"
           TEST_ADMIN_PASSWORD: "dummy_password"
-          TEST_SUPABASE_KEY: "dummy_key"
+          TEST_SUPABASE_KEY: "dummy-key-for-build"
 
       - run: npx playwright install --with-deps
 
@@ -55,7 +55,7 @@ jobs:
           VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
           TEST_RESIDENT_PASSWORD: "dummy_password"
           TEST_ADMIN_PASSWORD: "dummy_password"
-          TEST_SUPABASE_KEY: "dummy_key"
+          TEST_SUPABASE_KEY: "dummy-key-for-build"
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report

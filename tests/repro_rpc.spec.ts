@@ -2,7 +2,7 @@
 import { test } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = 'https://tqshoddiisfgfjqlkntv.supabase.co';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'http://127.0.0.1:54321';
 const SUPABASE_KEY = process.env.TEST_SUPABASE_KEY || 'dummy_key';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
