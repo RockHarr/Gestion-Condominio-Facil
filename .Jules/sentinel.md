@@ -22,3 +22,8 @@
 **Vulnerability:** Hardcoded Supabase URLs, ANON keys, and user/admin passwords were found directly in Playwright E2E tests (`tests/e2e/*.spec.ts`) and utility scripts (`scripts/*.js/ts`).
 **Learning:** Even in non-production files like tests or helper scripts, hardcoding credentials creates a critical security risk as these files are version-controlled and could expose staging/production keys if copied blindly or if the repository becomes public.
 **Prevention:** Always use environment variables (`process.env.VITE_SUPABASE_URL`, `process.env.TEST_RESIDENT_PASSWORD`, etc.) with safe local fallback values (e.g., `http://127.0.0.1:54321` or `dummy_key`) for tests and scripts.
+
+## 2024-07-08 - E2E Tests Connecting to Live Instances
+**Vulnerability:** CI E2E workflows and tests required access to a live database or emulator to authenticate and setup data, which originally worked because hardcoded passwords and a live URL were tracked in the test scripts.
+**Learning:** When moving secrets out to `process.env`, CI tests interacting with an authentic backend must be provided valid credentials (e.g. via GitHub Secrets mapped into the CI workflow env `TEST_RESIDENT_PASSWORD: ${{ secrets.TEST_RESIDENT_PASSWORD }}`). Providing non-resolving dummy values simply breaks the login steps and fails the build.
+**Prevention:** Always mirror the environment required by tests directly into the CI pipeline (via secrets mapping) when they rely on non-mocked external services.
