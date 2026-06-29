@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2024-07-08 - Hardcoded Secrets in Tests and Scripts
+**Vulnerability:** Hardcoded Supabase URLs, ANON keys, and user/admin passwords were found directly in Playwright E2E tests (`tests/e2e/*.spec.ts`) and utility scripts (`scripts/*.js/ts`).
+**Learning:** Even in non-production files like tests or helper scripts, hardcoding credentials creates a critical security risk as these files are version-controlled and could expose staging/production keys if copied blindly or if the repository becomes public.
+**Prevention:** Always use environment variables (`process.env.VITE_SUPABASE_URL`, `process.env.TEST_RESIDENT_PASSWORD`, etc.) with safe local fallback values (e.g., `http://127.0.0.1:54321` or `dummy_key`) for tests and scripts.
