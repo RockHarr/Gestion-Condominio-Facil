@@ -27,3 +27,8 @@
 **Vulnerability:** CI E2E workflows and tests required access to a live database or emulator to authenticate and setup data, which originally worked because hardcoded passwords and a live URL were tracked in the test scripts.
 **Learning:** When moving secrets out to `process.env`, CI tests interacting with an authentic backend must be provided valid credentials (e.g. via GitHub Secrets mapped into the CI workflow env `TEST_RESIDENT_PASSWORD: ${{ secrets.TEST_RESIDENT_PASSWORD }}`). Providing non-resolving dummy values simply breaks the login steps and fails the build.
 **Prevention:** Always mirror the environment required by tests directly into the CI pipeline (via secrets mapping) when they rely on non-mocked external services.
+
+## 2024-07-08 - E2E Tests Connecting to Live Instances (Correction)
+**Vulnerability:** Same as before.
+**Learning:** For E2E tests to succeed against a remote backend in a CI pipeline, *all* required environment variables (including the URL and ANON key, not just the passwords) must be securely injected via GitHub Secrets. Hardcoding dummy values in the workflow file causes `ECONNREFUSED` errors when the test runner attempts real network requests.
+**Prevention:** Always map `${{ secrets.VARIABLE_NAME }}` for all necessary coordinates in the `.github/workflows/playwright.yml` environment blocks.
