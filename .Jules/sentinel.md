@@ -32,3 +32,8 @@
 **Vulnerability:** Same as before.
 **Learning:** For E2E tests to succeed against a remote backend in a CI pipeline, *all* required environment variables (including the URL and ANON key, not just the passwords) must be securely injected via GitHub Secrets. Hardcoding dummy values in the workflow file causes `ECONNREFUSED` errors when the test runner attempts real network requests.
 **Prevention:** Always map `${{ secrets.VARIABLE_NAME }}` for all necessary coordinates in the `.github/workflows/playwright.yml` environment blocks.
+
+## 2024-07-08 - E2E Tests Connecting to Local Emulator (Correction 2)
+**Vulnerability:** Same as before.
+**Learning:** When CI environments are configured to connect to a local emulator (`http://127.0.0.1:54321`), tests must be provided the actual local test mock passwords in the workflow environment variables (e.g. `TEST_RESIDENT_PASSWORD: "180381"`) rather than arbitrary dummy strings or empty GitHub secrets, so that if the emulator is booted, the login steps will not fail due to invalid credentials.
+**Prevention:** Supply the correct seeded mock passwords in the `.github/workflows/playwright.yml` environment when targeting a local emulator instance.
