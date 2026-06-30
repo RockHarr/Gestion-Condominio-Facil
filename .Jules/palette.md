@@ -13,3 +13,6 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+## 2024-06-30 - Keyboard Accessibility with Hover States
+**Learning:** Using `group-hover:opacity-100` on action buttons makes them invisible to keyboard-only users who navigate via the Tab key, even if the buttons are technically focusable.
+**Action:** Always pair `group-hover:opacity-100` with `focus-within:opacity-100` on the container to ensure interactive elements are visible when they receive focus.
