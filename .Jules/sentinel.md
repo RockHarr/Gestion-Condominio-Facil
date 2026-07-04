@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2025-07-04 - [CRITICAL] Hardcoded Secrets in Test Files
+**Vulnerability:** Live database URLs, Supabase anonymous keys, and plain-text passwords for test accounts were hardcoded directly in the test files (`tests/e2e/*.spec.ts` and `tests/repro_rpc.*`).
+**Learning:** Hardcoding credentials in test files creates a significant risk if the repository is made public or accessed by unauthorized users. Even though they are test credentials, it is an insecure pattern and a violation of the coding standard to commit sensitive credentials.
+**Prevention:** Ensure test files access sensitive information through environment variables (`process.env.*`) and rely on dummy fallback values (e.g., `'http://127.0.0.1:54321'` or `'dummy_key'`) when executed locally, or strictly configure real values via CI secrets or `.env` files that are ignored from version control.
