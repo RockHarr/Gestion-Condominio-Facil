@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-const ADMIN_EMAIL = 'rockwell.harrison@gmail.com';
-const ADMIN_PASSWORD = '270386';
+const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'admin@test.com';
+const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'admin_pass';
 
 test.describe('System Setup', () => {
     test('Ensure Amenities and Reservation Types exist', async ({ page }) => {
