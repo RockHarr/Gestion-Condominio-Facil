@@ -13,3 +13,6 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+## 2024-05-18 - Ensure Keyboard Accessibility for Hover-Hidden UI Actions
+**Learning:** In Tailwind CSS, when using `opacity-0 group-hover:opacity-100` to hide secondary action buttons until hovered, these interactive elements remain invisible to users navigating via keyboard (tabbing).
+**Action:** Always pair `group-hover:opacity-100` with `group-focus-within:opacity-100` (or `focus-within:opacity-100` on the container) to ensure the actions become visible when focused, maintaining WCAG keyboard accessibility standards.
