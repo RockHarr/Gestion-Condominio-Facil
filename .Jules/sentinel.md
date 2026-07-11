@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2025-02-24 - [Security Enhancement] Content Security Policy Whitelisting
+**Vulnerability:** Missing security headers in `vercel.json` left the app vulnerable to various attacks like clickjacking, MIME-sniffing, and potentially XSS if React's auto-escaping is bypassed.
+**Learning:** Implementing a strict CSP required whitelisting specific third-party CDNs used in this project's sandbox (`aistudiocdn.com` for React, `cdn.tailwindcss.com`, Google Fonts) and local dummy backend ports (`http://127.0.0.1:*`) for Playwright tests, as they would otherwise fail with "Failed to fetch" errors.
+**Prevention:** When enforcing CSP in Vercel deployments, ensure that local E2E test environments and external CDN assets are explicitly included in `connect-src`, `script-src`, and `style-src` directives.
