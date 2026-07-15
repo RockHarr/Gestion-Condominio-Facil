@@ -19,11 +19,18 @@ test('reservations_menu_smoke', async ({ page }) => {
 
     // Fill login if redirected to login
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+
+    // Check if we are on the login screen
     if (await page.getByRole('heading', { name: 'Bienvenido' }).isVisible()) {
         await page.click('button:has-text("Usar contraseña")');
-        await page.fill('input[type="email"]', 'admin@condominio.com');
-        await page.fill('input[type="password"]', 'admin123'); // Assuming test creds
+        // Fallback to known credentials from setup.spec.ts if env vars are missing
+        await page.fill('input[type="email"]', process.env.TEST_ADMIN_EMAIL || 'rockwell.harrison@gmail.com');
+        await page.fill('input[type="password"]', process.env.TEST_ADMIN_PASSWORD || '270386');
         await page.click('button:has-text("Iniciar Sesión")');
+
+        // Wait for login to complete
+        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
     }
 
     // 3. Verify Sidebar
