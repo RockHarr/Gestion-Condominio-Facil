@@ -23,6 +23,10 @@ jobs:
         env:
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
           VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
+          TEST_RESIDENT_PASSWORD: "180381"
+          TEST_ADMIN_PASSWORD: "270386"
+          TEST_RESIDENT_PASSWORD: "${{ secrets.TEST_RESIDENT_PASSWORD }}"
+          TEST_ADMIN_PASSWORD: "${{ secrets.TEST_ADMIN_PASSWORD }}"
 
       - run: npx playwright install --with-deps
 
@@ -50,6 +54,10 @@ jobs:
           CI: true
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
           VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
+          TEST_RESIDENT_PASSWORD: "180381"
+          TEST_ADMIN_PASSWORD: "270386"
+          TEST_RESIDENT_PASSWORD: "${{ secrets.TEST_RESIDENT_PASSWORD }}"
+          TEST_ADMIN_PASSWORD: "${{ secrets.TEST_ADMIN_PASSWORD }}"
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
