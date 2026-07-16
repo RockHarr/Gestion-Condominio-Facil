@@ -8,6 +8,9 @@ test.describe('System Setup', () => {
         // 1. Login as Admin
         await page.goto('/');
 
+        // Wait for the login screen to render
+        await expect(page.getByRole('heading', { name: 'Bienvenido' })).toBeVisible();
+
         const emailInput = page.locator('input[type="email"]');
         await expect(emailInput).toBeVisible();
         await emailInput.fill(ADMIN_EMAIL);
