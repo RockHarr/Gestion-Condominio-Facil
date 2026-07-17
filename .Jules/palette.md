@@ -13,3 +13,11 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-25 - Hover-Revealed Action Buttons Accessibility
+**Learning:** Actions revealed only via mouse hover (`group-hover:opacity-100`) are completely invisible and inaccessible to keyboard and screen reader users. The application lacked clear focus indicators on icon-only action buttons.
+**Action:** When using `group-hover:opacity-100`, always add `group-focus-within:opacity-100` to the container to ensure keyboard visibility. Add `focus-visible:ring-2 focus:outline-none` and a localized `aria-label` to the interactive icon buttons themselves.
+
+## 2025-05-25 - Supabase Dummy Key Formatting in CI
+**Learning:** Supabase's client library strict validation can fail with a `TypeError: Failed to fetch` or crash entirely if the `VITE_SUPABASE_ANON_KEY` is not a structurally valid JWT (even if it's just a dummy key for testing/CI).
+**Action:** When mocking Supabase connection configurations in CI workflows or E2E tests, always provide a string that is structurally a JWT (e.g. `eyJhbGciOiJIUzI1Ni...`) rather than a simple string like `dummy-key-for-build`.
