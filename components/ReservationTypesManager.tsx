@@ -176,16 +176,16 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
               key={type.id}
               className="group hover:shadow-lg transition-all duration-200 border border-gray-100 dark:border-gray-700 relative"
             >
-              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                 <button
                   onClick={() => handleOpenModal(type)}
-                  className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-blue-600 hover:bg-blue-50"
+                  className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-blue-600 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none" aria-label="Editar tipo"
                 >
                   <Icons name="pencil" className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(type.id)}
-                  className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-red-600 hover:bg-red-50"
+                  className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-red-600 hover:bg-red-50 focus-visible:ring-2 focus-visible:ring-red-500 focus:outline-none" aria-label="Eliminar tipo"
                 >
                   <Icons name="trash" className="w-4 h-4" />
                 </button>
