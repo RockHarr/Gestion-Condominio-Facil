@@ -151,7 +151,7 @@ function App() {
 
     // Check Env Vars
     if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-      showToast('Faltan credenciales de Supabase en .env.local', 'error');
+      console.warn('Faltan credenciales de Supabase en .env.local');
     }
 
     console.log('App: Starting auth check...', window.location.href);
