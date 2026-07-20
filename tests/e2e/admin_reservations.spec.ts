@@ -23,6 +23,7 @@ test.describe('Admin — Reservations Management', () => {
         await page.click('button[type="submit"]');
 
         // Wait for login
+        await page.waitForLoadState('networkidle');
         await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
         // Retry logic for reservation creation (Day + Time)
         let success = false;

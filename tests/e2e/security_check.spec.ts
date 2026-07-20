@@ -20,6 +20,7 @@ test.describe('Security Policy Verification', () => {
         await page.click('button[type="submit"]');
 
         // Wait for login to complete (check for home page element)
+        await page.waitForLoadState('networkidle');
         await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
 
         // 2. Check Notices (Should only see Published)

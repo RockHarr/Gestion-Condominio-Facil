@@ -17,6 +17,7 @@ test.describe('Resident — Reservations Flow', () => {
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
         // Wait for a post-login element (e.g., the Home tab)
+        await page.waitForLoadState('networkidle');
         await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
     });
 

@@ -1,0 +1,1 @@
+sed -i "s/await page.click('button:has-text(\"Usar contraseña\")');/await page.waitForLoadState('networkidle');\n        await page.click('button:has-text(\"Usar contraseña\")');/" tests/e2e/setup.spec.ts
