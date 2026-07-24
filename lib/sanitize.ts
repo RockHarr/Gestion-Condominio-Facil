@@ -7,7 +7,7 @@ export function getSafeUrl(url?: string): string | undefined {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost';
     const parsedUrl = new URL(noControlChars, baseUrl);
 
-    const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:', 'blob:'];
+    const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:', 'blob:', 'data:'];
 
     if (allowedProtocols.includes(parsedUrl.protocol)) {
       return noControlChars;
