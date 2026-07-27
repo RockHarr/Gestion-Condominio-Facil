@@ -145,7 +145,7 @@ export const ReservationRequestModal: React.FC<ReservationRequestModalProps> = (
                             {amenity.name} - {selectedDate.toLocaleDateString()}
                         </p>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500 focus-visible:ring-2 focus-visible:ring-blue-500 rounded-md" aria-label="Cerrar modal">
                         <Icons name="xmark" className="w-6 h-6" />
                     </button>
                 </div>
