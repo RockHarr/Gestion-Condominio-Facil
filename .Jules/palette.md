@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-24 - Consistent and Accessible Modal Close Buttons
+**Learning:** Found multiple modals missing focus indicators and ARIA labels on their "xmark" close buttons (e.g., `AdminCreateReservationModal`, `ReservationRequestModal`, `AmenitiesManager`, `ReservationTypesManager`, `TicketsScreen`).
+**Action:** When adding icon-only close buttons, always include `aria-label` (e.g., "Cerrar modal") and explicit keyboard focus states using Tailwind's `focus-visible:ring-2 focus-visible:ring-blue-500 rounded-md`.
