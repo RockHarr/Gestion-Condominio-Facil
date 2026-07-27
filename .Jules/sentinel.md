@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2025-02-27 - Security Fix: Unsanitized Image URLs in React Components
+**Vulnerability:** The application was directly using user-provided URLs in `src` attributes of `<img>` tags (e.g., `ticket.foto`, `amenity.photoUrl`). This allowed attackers to use `javascript:` URIs, leading to Cross-Site Scripting (XSS) when the image is rendered, even though modern browsers sometimes block this, it's a critical defense-in-depth failure.
+**Learning:** React does not automatically sanitize `src` attributes for `javascript:` URIs. It relies on developers to validate the protocols of URLs passed to `src` or `href`. The codebase already had a `getSafeUrl` utility in `lib/sanitize.ts` but it wasn't being used consistently for `img` tags.
+**Prevention:** Always wrap user-provided URLs with a sanitization function (like `getSafeUrl`) before binding them to `href` or `src` attributes in JSX to ensure only allowed protocols (e.g., `http:`, `https:`, `data:`) are permitted.
