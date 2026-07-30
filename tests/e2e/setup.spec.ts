@@ -43,7 +43,7 @@ test.describe('System Setup', () => {
         const card = page.locator('.group', { has: page.getByRole('heading', { name: 'Quincho', exact: true }) }).first();
         // Force click the hidden button or hover
         await card.hover();
-        const manageTypesBtn = card.getByTitle('Gestionar Tipos de Reserva');
+        const manageTypesBtn = card.getByLabel('Tipos de reserva');
         await manageTypesBtn.click();
 
         await expect(page.getByRole('heading', { name: 'Tipos de Reserva' })).toBeVisible();
