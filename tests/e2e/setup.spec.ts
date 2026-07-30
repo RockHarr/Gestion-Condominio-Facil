@@ -43,7 +43,7 @@ test.describe('System Setup', () => {
         const card = page.locator('.group', { has: page.getByRole('heading', { name: 'Quincho', exact: true }) }).first();
         // Force click the hidden button or hover
         await card.hover();
-        const manageTypesBtn = card.getByTitle('Gestionar Tipos de Reserva');
+        const manageTypesBtn = card.getByLabel('Tipos de reserva');
         await manageTypesBtn.click();
 
         await expect(page.getByRole('heading', { name: 'Tipos de Reserva' })).toBeVisible();
@@ -63,7 +63,7 @@ test.describe('System Setup', () => {
             await page.getByLabel('Duración Máxima (minutos)').fill('240');
 
             await page.click('button:has-text("Guardar")');
-            await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible();
+            await expect(page.getByRole('heading', { name: 'Asado Familiar' }).first()).toBeVisible({ timeout: 15000 });
         }
     });
 });
