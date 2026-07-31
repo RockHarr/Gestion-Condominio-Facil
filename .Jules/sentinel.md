@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-08-01 - [Broken Image Previews via Strict URL Sanitization]
+**Vulnerability:** When applying strict URL sanitization (protocol allowlisting via `getSafeUrl`) to `<img>` `src` attributes as a defense-in-depth measure against malicious protocols, local file/image preview features (which rely on the `data:` protocol) were inadvertently blocked.
+**Learning:** Strict URL allowlists for image sources must explicitly account for frontend features that generate local Data URIs, otherwise legitimate functionality is broken while attempting to secure the application.
+**Prevention:** Always include the `data:` protocol in the `getSafeUrl` allowlist when the utility is used to sanitize image sources that may be generated client-side for previews.
