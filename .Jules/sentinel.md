@@ -17,3 +17,7 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2025-02-17 - Unsanitized User-Provided URLs in Image `src` Attributes
+**Vulnerability:** User-provided or external URLs used directly in `<img>` `src` attributes without sanitization can potentially be exploited if a malicious protocol (e.g., `javascript:`) is injected.
+**Learning:** Although modern browsers mitigate executing `javascript:` from `<img>` `src`, sanitizing these attributes via URL allowlisting (e.g., `getSafeUrl`) is a necessary defense-in-depth practice to prevent loading unexpected or malicious protocols.
+**Prevention:** Always wrap dynamically sourced URLs in `<img>` `src` attributes with a dedicated sanitization utility (like `getSafeUrl`) that validates the URL's protocol against an allowlist before rendering.
