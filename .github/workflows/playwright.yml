@@ -14,15 +14,23 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - run: npm ci
 
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start Supabase locally
+        run: supabase start
+
       - name: Build project
-        run: npm run build
+        run: |
+          export VITE_SUPABASE_ANON_KEY=$(npx supabase status -o json | jq -r .ANON_KEY)
+          npm run build
         env:
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
       - run: npx playwright install --with-deps
 
@@ -45,11 +53,12 @@ jobs:
 
       # 2) 🚀 Ejecuta los tests
       - name: Run E2E
-        run: npx playwright test --reporter=line
+        run: |
+          export VITE_SUPABASE_ANON_KEY=$(npx supabase status -o json | jq -r .ANON_KEY)
+          npx playwright test --reporter=line
         env:
           CI: true
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
