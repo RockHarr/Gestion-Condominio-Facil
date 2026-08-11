@@ -83,7 +83,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </span>
                 <button
                   onClick={() => onNavigate('payments')}
-                  className="bg-white text-blue-700 px-6 py-2 rounded-xl font-bold hover:bg-blue-50 transition-all shadow-lg active:scale-95"
+                  className="bg-white text-blue-700 px-6 py-2 rounded-xl font-bold hover:bg-blue-50 transition-all shadow-lg active:scale-95 focus-visible:ring-4 focus-visible:ring-blue-300 focus:outline-none"
                 >
                   Pagar
                 </button>
@@ -111,7 +111,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => onNavigate('reservations')}
-              className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
+              className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none"
             >
               <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                 <Icons name="calendar" className="w-5 h-5" />
@@ -122,7 +122,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </button>
             <button
               onClick={() => onNavigate('ticket-create')}
-              className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
+              className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none"
             >
               <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
                 <Icons name="plus" className="w-5 h-5" />
