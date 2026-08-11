@@ -32,7 +32,7 @@ export const NoticesScreen: React.FC<NoticesScreenProps> = ({ notices, onNavigat
             <button
               key={notice.id}
               onClick={() => onNavigate('notice-detail', { id: notice.id })}
-              className="text-left group focus:outline-none"
+              className="text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl block"
             >
               <Card
                 className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-l-4 ${
@@ -165,7 +165,7 @@ export const NoticeDetailScreen: React.FC<NoticeDetailScreenProps> = ({ notice, 
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
           <span>Publicado por Administración</span>
           <div className="flex gap-4">
-            <button className="flex items-center gap-1 hover:text-blue-600 transition-colors">
+            <button className="flex items-center gap-1 hover:text-blue-600 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-2 py-1 -mx-2">
               <Icons name="share" className="w-4 h-4" /> Compartir
             </button>
           </div>

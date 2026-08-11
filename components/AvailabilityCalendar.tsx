@@ -154,6 +154,7 @@ export const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({ amen
                             key={index}
                             disabled={isPast}
                             onClick={() => onSelectDate(item.date!)}
+                            aria-label={`Seleccionar fecha ${item.date?.toLocaleDateString()} ${isOccupied ? "(ocupado)" : ""}`}
                             className={`
                                 aspect-square rounded-lg flex items-center justify-center text-sm relative
                                 ${isPast ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-200'}
