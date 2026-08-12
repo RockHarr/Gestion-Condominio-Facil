@@ -18,11 +18,22 @@ jobs:
 
       - run: npm ci
 
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase
+        run: supabase start
+
+      - name: Get Supabase Anon Key for Build
+        run: |
+          echo "SUPABASE_ANON_KEY=$(supabase status -o json | jq -r .ANON_KEY)" >> $GITHUB_ENV
+
       - name: Build project
         run: npm run build
         env:
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
+          VITE_SUPABASE_ANON_KEY: ${{ env.SUPABASE_ANON_KEY }}
 
       - run: npx playwright install --with-deps
 
@@ -43,13 +54,18 @@ jobs:
         env:
           CI: true
 
+      # 1.5) Get Supabase Anon Key
+      - name: Get Supabase Anon Key
+        run: |
+          echo "SUPABASE_ANON_KEY=$(supabase status -o json | jq -r .ANON_KEY)" >> $GITHUB_ENV
+
       # 2) 🚀 Ejecuta los tests
       - name: Run E2E
         run: npx playwright test --reporter=line
         env:
           CI: true
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
+          VITE_SUPABASE_ANON_KEY: ${{ env.SUPABASE_ANON_KEY }}
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
