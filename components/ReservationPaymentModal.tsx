@@ -38,10 +38,11 @@ export const ReservationPaymentModal: React.FC<ReservationPaymentModalProps> = (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
             <Card className="w-full max-w-md relative animate-in zoom-in-95 duration-200">
                 <button
+                    aria-label="Cerrar modal"
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-blue-500 rounded-md"
                 >
-                    <Icons name="x-mark" className="w-6 h-6" />
+                    <Icons name="xmark" className="w-6 h-6" />
                 </button>
 
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
