@@ -17,3 +17,8 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-03-02 - [XSS Vulnerability in Image Sources]
+**Vulnerability:** The application was directly rendering `ticket.foto` and `amenity.photoUrl` in `src` attributes of `<img>` tags without sanitization across multiple components (AdminTickets, AmenitiesManager, AmenitiesScreen, TicketsScreen). This allows potential Cross-Site Scripting (XSS) via `javascript:` URIs or loading of unexpected resources if an attacker could control the image URLs.
+**Learning:** Any user-supplied data used in attributes like `src` must be treated as untrusted and sanitized before rendering to follow the principle of defense-in-depth, even if modern browsers block `javascript:` execution in `<img>` `src` tags, it is still a security best practice.
+**Prevention:** Use a dedicated context-aware sanitization function like `getSafeImageUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `blob:`, `data:`) before rendering it in the UI. Ensure `data:` URLs are verified to be image-specific (`image/`).
