@@ -19,6 +19,7 @@ jobs:
       - run: npm ci
 
 
+
       - uses: supabase/setup-cli@v1
         with:
           version: latest
@@ -58,6 +59,7 @@ jobs:
           CI: true
 
       # 2) 🚀 Ejecuta los tests
+
       - name: Run E2E
         run: npx playwright test --reporter=line
         env:
