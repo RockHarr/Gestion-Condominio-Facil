@@ -43,7 +43,8 @@ test.describe('System Setup', () => {
         const card = page.locator('.group', { has: page.getByRole('heading', { name: 'Quincho', exact: true }) }).first();
         // Force click the hidden button or hover
         await card.hover();
-        const manageTypesBtn = card.getByLabel('Gestionar Tipos de Reserva');
+        // Both title and aria-label are present
+        const manageTypesBtn = card.locator('button[title="Gestionar Tipos de Reserva"]');
         await manageTypesBtn.click();
 
         await expect(page.getByRole('heading', { name: 'Tipos de Reserva' })).toBeVisible();
