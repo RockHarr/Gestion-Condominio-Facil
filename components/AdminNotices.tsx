@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import type { Notice, Page, PageParams } from '../types';
 import { NoticeStatus, NoticeType } from '../types';
-import { Card, Button } from './Shared';
+import { Card, Button, EmptyState } from './Shared';
 import Icons from './Icons';
 
 interface AdminNoticesScreenProps {
@@ -97,15 +97,13 @@ export const AdminNoticesScreen: React.FC<AdminNoticesScreenProps> = ({ notices,
         </div>
 
         {notices.length === 0 && (
-          <div className="text-center py-16 bg-gray-50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
-            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
-              <Icons name="bell" className="w-8 h-8" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">No hay avisos</h3>
-            <p className="text-gray-500 dark:text-gray-400 mt-1">
-              Comienza creando un aviso para la comunidad.
-            </p>
-          </div>
+          <EmptyState
+            icon="bell"
+            title="No hay avisos"
+            description="Comienza creando un aviso para la comunidad."
+            actionLabel="Nuevo Aviso"
+            onAction={() => setIsModalOpen(true)}
+          />
         )}
       </div>
     </div>
