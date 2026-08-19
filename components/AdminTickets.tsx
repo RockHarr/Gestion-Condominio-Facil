@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { Ticket, Page, PageParams } from '../types';
 import { TicketStatus } from '../types';
 import { Card, Button } from './Shared';
+import { getSafeImageUrl } from '../lib/sanitize';
 import Icons from './Icons';
 
 // Helper
@@ -211,7 +212,7 @@ export const AdminTicketDetailScreen: React.FC<AdminTicketDetailScreenProps> = (
               </h3>
               <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                 <img
-                  src={ticket.foto}
+                  src={getSafeImageUrl(ticket.foto)}
                   alt="Adjunto del ticket"
                   className="w-full h-auto object-cover max-h-96"
                 />
