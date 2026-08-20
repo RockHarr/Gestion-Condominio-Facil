@@ -17,3 +17,25 @@ export function getSafeUrl(url?: string): string | undefined {
     return '#';
   }
 }
+
+export function getSafeImageUrl(url?: string): string | undefined {
+  if (!url) return undefined;
+  // eslint-disable-next-line no-control-regex
+  const noControlChars = url.replace(/[\u0000-\u001F\u007F]/g, '');
+
+  try {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost';
+    const parsedUrl = new URL(noControlChars, baseUrl);
+
+    // data: is explicitly allowed for images to support previews and inline images,
+    // but should NOT be added to getSafeUrl to prevent data:text/html XSS risks.
+    const allowedProtocols = ['http:', 'https:', 'blob:', 'data:'];
+
+    if (allowedProtocols.includes(parsedUrl.protocol)) {
+      return noControlChars;
+    }
+    return '#';
+  } catch (e) {
+    return '#';
+  }
+}
