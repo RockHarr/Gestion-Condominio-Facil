@@ -154,18 +154,21 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                     onClick={() => onNavigate('admin-reservation-types', { amenityId: amenity.id })}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-green-50 text-green-600"
                     title="Gestionar Tipos de Reserva"
+                    aria-label={`Gestionar tipos de reserva de ${amenity.name}`}
                   >
                     <Icons name="clipboard-document-list" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleOpenModal(amenity)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600"
+                    aria-label={`Editar amenity ${amenity.name}`}
                   >
                     <Icons name="pencil" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(amenity.id)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600"
+                    aria-label={`Eliminar amenity ${amenity.name}`}
                   >
                     <Icons name="trash" className="w-4 h-4" />
                   </button>
