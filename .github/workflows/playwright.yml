@@ -16,42 +16,36 @@ jobs:
         with:
           node-version: 22
 
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase Local
+        run: supabase start
+
       - run: npm ci
 
-      - name: Build project
-        run: npm run build
-        env:
-          VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
+      - name: Extract Anon Key and Build
+        run: |
+          export VITE_SUPABASE_ANON_KEY=$(supabase status -o json | jq -r .ANON_KEY)
+          export VITE_SUPABASE_URL="http://127.0.0.1:54321"
+          npm run build
 
       - run: npx playwright install --with-deps
 
-      # 🔎 DEBUG: ver árbol de tests y config (útil mientras afinamos)
-      - name: Debug – listar árbol de tests y config
-        run: |
-          pwd
-          node -v
-          ls -la
-          echo "----- tests tree -----"
-          ls -R tests || true
-          echo "----- playwright.config.ts -----"
-          sed -n '1,200p' playwright.config.ts || true
-
-      # 1) Lista los tests que detecta Playwright
       - name: Lista de tests detectados
         run: npx playwright test --list
         env:
           CI: true
 
-      # 2) 🚀 Ejecuta los tests
       - name: Run E2E
-        run: npx playwright test --reporter=line
+        run: |
+          export VITE_SUPABASE_ANON_KEY=$(supabase status -o json | jq -r .ANON_KEY)
+          export VITE_SUPABASE_URL="http://127.0.0.1:54321"
+          npx playwright test --reporter=line
         env:
           CI: true
-          VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
-      # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
         if: always()
         uses: actions/upload-artifact@v4
