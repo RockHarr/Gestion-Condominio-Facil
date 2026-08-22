@@ -16,6 +16,15 @@ DROP TYPE IF EXISTS incident_status CASCADE;
 DROP TYPE IF EXISTS deposit_decision_type CASCADE;
 DROP TYPE IF EXISTS reservation_status CASCADE;
 
+-- Create profiles table if it doesn't exist
+CREATE TABLE IF NOT EXISTS profiles (
+  id uuid references auth.users on delete cascade not null primary key,
+  email text unique not null,
+  nombre text not null,
+  unidad text,
+  role text check (role in ('admin', 'resident')) default 'resident'
+);
+
 -- Enums
 CREATE TYPE reservation_status AS ENUM ('REQUESTED', 'REJECTED', 'APPROVED_PENDING_PAYMENT', 'CONFIRMED', 'CANCELLED', 'COMPLETED', 'NO_SHOW');
 CREATE TYPE deposit_decision_type AS ENUM ('RELEASE', 'RETAIN_PARTIAL', 'RETAIN_FULL');
