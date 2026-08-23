@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Notice, Page, PageParams } from '../types';
 import { NoticeType } from '../types';
-import { Card, Button, Header } from './Shared';
+import { Card, Button, Header, EmptyState } from './Shared';
 import Icons from './Icons';
 
 interface NoticesScreenProps {
@@ -93,15 +93,11 @@ export const NoticesScreen: React.FC<NoticesScreenProps> = ({ notices, onNavigat
             </button>
           ))
         ) : (
-          <div className="text-center py-12">
-            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Icons name="bell-slash" className="w-10 h-10 text-gray-400" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Todo tranquilo</h3>
-            <p className="text-gray-500 dark:text-gray-400">
-              No hay avisos recientes en la comunidad.
-            </p>
-          </div>
+          <EmptyState
+            icon="bell-slash"
+            title="Todo tranquilo"
+            description="No hay avisos recientes en la comunidad."
+          />
         )}
       </div>
     </div>
