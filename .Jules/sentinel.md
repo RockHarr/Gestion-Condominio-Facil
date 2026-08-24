@@ -17,3 +17,7 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2025-02-24 - Add Security Headers via Vercel Configuration
+**Vulnerability:** The application was missing critical HTTP security headers (CSP, X-Frame-Options, etc.), leaving it vulnerable to XSS, Clickjacking, and MIME-type sniffing.
+**Learning:** For SPAs hosted on Vercel (or similar edge platforms), adding security headers requires configuring the hosting environment (e.g., `vercel.json`) rather than the application code itself to ensure headers are served consistently across all static routes.
+**Prevention:** Always implement a baseline set of security headers (especially CSP) in the hosting configuration as part of the initial deployment setup to provide defense-in-depth against client-side attacks.
