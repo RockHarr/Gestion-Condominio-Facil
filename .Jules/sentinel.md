@@ -22,3 +22,8 @@
 **Vulnerability:** The application was directly rendering image URLs (`ticket.foto`, `amenity.photoUrl`, etc.) in `src` attributes of `<img>` tags without proper protocol sanitization. An attacker could potentially inject malicious protocols like `javascript:`, leading to Cross-Site Scripting (XSS).
 **Learning:** Any user-supplied URL used in `src` attributes must be validated against a strict allowlist of protocols (e.g., `http:`, `https:`, `data:`, `blob:`). Data URLs (`data:`) should be carefully allowed specifically for images, avoiding generic allowlists that might permit `data:text/html` navigations if reused for `href` attributes.
 **Prevention:** Always use a context-specific URL sanitizer function, such as `getSafeImageUrl`, for all dynamically bound `src` attributes handling user input.
+
+## 2026-03-02 - [Migration File Execution Order Error]
+**Vulnerability:** A CI build failed due to `relation "reservation_types" does not exist` when `20260103_add_reservation_cols.sql` executed before the table was actually created in `20260103_phase4_schema.sql`.
+**Learning:** Supabase migrations are executed alphanumerically based on their filenames. When creating multiple migrations on the same date prefix, subsequent files that depend on tables created in an earlier file *must* be named so they sort *after* the dependency.
+**Prevention:** Verify alphanumeric sorting of migration filenames. E.g., rename `20260103_add...` to `20260103_z_add...` to ensure correct sequential execution in `supabase start` or `supabase db reset`.
