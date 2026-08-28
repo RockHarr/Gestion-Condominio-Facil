@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 24
 
-      - run: npm install -g pnpm && pnpm i
+      - run: npm install -g pnpm && pnpm config set ignore-scripts true && pnpm i
       - uses: supabase/setup-cli@v1
         with:
           version: latest
