@@ -81,7 +81,7 @@ export const ExpenseStatementModal: React.FC<ExpenseStatementModalProps> = ({
                         Estado de Gasto Común
                     </h2>
                     <div className="flex gap-3">
-                        <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
+                        <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Cerrar estado de cuenta">
                             Cerrar
                         </button>
                         <button onClick={handlePrint} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm flex items-center gap-2 transition-colors">
