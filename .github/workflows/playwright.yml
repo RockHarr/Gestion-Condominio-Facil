@@ -16,15 +16,26 @@ jobs:
         with:
           node-version: 22
 
-      - run: npm ci
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - run: pnpm install
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start
 
       - name: Build project
-        run: npm run build
+        run: |
+          ANON_KEY=$(supabase status -o json | jq -r .ANON_KEY)
+          VITE_SUPABASE_ANON_KEY=$ANON_KEY pnpm run build
         env:
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
+          VITE_SUPABASE_ANON_KEY: ${{ env.ANON_KEY }}
 
-      - run: npx playwright install --with-deps
+      - run: pnpm exec playwright install --with-deps
 
       # 🔎 DEBUG: ver árbol de tests y config (útil mientras afinamos)
       - name: Debug – listar árbol de tests y config
@@ -39,17 +50,18 @@ jobs:
 
       # 1) Lista los tests que detecta Playwright
       - name: Lista de tests detectados
-        run: npx playwright test --list
+        run: pnpm exec playwright test --list
         env:
           CI: true
 
       # 2) 🚀 Ejecuta los tests
       - name: Run E2E
-        run: npx playwright test --reporter=line
+        run: |
+          ANON_KEY=$(supabase status -o json | jq -r .ANON_KEY)
+          VITE_SUPABASE_ANON_KEY=$ANON_KEY npx playwright test --reporter=line
         env:
           CI: true
           VITE_SUPABASE_URL: "http://127.0.0.1:54321"
-          VITE_SUPABASE_ANON_KEY: "dummy-key-for-build"
 
       # 3) Sube el reporte HTML como artefacto
       - name: Upload HTML report
