@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { dataService } from '../services/data';
 import type { Amenity, Page, PageParams } from '../types';
-import { Card, Button } from './Shared';
+import { Card, Button, EmptyState } from './Shared';
 import Icons from './Icons';
 
 interface AmenitiesManagerProps {
@@ -112,6 +112,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
             <button
               onClick={() => onNavigate('admin-dashboard')}
               className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              aria-label="Volver al panel de administración"
             >
               <Icons name="arrow-left" className="w-5 h-5" />
             </button>
@@ -154,18 +155,23 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                     onClick={() => onNavigate('admin-reservation-types', { amenityId: amenity.id })}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-green-50 text-green-600"
                     title="Gestionar Tipos de Reserva"
+                    aria-label={`Gestionar tipos de reserva para ${amenity.name}`}
                   >
                     <Icons name="clipboard-document-list" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleOpenModal(amenity)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600"
+                    aria-label={`Editar ${amenity.name}`}
+                    title="Editar espacio"
                   >
                     <Icons name="pencil" className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(amenity.id)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600"
+                    aria-label={`Eliminar ${amenity.name}`}
+                    title="Eliminar espacio"
                   >
                     <Icons name="trash" className="w-4 h-4" />
                   </button>
@@ -189,14 +195,14 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
           ))}
 
           {amenities.length === 0 && (
-            <div className="col-span-full text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
-              <Icons name="building-office" className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                No hay espacios creados
-              </h3>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">
-                Comienza creando el primer espacio común.
-              </p>
+            <div className="col-span-full">
+              <EmptyState
+                icon="building-office"
+                title="No hay espacios creados"
+                description="Comienza creando el primer espacio común."
+                actionLabel="Nuevo Espacio"
+                onAction={() => handleOpenModal()}
+              />
             </div>
           )}
         </div>
@@ -212,6 +218,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
               <button
                 onClick={() => setModalOpen(false)}
                 className="text-gray-400 hover:text-gray-500"
+                aria-label="Cerrar modal"
               >
                 <Icons name="xmark" className="w-6 h-6" />
               </button>
