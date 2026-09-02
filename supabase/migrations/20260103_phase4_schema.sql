@@ -34,10 +34,16 @@ CREATE TABLE IF NOT EXISTS units (
 -- Migrate existing units from profiles if needed
 -- This assumes profiles has a 'unidad' text column.
 -- We insert unique values from profiles.unidad into units.
-INSERT INTO units (name)
-SELECT DISTINCT unidad FROM profiles 
-WHERE unidad IS NOT NULL AND unidad != ''
-ON CONFLICT (name) DO NOTHING;
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'profiles') THEN
+        INSERT INTO units (name)
+        SELECT DISTINCT unidad FROM profiles
+        WHERE unidad IS NOT NULL AND unidad != ''
+        ON CONFLICT (name) DO NOTHING;
+    END IF;
+END
+$$;
 
 -- Add unit_id to profiles if it doesn't exist
 DO $$

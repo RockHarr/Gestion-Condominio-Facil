@@ -27,3 +27,8 @@
 **Vulnerability:** The application's CI pipeline failed to initialize the database because migration files executed out of order (`20260103_add_reservation_cols.sql` attempted to modify a table that hadn't been created yet).
 **Learning:** Supabase CLI applies migrations strictly based on alphanumeric order. Adding new files on the same day must consider this order. Even if it is not a direct security flaw in the application code, a broken CI prevents deploying critical security updates, causing a secondary security risk.
 **Prevention:** When adding or retroactively renaming migration files on the same date prefix, append an alphabetical sequence (e.g., `_z_`) to force them to run after base schema migrations.
+
+## 2026-03-02 - [Migration Dependency on External Schemas]
+**Vulnerability:** A base schema migration (`20260103_phase4_schema.sql`) failed during CI because it unconditionally attempted to read from the `profiles` table (managed by auth schema migrations) which may not exist during fresh `supabase start` initializations.
+**Learning:** Migrations that query or migrate data from tables outside their immediate definition scope must handle the case where those external tables do not yet exist, especially in fresh CI environments.
+**Prevention:** Wrap queries to external tables in PostgreSQL anonymous blocks (`DO $$ ... END $$;`) with `IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '...') THEN` to ensure migrations are idempotent and do not crash the initialization sequence.
