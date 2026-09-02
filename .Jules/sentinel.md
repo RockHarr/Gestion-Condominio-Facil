@@ -17,3 +17,18 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+
+## 2026-03-02 - [XSS Vulnerability in Image Sources]
+**Vulnerability:** The application was directly rendering user-supplied URLs in `<img>` `src` attributes without sanitization across multiple components (`AdminTickets`, `AmenitiesScreen`, `TicketsScreen`, `AmenitiesManager`). This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)` or `vbscript:`) into the image URL.
+**Learning:** Any user-supplied data used in attributes like `src` must be treated as untrusted and sanitized before rendering to follow the principle of defense-in-depth. Image sources require a different allowlist than standard links (e.g., allowing `data:` and `blob:` for image previews).
+**Prevention:** Use a dedicated sanitization function like `getSafeImageUrl` to validate the URL's protocol against an image-specific allowlist (e.g., `http:`, `https:`, `data:`, `blob:`) before rendering it in the UI.
+
+## 2026-03-02 - [Supabase Migration Ordering Failure in CI]
+**Vulnerability:** The application's CI pipeline failed to initialize the database because migration files executed out of order (`20260103_add_reservation_cols.sql` attempted to modify a table that hadn't been created yet).
+**Learning:** Supabase CLI applies migrations strictly based on alphanumeric order. Adding new files on the same day must consider this order. Even if it is not a direct security flaw in the application code, a broken CI prevents deploying critical security updates, causing a secondary security risk.
+**Prevention:** When adding or retroactively renaming migration files on the same date prefix, append an alphabetical sequence (e.g., `_z_`) to force them to run after base schema migrations.
+
+## 2026-03-02 - [Migration Dependency on External Schemas]
+**Vulnerability:** A base schema migration (`20260103_phase4_schema.sql`) failed during CI because it unconditionally attempted to read from the `profiles` table (managed by auth schema migrations) which may not exist during fresh `supabase start` initializations.
+**Learning:** Migrations that query or migrate data from tables outside their immediate definition scope must handle the case where those external tables do not yet exist, especially in fresh CI environments.
+**Prevention:** Wrap queries to external tables in PostgreSQL anonymous blocks (`DO $$ ... END $$;`) with `IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '...') THEN` to ensure migrations are idempotent and do not crash the initialization sequence.
