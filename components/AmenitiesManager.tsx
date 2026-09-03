@@ -1,6 +1,6 @@
-import { getSafeImageUrl } from '../lib/sanitize';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { getSafeImageUrl } from '../lib/sanitize';
 import { supabase } from '../lib/supabase';
 import { dataService } from '../services/data';
 import type { Amenity, Page, PageParams } from '../types';

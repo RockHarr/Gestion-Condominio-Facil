@@ -1,6 +1,6 @@
-import { getSafeImageUrl } from '../lib/sanitize';
 import * as React from 'react';
 import { useState } from 'react';
+import { getSafeImageUrl } from '../lib/sanitize';
 import type { Ticket, Page, PageParams } from '../types';
 import { TicketStatus } from '../types';
 import { Card, Button, Header } from './Shared';

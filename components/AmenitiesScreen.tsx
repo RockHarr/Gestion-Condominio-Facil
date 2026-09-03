@@ -1,5 +1,5 @@
-import { getSafeImageUrl } from '../lib/sanitize';
 import React from 'react';
+import { getSafeImageUrl } from '../lib/sanitize';
 import type { Amenity, Page, PageParams } from '../types';
 import { Card, Button } from './Shared';
 import Icons from './Icons';

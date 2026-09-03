@@ -18,7 +18,7 @@ export function getSafeUrl(url?: string): string | undefined {
   }
 }
 
-export function getSafeImageUrl(url?: string): string | undefined {
+export function getSafeImageUrl(url?: string | null): string | undefined {
   if (!url) return undefined;
   // eslint-disable-next-line no-control-regex
   const noControlChars = url.replace(/[\u0000-\u001F\u007F]/g, '');
