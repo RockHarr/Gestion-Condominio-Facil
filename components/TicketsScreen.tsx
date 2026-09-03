@@ -287,6 +287,7 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                             setPhotoName('');
                             setError(null);
                           }}
+                          aria-label="Eliminar foto"
                           className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600"
                         >
                           <Icons name="xmark" className="w-4 h-4" />
