@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { getSafeImageUrl } from '../lib/sanitize';
 import { supabase } from '../lib/supabase';
 import { dataService } from '../services/data';
 import type { Amenity, Page, PageParams } from '../types';
@@ -140,7 +141,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
               <div className="aspect-video w-full bg-gray-100 dark:bg-gray-800 rounded-lg mb-4 overflow-hidden relative">
                 {amenity.photoUrl ? (
                   <img
-                    src={amenity.photoUrl}
+                    src={getSafeImageUrl(amenity.photoUrl)}
                     alt={amenity.name}
                     className="w-full h-full object-cover"
                   />
