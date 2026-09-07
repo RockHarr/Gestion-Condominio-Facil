@@ -23,7 +23,7 @@ test.describe('Admin — Reservations Management', () => {
         await page.click('button[type="submit"]');
 
         // Wait for login
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText('Resumen financiero y operativo')).toBeVisible();
         // Retry logic for reservation creation (Day + Time)
         let success = false;
         let attempts = 0;

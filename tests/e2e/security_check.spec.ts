@@ -20,7 +20,7 @@ test.describe('Security Policy Verification', () => {
         await page.click('button[type="submit"]');
 
         // Wait for login to complete (check for home page element)
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText('Módulo Financiero y de Uso de Espacios Comunes')).toBeVisible();
 
         // 2. Check Notices (Should only see Published)
         await page.click('text=Avisos');
@@ -52,7 +52,7 @@ test.describe('Security Policy Verification', () => {
         await page.click('button[type="submit"]');
 
         // Wait for dashboard
-        await expect(page.getByRole('heading', { name: 'Panel de Control' })).toBeVisible();
+        await expect(page.getByText('Resumen financiero y operativo')).toBeVisible();
 
         // 2. Check Admin Access
         await expect(page.getByText('Cola de Aprobación')).toBeVisible();
