@@ -175,8 +175,10 @@ export const AdminUnitsScreen: React.FC<AdminUnitsScreenProps> = ({
                       </button>
                       <button
                         onClick={() => {
-                          onDeleteUser(resident.id);
-                          setMenuOpen(null);
+                          if (window.confirm('¿Estás seguro de eliminar esta unidad? Esta acción no se puede deshacer.')) {
+                            onDeleteUser(resident.id);
+                            setMenuOpen(null);
+                          }
                         }}
                         className="w-full text-left flex items-center px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                       >

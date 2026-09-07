@@ -17,7 +17,7 @@ test.describe('Resident — Reservations Flow', () => {
         await page.fill('input[type="password"]', RESIDENT_PASSWORD);
         await page.click('button[type="submit"]');
         // Wait for a post-login element (e.g., the Home tab)
-        await expect(page.locator('[data-testid="tab-home"]')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText('Módulo Financiero y de Uso de Espacios Comunes')).toBeVisible();
     });
 
     test('should allow a resident to create and cancel a reservation', async ({ page }) => {
