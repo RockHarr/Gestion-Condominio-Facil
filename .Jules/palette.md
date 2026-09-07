@@ -13,3 +13,6 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+## 2026-01-07 - Add Confirmation to Destructive Actions
+**Learning:** Found that deleting a unit directly removed it without confirmation, which can lead to frustrating accidental data loss. Critical for user trust in administrative interfaces to have safeguards on destructive paths.
+**Action:** Implemented a native `window.confirm` check before processing the `onDeleteUser` action to prevent accidental deletions.
