@@ -25,6 +25,8 @@ jobs:
           version: latest
 
       - run: supabase start
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: ghcr.io
 
       - run: pnpm install
 
@@ -66,3 +68,4 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report
+          if-no-files-found: ignore
