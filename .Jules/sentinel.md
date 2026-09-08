@@ -27,3 +27,8 @@
 **Vulnerability:** A database migration (`20260103_add_reservation_cols.sql`) attempted to alter the `reservation_types` table using the same date prefix as the script creating it (`20260103_phase4_schema.sql`). Lexicographical sorting caused the alter script to execute first, resulting in a `relation does not exist` error during `supabase start` in CI pipelines.
 **Learning:** Supabase CLI applies migrations strictly in lexicographical order based on the filename. Prefixing multiple files with the exact same timestamp without accounting for dependency order will break database provisioning.
 **Prevention:** Always ensure migrations that depend on each other have distinct, sequentially ordered date prefixes (e.g., changing `20260103_` to `20260104_`) to guarantee they execute in the correct order.
+
+## 2026-03-01 - [Supabase Migration Dependency Failure on profiles]
+**Vulnerability:** A database migration (`20260103_fix_profiles_rls.sql`) attempted to enable Row Level Security on the `profiles` table before the table was fully created or initialized by the base schema migration (`20260103_phase4_schema.sql`). This resulted in a `relation "profiles" does not exist` error during CI pipeline execution.
+**Learning:** Migrations that depend on tables managed outside of the standard migration flow (e.g., tables created by triggers on `auth.users`) or that execute concurrently due to identical date prefixes must include existence checks.
+**Prevention:** Wrap dependent migration logic in defensive PL/pgSQL blocks (`DO $$ BEGIN IF EXISTS (...) THEN ... END IF; END $$;`) to ensure the target relation exists before attempting to alter it or apply policies, preventing pipeline crashes.
