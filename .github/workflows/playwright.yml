@@ -17,6 +17,8 @@ jobs:
           node-version: 22
 
       - uses: pnpm/action-setup@v3
+        with:
+          version: 10
 
       - uses: supabase/setup-cli@v1
         with:
