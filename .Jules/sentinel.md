@@ -17,3 +17,7 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2024-10-24 - Missing URL Sanitization on Image Sources
+**Vulnerability:** User-provided URLs for images (like `ticket.foto` and `amenity.photoUrl`) were directly bound to `src` attributes without sanitization, allowing potential Stored XSS via malicious URIs (e.g., `javascript:` or `data:text/html`).
+**Learning:** Data URIs must be explicitly validated to ensure their MIME type is an image (e.g., by checking `pathname.startsWith('image/')`), as standard URL sanitization might broadly block `data:` or blindly allow unsafe MIME types.
+**Prevention:** Always use a dedicated image sanitization utility (like `getSafeImageUrl`) that validates the protocol and MIME type before rendering any user-provided URL in an `<img>` tag.
