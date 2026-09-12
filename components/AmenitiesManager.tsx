@@ -111,7 +111,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
           <div className="flex items-center gap-2 mb-1">
             <button
               onClick={() => onNavigate('admin-dashboard')}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 p-1" aria-label="Volver"
             >
               <Icons name="arrow-left" className="w-5 h-5" />
             </button>
@@ -211,8 +211,8 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
               </h2>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-gray-400 hover:text-gray-500"
-              >
+                className="text-gray-400 hover:text-gray-500 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 p-1"
+               aria-label="Cerrar">
                 <Icons name="xmark" className="w-6 h-6" />
               </button>
             </div>

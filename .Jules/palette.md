@@ -13,3 +13,7 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+
+## 2025-05-24 - Interactive Accessibility: ARIA Labels & Focus
+**Learning:** Throughout the application, many icon-only interactive elements (close buttons, edit/delete actions, back buttons) lacked descriptive accessible names (`aria-label`) and visible focus states, which degrades the experience for screen reader users and those relying on keyboard navigation.
+**Action:** Always ensure any `<button>` lacking inner text content includes an explicit `aria-label`. Further, add `focus:outline-none focus:ring-2` tailwind classes to provide clear visual feedback during keyboard navigation.
