@@ -165,7 +165,7 @@ export const NoticeDetailScreen: React.FC<NoticeDetailScreenProps> = ({ notice, 
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
           <span>Publicado por Administración</span>
           <div className="flex gap-4">
-            <button className="flex items-center gap-1 hover:text-blue-600 transition-colors">
+            <button className="flex items-center gap-1 hover:text-blue-600 transition-colors rounded focus:outline-none focus:ring-2 focus:ring-blue-500 px-2 py-1" aria-label="Compartir noticia">
               <Icons name="share" className="w-4 h-4" /> Compartir
             </button>
           </div>
