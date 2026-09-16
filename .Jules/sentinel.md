@@ -17,3 +17,7 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2024-05-24 - [HIGH] Sanitize user-provided image URLs to prevent XSS
+**Vulnerability:** Unsanitized user inputs (`ticket.foto`, `amenity.photoUrl`) were passed directly to `img` `src` attributes, which could allow XSS attacks via `javascript:` or malicious `data:text/html` URIs.
+**Learning:** React does not automatically sanitize `src` or `href` attributes against malicious URI schemes like `javascript:`. Furthermore, `data:` URIs need strict MIME-type validation to prevent injection of executable content.
+**Prevention:** Always validate and sanitize user-provided URLs before using them in `src` or `href` attributes, specifically filtering allowed protocols (`http:`, `https:`, `blob:`) and verifying the MIME-type of `data:` URIs.
