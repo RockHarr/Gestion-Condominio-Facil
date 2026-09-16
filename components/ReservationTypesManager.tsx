@@ -146,7 +146,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <button
+            <button aria-label="Volver a espacios"
               onClick={() => onNavigate('admin-amenities')}
               className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >
@@ -177,13 +177,13 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
               className="group hover:shadow-lg transition-all duration-200 border border-gray-100 dark:border-gray-700 relative"
             >
               <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
+                <button aria-label="Editar tipo de reserva"
                   onClick={() => handleOpenModal(type)}
                   className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-blue-600 hover:bg-blue-50"
                 >
                   <Icons name="pencil" className="w-4 h-4" />
                 </button>
-                <button
+                <button aria-label="Eliminar tipo de reserva"
                   onClick={() => handleDelete(type.id)}
                   className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-red-600 hover:bg-red-50"
                 >
@@ -262,7 +262,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 {editingType ? 'Editar Tipo de Reserva' : 'Nuevo Tipo de Reserva'}
               </h2>
-              <button
+              <button aria-label="Cerrar"
                 onClick={() => setModalOpen(false)}
                 className="text-gray-400 hover:text-gray-500"
               >
