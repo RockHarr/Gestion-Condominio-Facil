@@ -109,7 +109,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <button
+            <button aria-label="Volver al panel"
               onClick={() => onNavigate('admin-dashboard')}
               className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >
@@ -150,20 +150,20 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
                   </div>
                 )}
                 <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
+                  <button aria-label="Gestionar tipos de reserva"
                     onClick={() => onNavigate('admin-reservation-types', { amenityId: amenity.id })}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-green-50 text-green-600"
                     title="Gestionar Tipos de Reserva"
                   >
                     <Icons name="clipboard-document-list" className="w-4 h-4" />
                   </button>
-                  <button
+                  <button aria-label="Editar espacio"
                     onClick={() => handleOpenModal(amenity)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-blue-50 text-blue-600"
                   >
                     <Icons name="pencil" className="w-4 h-4" />
                   </button>
-                  <button
+                  <button aria-label="Eliminar espacio"
                     onClick={() => handleDelete(amenity.id)}
                     className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-full shadow-sm hover:bg-red-50 text-red-600"
                   >
@@ -209,7 +209,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 {editingAmenity ? 'Editar Espacio' : 'Nuevo Espacio'}
               </h2>
-              <button
+              <button aria-label="Cerrar modal"
                 onClick={() => setModalOpen(false)}
                 className="text-gray-400 hover:text-gray-500"
               >
