@@ -17,3 +17,7 @@
 **Vulnerability:** The application was directly rendering `expense.evidenciaUrl` in an `href` attribute without sanitization in the `AdminDashboard`. This allowed for potential Cross-Site Scripting (XSS) if an attacker could input a malicious payload (e.g., `javascript:alert(1)`) into the URL.
 **Learning:** Any user-supplied data used in attributes like `href`, `src`, or `action` must be treated as untrusted and sanitized before rendering, even if it comes from a supposedly secure backend or database, to follow the principle of defense-in-depth.
 **Prevention:** Use a dedicated sanitization function like `getSafeUrl` to validate the URL's protocol against an allowlist (e.g., `http:`, `https:`, `mailto:`, `tel:`) before rendering it in the UI.
+## 2023-10-27 - Supabase Schema Init
+**Vulnerability:** In Supabase, if the base schema is defined in a standalone `supabase/schema.sql` file, `supabase start` may not execute it automatically before running migrations. This leads to `relation does not exist` errors.
+**Learning:** To ensure the base schema is applied during local development or CI tests, rename and move it into the migrations directory as the first migration (e.g., `supabase/migrations/20260101_init.sql`).
+**Prevention:** Always place base schemas within the `migrations` directory with an early timestamp prefix when using `supabase start` in CI.
