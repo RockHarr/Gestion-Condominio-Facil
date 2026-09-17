@@ -13,3 +13,6 @@
 ## 2025-05-24 - Accessibility Verification in Authenticated Routes
 **Learning:** Verifying accessibility changes in protected routes (like `ProfileScreen`) without valid backend credentials is challenging. E2E tests fail due to missing env vars.
 **Action:** Temporarily mock the authentication service (`services/auth.ts`) to return a static user. This allows bypassing the login screen and verifying UI changes in isolation using Playwright scripts, even when the backend is unreachable.
+## 2025-05-24 - Accessibility on Icon-only Buttons
+**Learning:** Found multiple icon-only buttons lacking `aria-label`s across modals and screens, making them inaccessible to screen reader users. Specifically, close buttons (`xmark`) and action buttons (like delete photo) needed explicit labels.
+**Action:** Always ensure that buttons containing only an `<Icons>` element have an explicit `aria-label` or `title` describing their function (e.g., "Cerrar modal", "Eliminar imagen").
