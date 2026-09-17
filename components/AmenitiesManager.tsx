@@ -212,6 +212,7 @@ export const AmenitiesManager: React.FC<AmenitiesManagerProps> = ({ onNavigate }
               <button
                 onClick={() => setModalOpen(false)}
                 className="text-gray-400 hover:text-gray-500"
+                aria-label="Cerrar modal"
               >
                 <Icons name="xmark" className="w-6 h-6" />
               </button>
