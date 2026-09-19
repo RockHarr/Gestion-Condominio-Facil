@@ -281,6 +281,7 @@ export const CreateTicketScreen: React.FC<CreateTicketScreenProps> = ({ onAddTic
                         />
                         <button
                           type="button"
+                          aria-label="Cerrar"
                           onClick={(e) => {
                             e.preventDefault();
                             setPhoto(undefined);
