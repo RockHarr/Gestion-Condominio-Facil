@@ -263,6 +263,7 @@ export const ReservationTypesManager: React.FC<ReservationTypesManagerProps> = (
                 {editingType ? 'Editar Tipo de Reserva' : 'Nuevo Tipo de Reserva'}
               </h2>
               <button
+                aria-label="Cerrar"
                 onClick={() => setModalOpen(false)}
                 className="text-gray-400 hover:text-gray-500"
               >
