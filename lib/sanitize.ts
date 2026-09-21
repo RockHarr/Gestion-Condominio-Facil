@@ -17,3 +17,22 @@ export function getSafeUrl(url?: string): string | undefined {
     return '#';
   }
 }
+
+export function getSafeImageUrl(url?: string): string | undefined {
+  if (!url) return undefined;
+
+  // Allow safe data URIs for images (common for local uploads/previews before syncing)
+  if (url.startsWith('data:')) {
+    try {
+      const parsed = new URL(url);
+      if (parsed.pathname.startsWith('image/')) {
+        return url;
+      }
+      return '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  return getSafeUrl(url);
+}
