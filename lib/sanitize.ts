@@ -17,3 +17,17 @@ export function getSafeUrl(url?: string): string | undefined {
     return '#';
   }
 }
+
+
+export function getSafeImageUrl(url?: string): string | undefined {
+  if (!url) return undefined;
+
+  if (url.startsWith('data:')) {
+    if (url.startsWith('data:image/')) {
+      return url;
+    }
+    return undefined;
+  }
+
+  return getSafeUrl(url);
+}
