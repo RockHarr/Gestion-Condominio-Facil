@@ -17,3 +17,15 @@ export function getSafeUrl(url?: string): string | undefined {
     return '#';
   }
 }
+
+export function getSafeImageUrl(url?: string): string | undefined {
+  if (!url) return undefined;
+
+  // Allow empty strings or valid sanitized data URIs
+  if (url.startsWith('data:image/')) {
+    return url;
+  }
+
+  const safeUrl = getSafeUrl(url);
+  return safeUrl === '#' ? undefined : safeUrl;
+}
