@@ -17,3 +17,23 @@ export function getSafeUrl(url?: string): string | undefined {
     return '#';
   }
 }
+
+
+export function getSafeImageUrl(url?: string): string | undefined {
+  if (!url) return undefined;
+
+  const safeUrl = getSafeUrl(url);
+  if (safeUrl !== '#') return safeUrl;
+
+  // eslint-disable-next-line no-control-regex
+  const noControlChars = url.replace(/[\u0000-\u001F\u007F]/g, '');
+  try {
+    const parsedUrl = new URL(noControlChars);
+    if (parsedUrl.protocol === 'data:' && parsedUrl.pathname.startsWith('image/')) {
+      return noControlChars;
+    }
+  } catch (e) {
+    // ignore
+  }
+  return '#';
+}
