@@ -21,3 +21,7 @@
 **Vulnerability:** Unsanitized user inputs bound to `<img>` `src` attributes allowed malicious data URIs (`data:text/html;base64,...`) and `javascript:` schemes, enabling XSS attacks.
 **Learning:** React's auto-escaping does not protect against XSS if the payload is a valid scheme (like `javascript:` or `data:`) executed within attributes like `src` or `href`.
 **Prevention:** Implement and use a dedicated URL sanitization function (like `getSafeImageUrl`) that validates the scheme against an allowlist and strictly ensures that `data:` URIs start with an `image/` MIME type before rendering in the UI.
+## 2024-03-20 - [Base Schema Not Applied in CI]
+**Vulnerability:** The base schema (`schema.sql`) was not automatically executed by the `supabase start` command in CI before running subsequent migrations. This caused migrations attempting to alter or reference base tables (like `reservation_types`) to fail with "relation does not exist" errors, preventing secure and consistent test environments.
+**Learning:** `supabase start` relies strictly on the `migrations` directory to build the initial database state. Standalone schema files outside this directory are not automatically ingested during the bootstrap process.
+**Prevention:** Always rename and move standalone base schemas into the `migrations` directory (e.g., as the earliest timestamped migration, like `20260101_init.sql`) to guarantee they are applied in the correct dependency order before any other migrations run.
