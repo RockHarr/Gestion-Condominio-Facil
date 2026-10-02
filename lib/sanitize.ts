@@ -7,13 +7,23 @@ export function getSafeUrl(url?: string): string | undefined {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost';
     const parsedUrl = new URL(noControlChars, baseUrl);
 
-    const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:', 'blob:'];
+    const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:', 'blob:', 'data:'];
 
     if (allowedProtocols.includes(parsedUrl.protocol)) {
+      if (parsedUrl.protocol === 'data:') {
+        if (parsedUrl.pathname.startsWith('image/')) {
+          return noControlChars;
+        }
+        return '#';
+      }
       return noControlChars;
     }
     return '#';
   } catch (e) {
     return '#';
   }
+}
+
+export function getSafeImageUrl(url?: string): string | undefined {
+    return getSafeUrl(url);
 }
