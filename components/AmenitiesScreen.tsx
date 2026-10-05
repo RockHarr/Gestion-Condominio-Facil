@@ -1,3 +1,4 @@
+import { getSafeImageUrl } from '../lib/sanitize';
 import React from 'react';
 import type { Amenity, Page, PageParams } from '../types';
 import { Card, Button } from './Shared';
@@ -34,7 +35,7 @@ export const AmenitiesScreen: React.FC<AmenitiesScreenProps> = ({
             <Card key={amenity.id} className="overflow-hidden !p-0 group">
               <div className="relative h-48 overflow-hidden">
                 <img
-                  src={amenity.photoUrl}
+                  src={getSafeImageUrl(amenity.photoUrl)}
                   alt={amenity.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
